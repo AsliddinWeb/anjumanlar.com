@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: attach to container",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": { "host": "localhost", "port": 5678 },
+      "pathMappings": [
+        { "localRoot": "${workspaceFolder}/backend", "remoteRoot": "/app" }
+      ],
+      "justMyCode": false
+    },
+    {
+      "name": "Backend: run pytest in container",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "docker compose exec backend pytest -q"
+    },
+    {
+      "name": "Frontend: open in browser",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "open http://localhost:8308"
+    }
+  ]
+}

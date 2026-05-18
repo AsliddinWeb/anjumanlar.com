@@ -1,0 +1,35 @@
+{
+  "site": {
+    "title": "Anjumanlar.com",
+    "tagline": "A marketplace for academic monographs"
+  },
+  "nav": {
+    "home": "Home",
+    "books": "Books",
+    "authors": "Authors",
+    "blog": "Blog",
+    "about": "About"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "home": {
+    "hero": {
+      "title": "Anjumanlar.com — a digital monograph library",
+      "subtitle": "Authors upload, readers buy.",
+      "cta_browse": "Browse books",
+      "cta_become_author": "Become an author"
+    },
+    "skeleton_note": "This is a skeleton page. The full design lands in Phase 3."
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong"
+  }
+}

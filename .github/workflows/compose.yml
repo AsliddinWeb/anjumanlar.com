@@ -1,0 +1,36 @@
+name: compose
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "docker-compose.yml"
+      - "docker/**"
+      - ".github/workflows/compose.yml"
+      - ".env.example"
+  pull_request:
+    paths:
+      - "docker-compose.yml"
+      - "docker/**"
+      - ".github/workflows/compose.yml"
+
+jobs:
+  validate:
+    name: validate compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate .env from example
+        run: cp .env.example .env
+
+      - name: Validate docker-compose.yml
+        run: docker compose config --quiet
+
+      - name: Check service list
+        run: |
+          expected="backend frontend mailhog meilisearch minio minio-init postgres redis"
+          actual=$(docker compose config --services | sort | tr '\n' ' ' | sed 's/ $//')
+          echo "Expected: $expected"
+          echo "Actual:   $actual"
+          test "$expected" = "$actual"

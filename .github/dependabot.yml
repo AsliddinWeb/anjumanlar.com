@@ -1,0 +1,60 @@
+version: 2
+updates:
+  # Backend Python deps
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "backend"]
+    groups:
+      python-dev:
+        patterns:
+          - "ruff"
+          - "mypy"
+          - "pytest*"
+          - "types-*"
+
+  # Frontend Node deps
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "frontend"]
+    groups:
+      nuxt-modules:
+        patterns:
+          - "@nuxtjs/*"
+          - "@nuxt/*"
+          - "nuxt"
+      node-dev:
+        patterns:
+          - "eslint*"
+          - "prettier"
+          - "vitest"
+          - "typescript"
+          - "vue-tsc"
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ["dependencies", "ci"]
+
+  # Docker base images (root + backend + frontend)
+  - package-ecosystem: docker
+    directory: /backend
+    schedule:
+      interval: weekly
+    labels: ["dependencies", "docker"]
+  - package-ecosystem: docker
+    directory: /frontend
+    schedule:
+      interval: weekly
+    labels: ["dependencies", "docker"]

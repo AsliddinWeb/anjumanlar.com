@@ -1,0 +1,35 @@
+{
+  "site": {
+    "title": "Anjumanlar.com",
+    "tagline": "Monografiya sotuvi platformasi"
+  },
+  "nav": {
+    "home": "Bosh sahifa",
+    "books": "Kitoblar",
+    "authors": "Mualliflar",
+    "blog": "Blog",
+    "about": "Biz haqimizda"
+  },
+  "theme": {
+    "label": "Rejim",
+    "light": "Yorug'",
+    "dark": "Tungi",
+    "system": "Tizim"
+  },
+  "language": {
+    "label": "Til"
+  },
+  "home": {
+    "hero": {
+      "title": "Anjumanlar.com — raqamli monografiya kutubxonasi",
+      "subtitle": "Mualliflar uchun yuklash, o'quvchilar uchun sotib olish.",
+      "cta_browse": "Kitoblarni ko'rish",
+      "cta_become_author": "Muallif bo'lish"
+    },
+    "skeleton_note": "Bu hozircha skeleton sahifa. Phase 3'da to'liq dizayn keladi."
+  },
+  "common": {
+    "loading": "Yuklanmoqda…",
+    "error": "Xatolik yuz berdi"
+  }
+}

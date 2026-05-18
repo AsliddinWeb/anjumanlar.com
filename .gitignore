@@ -1,0 +1,86 @@
+# ===== Environment =====
+.env
+.env.local
+.env.*.local
+*.env
+
+# ===== Python / Backend =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# ===== Node / Frontend =====
+node_modules/
+.nuxt/
+.output/
+.nitro/
+.cache/
+dist/
+.vite/
+.pnpm-store/
+.pnpm-state.json
+*.tsbuildinfo
+.eslintcache
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== Docker =====
+docker-compose.override.yml
+
+# ===== Editor / OS =====
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+logs/
+*.log
+
+# ===== Local data / uploads =====
+data/
+volumes/
+uploads/
+backups/
+*.sqlite3
+*.db
+
+# ===== Secrets / SSL =====
+*.pem
+*.key
+*.crt
+secrets/
+
+# ===== Build artifacts =====
+build/
+out/
+*.tar.gz
+
+# ===== Misc =====
+.claude/local/
+sources/

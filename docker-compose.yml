@@ -1,0 +1,203 @@
+# ============================================================
+# Anjumanlar.com — development docker-compose
+# All host ports start from 8300 (see README).
+# Backend, frontend and Celery services are added in
+# sub-phases 0.5 and 0.6 — this file currently brings up the
+# infrastructure tier only (Postgres, Redis, MinIO, Meilisearch,
+# MailHog) so it can be verified independently.
+# ============================================================
+
+name: anjumanlar
+
+networks:
+  anjumanlar:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  meilisearch_data:
+  frontend_node_modules:
+
+services:
+
+  # ---------- PostgreSQL 16 ----------
+  postgres:
+    image: postgres:16-alpine
+    container_name: anjumanlar-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-anjumanlar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-anjumanlar}
+      POSTGRES_DB: ${POSTGRES_DB:-anjumanlar}
+      TZ: ${TZ:-Asia/Tashkent}
+      PGTZ: ${TZ:-Asia/Tashkent}
+    ports:
+      - "${POSTGRES_PORT:-8300}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-anjumanlar} -d ${POSTGRES_DB:-anjumanlar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - anjumanlar
+
+  # ---------- Redis 7 ----------
+  redis:
+    image: redis:7-alpine
+    container_name: anjumanlar-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --save 60 1
+    ports:
+      - "${REDIS_PORT:-8301}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - anjumanlar
+
+  # ---------- MinIO (S3-compatible) ----------
+  minio:
+    image: minio/minio:latest
+    container_name: anjumanlar-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio-root}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio-root-pass}
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:${MINIO_CONSOLE_PORT:-8303}
+    ports:
+      - "${MINIO_API_PORT:-8302}:9000"
+      - "${MINIO_CONSOLE_PORT:-8303}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - anjumanlar
+
+  # One-shot job: creates required buckets on first run.
+  minio-init:
+    image: minio/mc:latest
+    container_name: anjumanlar-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio-root}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio-root-pass}
+      MINIO_BUCKET_BOOKS: ${MINIO_BUCKET_BOOKS:-books}
+      MINIO_BUCKET_BOOKS_WM: ${MINIO_BUCKET_BOOKS_WM:-books-watermarked}
+      MINIO_BUCKET_COVERS: ${MINIO_BUCKET_COVERS:-covers}
+      MINIO_BUCKET_AVATARS: ${MINIO_BUCKET_AVATARS:-avatars}
+      MINIO_BUCKET_DEMOS: ${MINIO_BUCKET_DEMOS:-demos}
+      MINIO_BUCKET_BLOG: ${MINIO_BUCKET_BLOG:-blog}
+    volumes:
+      - ./docker/minio/setup.sh:/setup.sh:ro
+    entrypoint: ["/bin/sh", "/setup.sh"]
+    networks:
+      - anjumanlar
+    restart: "no"
+
+  # ---------- Meilisearch ----------
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    container_name: anjumanlar-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:-change-me-32-chars-minimum-secret-key}
+      MEILI_ENV: ${ENVIRONMENT:-development}
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "${MEILISEARCH_PORT:-8304}:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - anjumanlar
+
+  # ---------- MailHog (dev SMTP catcher) ----------
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: anjumanlar-mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_SMTP_PORT:-8305}:1025"
+      - "${MAILHOG_UI_PORT:-8306}:8025"
+    networks:
+      - anjumanlar
+
+  # ---------- Frontend (Nuxt 3) ----------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: anjumanlar-frontend:dev
+    container_name: anjumanlar-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      NUXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      - ./frontend:/app
+      # Keep image-installed node_modules (host doesn't have them).
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "${FRONTEND_PORT:-8308}:3000"
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - anjumanlar
+
+  # ---------- Backend (FastAPI) ----------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: anjumanlar-backend:dev
+    container_name: anjumanlar-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "${BACKEND_PORT:-8307}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - anjumanlar
