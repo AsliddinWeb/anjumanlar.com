@@ -1,0 +1,23 @@
+{% extends "_layout.html" %}
+{% set locale = "ru" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Здравствуйте, {{ full_name }}!</h1>
+<p style="margin:0 0 16px;">
+  Спасибо за регистрацию на Anjumanlar.com. Здесь вы можете искать и
+  покупать монографии и научные книги, а также загружать свои работы как
+  автор.
+</p>
+<p style="margin:0 0 24px;">
+  Чтобы получить полный доступ к аккаунту, подтвердите ваш email — мы
+  отправили отдельное письмо.
+</p>
+<p style="margin:0 0 16px;">
+  <a href="{{ site_url }}" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Перейти на сайт
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  Это письмо отправлено, потому что на адрес <strong>{{ email }}</strong>
+  была произведена регистрация.
+</p>
+{% endblock %}

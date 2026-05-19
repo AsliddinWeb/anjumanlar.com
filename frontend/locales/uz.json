@@ -8,7 +8,10 @@
     "books": "Kitoblar",
     "authors": "Mualliflar",
     "blog": "Blog",
-    "about": "Biz haqimizda"
+    "about": "Biz haqimizda",
+    "account": "Kabinet",
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish"
   },
   "theme": {
     "label": "Rejim",
@@ -28,8 +31,73 @@
     },
     "skeleton_note": "Bu hozircha skeleton sahifa. Phase 3'da to'liq dizayn keladi."
   },
+  "auth": {
+    "login": {
+      "title": "Hisobingizga kiring",
+      "subtitle": "Email va parolingizni kiriting",
+      "email": "Email",
+      "password": "Parol",
+      "submit": "Kirish",
+      "submitting": "Yuborilmoqda…",
+      "no_account": "Hisobingiz yo'qmi?",
+      "register_link": "Ro'yxatdan o'tish",
+      "forgot_link": "Parolni unutdingizmi?",
+      "error_generic": "Email yoki parol noto'g'ri"
+    },
+    "register": {
+      "title": "Yangi hisob yaratish",
+      "subtitle": "Bir necha soniya — bepul",
+      "full_name": "To'liq ism",
+      "email": "Email",
+      "password": "Parol",
+      "password_hint": "Kamida 8 ta belgi, bitta katta harf, kichik harf va raqam",
+      "preferred_locale": "Til",
+      "submit": "Ro'yxatdan o'tish",
+      "submitting": "Yaratilmoqda…",
+      "have_account": "Hisobingiz bormi?",
+      "login_link": "Kirish",
+      "success_title": "Email manzilingizni tekshiring",
+      "success_body": "{email} manziliga tasdiqlash xati yubordik. Linkni bosing va hisobingizni faollashtiring."
+    },
+    "forgot": {
+      "title": "Parolni unutdingizmi?",
+      "subtitle": "Email manzilingizni kiriting — tiklash linki yuboriladi",
+      "email": "Email",
+      "submit": "Linkni yuborish",
+      "submitting": "Yuborilmoqda…",
+      "success": "Agar bu email ro'yxatdan o'tgan bo'lsa, tiklash linki yuborildi.",
+      "back_to_login": "Kirishga qaytish"
+    },
+    "reset": {
+      "title": "Yangi parol o'rnatish",
+      "subtitle": "Ushbu havolaning amal qilish muddati cheklangan",
+      "new_password": "Yangi parol",
+      "submit": "Parolni saqlash",
+      "submitting": "Saqlanmoqda…",
+      "success": "Parol yangilandi. Endi yangi parol bilan kirishingiz mumkin.",
+      "go_to_login": "Kirish sahifasiga o'tish",
+      "invalid_token": "Havola yaroqsiz yoki muddati o'tgan"
+    },
+    "verify": {
+      "title": "Email tasdiqlash",
+      "in_progress": "Tasdiqlanmoqda…",
+      "success": "Email tasdiqlandi. Endi to'liq hisobdan foydalanishingiz mumkin.",
+      "error": "Havola yaroqsiz yoki muddati o'tgan",
+      "go_to_login": "Kirish sahifasiga o'tish"
+    },
+    "logout": "Chiqish"
+  },
+  "account": {
+    "title": "Kabinet",
+    "welcome": "Salom, {name}",
+    "email_unverified": "Email tasdiqlanmagan",
+    "role": "Rol",
+    "logout": "Chiqish",
+    "logout_all": "Hamma qurilmalardan chiqish"
+  },
   "common": {
     "loading": "Yuklanmoqda…",
-    "error": "Xatolik yuz berdi"
+    "error": "Xatolik yuz berdi",
+    "required": "Bu maydon majburiy"
   }
 }

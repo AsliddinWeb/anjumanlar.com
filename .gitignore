@@ -4,6 +4,11 @@
 .env.*.local
 *.env
 
+# ===== Celery runtime state =====
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat.pid
+
 # ===== Python / Backend =====
 __pycache__/
 *.py[cod]

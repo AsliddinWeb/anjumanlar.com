@@ -1,19 +1,31 @@
 /**
  * Thin wrapper around Nuxt's $fetch that points at the backend API.
- * Phase 1 will add the JWT interceptor + refresh handling.
+ *
+ * Adds two pieces of glue:
+ * - sends ``credentials: "include"`` so the httpOnly refresh cookie travels
+ *   on every request automatically;
+ * - attaches the in-memory access token from the auth store as a Bearer
+ *   header when one is present.
+ *
+ * Automatic 401 → refresh → retry is intentionally deferred to Phase 6 —
+ * each composable handles 401 explicitly for now so failure modes stay
+ * obvious during Phase 1 dev.
  */
-export function useApi() {
+import type { $Fetch } from "ofetch";
+
+export function useApi(): $Fetch {
   const { apiBase } = useRuntimeConfig().public;
+  const auth = useAuthStore();
 
   return $fetch.create({
     baseURL: apiBase,
+    credentials: "include",
     onRequest({ options }) {
-      // Placeholder for auth header — wired up in Phase 1.
-      options.headers = options.headers || {};
-    },
-    onResponseError({ response }) {
-      // eslint-disable-next-line no-console
-      console.warn("[api] error", response.status, response._data);
+      const headers = new Headers(options.headers);
+      if (auth.accessToken) {
+        headers.set("Authorization", `Bearer ${auth.accessToken}`);
+      }
+      options.headers = headers;
     },
   });
 }

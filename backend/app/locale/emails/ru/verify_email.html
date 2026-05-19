@@ -1,0 +1,23 @@
+{% extends "_layout.html" %}
+{% set locale = "ru" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Подтвердите email</h1>
+<p style="margin:0 0 16px;">
+  Здравствуйте, {{ full_name }}. Чтобы активировать ваш аккаунт, нажмите
+  на кнопку ниже:
+</p>
+<p style="margin:0 0 24px;">
+  <a href="{{ verify_url }}" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Подтвердить email
+  </a>
+</p>
+<p style="margin:0 0 16px;color:#4a3f35;font-size:13px;">
+  Или скопируйте эту ссылку в браузер:
+  <br />
+  <span style="word-break:break-all;color:#8b4513;">{{ verify_url }}</span>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  Ссылка действительна в течение {{ expires_in_hours }} ч. Если вы не
+  регистрировались на Anjumanlar.com — просто проигнорируйте письмо.
+</p>
+{% endblock %}

@@ -8,7 +8,10 @@
     "books": "Books",
     "authors": "Authors",
     "blog": "Blog",
-    "about": "About"
+    "about": "About",
+    "account": "Account",
+    "login": "Log in",
+    "register": "Sign up"
   },
   "theme": {
     "label": "Theme",
@@ -28,8 +31,73 @@
     },
     "skeleton_note": "This is a skeleton page. The full design lands in Phase 3."
   },
+  "auth": {
+    "login": {
+      "title": "Log in to your account",
+      "subtitle": "Enter your email and password",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Signing in…",
+      "no_account": "Don't have an account?",
+      "register_link": "Sign up",
+      "forgot_link": "Forgot password?",
+      "error_generic": "Invalid email or password"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Takes a few seconds — free",
+      "full_name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "password_hint": "At least 8 chars with one uppercase, one lowercase and one digit",
+      "preferred_locale": "Language",
+      "submit": "Sign up",
+      "submitting": "Creating…",
+      "have_account": "Already have an account?",
+      "login_link": "Log in",
+      "success_title": "Check your email",
+      "success_body": "We sent a verification link to {email}. Open it to activate your account."
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email — we'll send a reset link",
+      "email": "Email",
+      "submit": "Send link",
+      "submitting": "Sending…",
+      "success": "If the email is registered, a reset link has been sent.",
+      "back_to_login": "Back to login"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "This link is time-limited",
+      "new_password": "New password",
+      "submit": "Save password",
+      "submitting": "Saving…",
+      "success": "Password updated. You can now log in with the new one.",
+      "go_to_login": "Go to login",
+      "invalid_token": "This link is invalid or expired"
+    },
+    "verify": {
+      "title": "Verify email",
+      "in_progress": "Verifying…",
+      "success": "Email verified. You now have full account access.",
+      "error": "This link is invalid or expired",
+      "go_to_login": "Go to login"
+    },
+    "logout": "Log out"
+  },
+  "account": {
+    "title": "Account",
+    "welcome": "Hi, {name}",
+    "email_unverified": "Email not verified",
+    "role": "Role",
+    "logout": "Log out",
+    "logout_all": "Log out everywhere"
+  },
   "common": {
     "loading": "Loading…",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+    "required": "This field is required"
   }
 }

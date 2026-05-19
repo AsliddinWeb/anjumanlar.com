@@ -60,6 +60,10 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # ----- Single-use auth tokens (email verify / password reset) -----
+    EMAIL_VERIFY_TOKEN_TTL_HOURS: int = 24
+    PASSWORD_RESET_TOKEN_TTL_HOURS: int = 2
+
     # ----- Email -----
     SMTP_HOST: str = "mailhog"
     SMTP_PORT: int = 1025

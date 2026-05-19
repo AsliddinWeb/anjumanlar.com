@@ -90,6 +90,9 @@ ignore = [
     "E501",          # line length — handled by formatter
     "B008",          # FastAPI uses Depends() as default arg by design
     "UP046",         # PEP 695 type params break pydantic Generic models
+    "RUF001",        # Cyrillic in strings — we intentionally ship Russian text
+    "RUF002",        # Cyrillic/× in docstrings — same reason
+    "RUF003",        # same, in comments
 ]
 
 [tool.ruff.format]
@@ -105,5 +108,7 @@ disallow_untyped_decorators = false
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
 testpaths = ["tests"]
 addopts = "-ra -q --strict-markers"

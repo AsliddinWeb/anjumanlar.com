@@ -1,14 +1,10 @@
-"""Top-level v1 router.
-
-Sub-routers (auth, books, orders, etc.) will be added in Phase 1+.
-For now we only expose a single readiness probe so the v1 surface is
-discoverable in Swagger.
-"""
+"""Top-level v1 router. Sub-routers register here so Swagger sees them all."""
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.v1.endpoints import auth, users
 from app.db.session import get_db
 
 api_router = APIRouter()
@@ -25,3 +21,7 @@ async def ready(db: AsyncSession = Depends(get_db)) -> dict[str, object]:
     result = await db.execute(text("SELECT 1"))
     db_ok = result.scalar_one() == 1
     return {"ready": db_ok, "db": "ok" if db_ok else "fail"}
+
+
+api_router.include_router(auth.router)
+api_router.include_router(users.router)

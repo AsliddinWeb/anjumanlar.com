@@ -29,7 +29,7 @@ jobs:
 
       - name: Check service list
         run: |
-          expected="backend frontend mailhog meilisearch minio minio-init postgres redis"
+          expected="backend celery_beat celery_worker frontend mailhog meilisearch minio minio-init postgres redis"
           actual=$(docker compose config --services | sort | tr '\n' ' ' | sed 's/ $//')
           echo "Expected: $expected"
           echo "Actual:   $actual"
