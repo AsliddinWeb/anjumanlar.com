@@ -10,10 +10,11 @@
  * Automatic 401 → refresh → retry is intentionally deferred to Phase 6 —
  * each composable handles 401 explicitly for now so failure modes stay
  * obvious during Phase 1 dev.
+ *
+ * We deliberately don't annotate the return type so Nuxt's narrower
+ * ``$Fetch<unknown, NitroFetchRequest>`` can flow through cleanly.
  */
-import type { $Fetch } from "ofetch";
-
-export function useApi(): $Fetch {
+export function useApi() {
   const { apiBase } = useRuntimeConfig().public;
   const auth = useAuthStore();
 

@@ -88,6 +88,7 @@ def _fetch_to(recipient: str, attempts: int = 10) -> dict | None:
     return None
 
 
+@pytest.mark.integration
 def test_render_and_send_delivers_to_mailhog():
     _clear_mailhog()
     recipient = "mailhog-test@example.com"

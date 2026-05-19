@@ -75,6 +75,7 @@ async def _purge_audits(action: AuditAction) -> None:
         await s.commit()
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_login_success_writes_audit():
     """The audit service uses its own session, so it can't see users created

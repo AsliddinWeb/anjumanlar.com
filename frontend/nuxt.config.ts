@@ -34,12 +34,14 @@ export default defineNuxtConfig({
     },
   },
 
+  // Nuxt auto-substitutes NUXT_PUBLIC_* env vars into ``runtimeConfig.public``
+  // at boot, so the defaults below act as dev fallbacks only.
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8307/api/v1",
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:8308",
-      siteName: process.env.NUXT_PUBLIC_SITE_NAME || "Anjumanlar.com",
-      defaultLocale: process.env.NUXT_PUBLIC_DEFAULT_LOCALE || "uz",
+      apiBase: "http://localhost:8307/api/v1",
+      siteUrl: "http://localhost:8308",
+      siteName: "Anjumanlar.com",
+      defaultLocale: "uz",
     },
   },
 

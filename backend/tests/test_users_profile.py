@@ -118,6 +118,7 @@ async def test_patch_me_rejects_invalid_locale(api_client: AsyncClient, db_sessi
 # ---------- POST /users/me/avatar ----------
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_upload_avatar_resizes_and_stores_url(
     api_client: AsyncClient, db_session: AsyncSession

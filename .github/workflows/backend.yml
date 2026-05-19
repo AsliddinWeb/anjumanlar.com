@@ -76,8 +76,8 @@ jobs:
       - name: Ruff format check
         run: ruff format --check .
 
-      - name: Pytest
-        run: pytest -q
+      - name: Pytest (unit + non-integration)
+        run: pytest -q -m "not integration"
 
   docker-build:
     name: docker build

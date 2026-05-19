@@ -112,3 +112,6 @@ asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
 testpaths = ["tests"]
 addopts = "-ra -q --strict-markers"
+markers = [
+    "integration: hits external dev-stack services (MailHog, MinIO, live API) — skipped in CI",
+]
