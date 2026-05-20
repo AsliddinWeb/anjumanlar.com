@@ -89,7 +89,20 @@ jobs:
         run: alembic upgrade head
 
       - name: Pytest (unit + non-integration)
-        run: pytest -q -m "not integration"
+        id: pytest
+        # Capture output to a file so we can publish it as an artifact even
+        # when the step fails — log download via the API needs admin auth,
+        # public artifacts don't.
+        run: |
+          set -o pipefail
+          pytest -v --tb=short -m "not integration" 2>&1 | tee /tmp/pytest.log
+
+      - name: Upload pytest log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-log
+          path: /tmp/pytest.log
 
   docker-build:
     name: docker build

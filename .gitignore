@@ -87,5 +87,5 @@ out/
 *.tar.gz
 
 # ===== Misc =====
-.claude/local/
+.claude/
 sources/
