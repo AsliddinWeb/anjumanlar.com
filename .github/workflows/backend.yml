@@ -76,6 +76,18 @@ jobs:
       - name: Ruff format check
         run: ruff format --check .
 
+      - name: Bootstrap Postgres extensions
+        # ``citext``, ``pgcrypto``, etc. live in docker/postgres/init.sql for
+        # the dev stack; CI's postgres service skips that script so we apply
+        # it by hand before migrations run.
+        env:
+          PGPASSWORD: anjumanlar
+        run: |
+          psql -h localhost -U anjumanlar -d anjumanlar -f ../docker/postgres/init.sql
+
+      - name: Alembic upgrade head
+        run: alembic upgrade head
+
       - name: Pytest (unit + non-integration)
         run: pytest -q -m "not integration"
 
