@@ -4,7 +4,19 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.endpoints import auth, authors, books, categories, reviews, search, users
+from app.api.v1.endpoints import (
+    auth,
+    authors,
+    books,
+    categories,
+    libraries,
+    orders,
+    payments,
+    reviews,
+    search,
+    users,
+    withdrawals,
+)
 from app.db.session import get_db
 
 api_router = APIRouter()
@@ -32,3 +44,8 @@ api_router.include_router(reviews.books_review_router)
 api_router.include_router(reviews.review_router)
 api_router.include_router(reviews.admin_review_router)
 api_router.include_router(search.router)
+api_router.include_router(orders.router)
+api_router.include_router(payments.router)
+api_router.include_router(libraries.router)
+api_router.include_router(withdrawals.author_router)
+api_router.include_router(withdrawals.admin_router)

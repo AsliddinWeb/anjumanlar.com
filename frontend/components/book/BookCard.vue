@@ -31,6 +31,10 @@ const href = computed(() => localePath(`/books/${props.book.slug}`));
       >
         ★ {{ $t("book.featured") }}
       </UiBadge>
+      <div class="absolute top-2 right-2 flex flex-col gap-1.5">
+        <WishlistButton :book-id="book.id" size="sm" />
+        <CartButton v-if="!book.is_free" :book="book" size="sm" />
+      </div>
     </div>
 
     <div class="p-3 space-y-1.5">

@@ -9,9 +9,13 @@ from app.models.author_profile import AuthorProfile
 from app.models.book import Book, BookLanguage, BookStatus
 from app.models.book_category import book_categories
 from app.models.category import Category
+from app.models.order import Order, OrderItem, OrderStatus
+from app.models.payment import Payment, PaymentProvider, PaymentStatus
 from app.models.refresh_token import RefreshToken
 from app.models.review import Review, ReviewStatus
 from app.models.user import User, UserRole, UserStatus
+from app.models.user_library import UserLibrary
+from app.models.withdrawal import Withdrawal, WithdrawalStatus
 from app.models.wishlist import Wishlist
 
 __all__ = [
@@ -24,12 +28,21 @@ __all__ = [
     "BookLanguage",
     "BookStatus",
     "Category",
+    "Order",
+    "OrderItem",
+    "OrderStatus",
+    "Payment",
+    "PaymentProvider",
+    "PaymentStatus",
     "RefreshToken",
     "Review",
     "ReviewStatus",
     "User",
+    "UserLibrary",
     "UserRole",
     "UserStatus",
+    "Withdrawal",
+    "WithdrawalStatus",
     "Wishlist",
     "book_categories",
 ]

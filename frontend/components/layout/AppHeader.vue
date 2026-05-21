@@ -3,6 +3,7 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const { user, isAuthenticated, logout } = useAuth();
+const cart = useCartStore();
 
 const nav = computed(() => [
   { to: "/", label: t("nav.home") },
@@ -99,6 +100,20 @@ async function onLogout() {
       </form>
 
       <div class="flex-1 md:hidden" />
+
+      <NuxtLink
+        :to="localePath('/cart')"
+        class="relative inline-flex items-center justify-center h-9 w-9 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
+        :aria-label="t('cart.title')"
+      >
+        <span aria-hidden="true">🛒</span>
+        <span
+          v-if="cart.count > 0"
+          class="absolute -top-1 -right-1 min-w-[18px] h-[18px] inline-flex items-center justify-center px-1 rounded-full bg-primary text-ink-inverse text-[10px] font-semibold"
+        >
+          {{ cart.count }}
+        </span>
+      </NuxtLink>
 
       <LanguageSwitcher />
       <ThemeToggle />

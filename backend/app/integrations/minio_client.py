@@ -11,6 +11,7 @@ call-site is the recommended pattern when used from FastAPI.
 from __future__ import annotations
 
 import contextlib
+from datetime import timedelta
 from io import BytesIO
 
 from minio import Minio
@@ -51,6 +52,34 @@ def remove_object(bucket: str, object_key: str) -> None:
     """Idempotent delete — missing objects are silently ignored."""
     with contextlib.suppress(Exception):  # pragma: no cover — best-effort cleanup
         minio_client.remove_object(bucket, object_key)
+
+
+def presigned_get_url(
+    bucket: str,
+    object_key: str,
+    expires_seconds: int = 300,
+) -> str:
+    """Time-limited URL the browser can hit directly to download a private object.
+
+    Returned URL points at the *public* MinIO endpoint (``localhost:8302``
+    in dev), so the SDK-signed host header has to be rewritten — we do
+    that by building the client against the public endpoint just for
+    signing. Default TTL is 5 minutes; the caller can extend it for
+    cases like resuming a multi-gigabyte download.
+    """
+    # We need a client bound to the public endpoint, otherwise the
+    # signed URL would point at "minio:9000" which is unreachable from
+    # the user's browser.
+    public_host = settings.MINIO_PUBLIC_ENDPOINT.split("://", 1)[-1]
+    signing_client = Minio(
+        endpoint=public_host,
+        access_key=settings.MINIO_ROOT_USER,
+        secret_key=settings.MINIO_ROOT_PASSWORD,
+        secure=settings.MINIO_PUBLIC_ENDPOINT.startswith("https://"),
+    )
+    return signing_client.presigned_get_object(
+        bucket, object_key, expires=timedelta(seconds=expires_seconds)
+    )
 
 
 def get_bytes(bucket: str, object_key: str) -> bytes:

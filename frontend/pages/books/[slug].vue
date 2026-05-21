@@ -157,13 +157,17 @@ const similarBooks = computed<BookPublic[]>(() => {
         </div>
 
         <div class="flex flex-wrap gap-3 pt-2">
-          <UiButton size="lg" disabled>
-            {{ book.is_free ? t("book.cta.read") : t("book.buy") }}
+          <UiButton
+            v-if="book.is_free"
+            size="lg"
+            :to="localePath('/account/library')"
+            :disabled="true"
+          >
+            {{ t("book.cta.read") }}
           </UiButton>
+          <CartButton v-else :book="book" variant="button" size="lg" />
           <BookDemoViewer :demo-url="book.demo_url" :title="title" />
-          <UiButton variant="subtle" size="lg" disabled>
-            {{ t("book.add_to_wishlist") }}
-          </UiButton>
+          <WishlistButton :book-id="book.id" variant="button" size="lg" />
         </div>
         <p class="text-xs text-ink-tertiary">{{ t("book.cta.coming_soon") }}</p>
       </div>

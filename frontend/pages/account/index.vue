@@ -3,9 +3,11 @@ definePageMeta({ middleware: "auth" });
 
 const { t } = useI18n();
 const localePath = useLocalePath();
-const { user, isVerified, logout } = useAuth();
+const { user, isVerified, hasRole, logout } = useAuth();
 
 useHead({ title: t("account.title") });
+
+const isAuthor = computed(() => hasRole("author"));
 
 async function onLogout() {
   await logout();
@@ -31,6 +33,71 @@ async function onLogout() {
       <dt class="text-ink-tertiary">{{ t("account.role") }}</dt>
       <dd class="text-ink">{{ user.role }}</dd>
     </dl>
+
+    <nav class="grid sm:grid-cols-2 gap-3 mb-8">
+      <NuxtLink
+        :to="localePath('/account/library')"
+        class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
+      >
+        <span class="text-2xl" aria-hidden="true">📚</span>
+        <div>
+          <div class="font-medium text-ink">{{ t("library.title") }}</div>
+          <div class="text-xs text-ink-tertiary">{{ t("library.subtitle") }}</div>
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        :to="localePath('/account/orders')"
+        class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
+      >
+        <span class="text-2xl" aria-hidden="true">📋</span>
+        <div>
+          <div class="font-medium text-ink">{{ t("orders.title") }}</div>
+          <div class="text-xs text-ink-tertiary">{{ t("orders.subtitle") }}</div>
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        :to="localePath('/account/wishlist')"
+        class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
+      >
+        <span class="text-2xl" aria-hidden="true">💝</span>
+        <div>
+          <div class="font-medium text-ink">{{ t("nav.wishlist") }}</div>
+          <div class="text-xs text-ink-tertiary">{{ t("wishlist.subtitle") }}</div>
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        :to="localePath('/cart')"
+        class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
+      >
+        <span class="text-2xl" aria-hidden="true">🛒</span>
+        <div>
+          <div class="font-medium text-ink">{{ t("cart.title") }}</div>
+          <div class="text-xs text-ink-tertiary">{{ t("cart.subtitle") }}</div>
+        </div>
+      </NuxtLink>
+      <template v-if="isAuthor">
+        <NuxtLink
+          :to="localePath('/account/balance')"
+          class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
+        >
+          <span class="text-2xl" aria-hidden="true">💰</span>
+          <div>
+            <div class="font-medium text-ink">{{ t("balance.title") }}</div>
+            <div class="text-xs text-ink-tertiary">{{ t("balance.subtitle") }}</div>
+          </div>
+        </NuxtLink>
+        <NuxtLink
+          :to="localePath('/account/withdrawals')"
+          class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
+        >
+          <span class="text-2xl" aria-hidden="true">💸</span>
+          <div>
+            <div class="font-medium text-ink">{{ t("withdrawals.title") }}</div>
+            <div class="text-xs text-ink-tertiary">{{ t("withdrawals.subtitle") }}</div>
+          </div>
+        </NuxtLink>
+      </template>
+    </nav>
 
     <div class="flex gap-3">
       <button

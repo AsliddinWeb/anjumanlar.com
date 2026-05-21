@@ -1,0 +1,24 @@
+{% extends "_layout.html" %}
+{% set locale = "uz" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Kitob kutubxonangizda!</h1>
+<p style="margin:0 0 16px;">
+  Salom, {{ full_name }}. {{ order_number }} buyurtmangiz bo'yicha
+  to'lov muvaffaqiyatli amalga oshdi. Quyidagi kitoblar shaxsiy
+  kutubxonangizga qo'shildi:
+</p>
+<ul style="margin:0 0 24px;padding-left:20px;">
+  {% for title in book_titles %}
+  <li style="margin:0 0 6px;color:#1a1410;">{{ title }}</li>
+  {% endfor %}
+</ul>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/uz/account/library" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Kutubxonaga o'tish
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  Yuklab olingan PDF nusxasiga sizning {{ email }} manzilingiz vodiy belgi
+  sifatida qo'yiladi. Iltimos, nusxani uchinchi shaxslarga ulashmang.
+</p>
+{% endblock %}

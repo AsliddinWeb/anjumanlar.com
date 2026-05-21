@@ -184,3 +184,110 @@ export interface WishlistList {
   items: WishlistItem[];
   total: number;
 }
+
+// ---------- Orders ----------
+
+export type OrderStatus =
+  | "pending"
+  | "paid"
+  | "expired"
+  | "cancelled"
+  | "failed"
+  | "refunded";
+
+export interface OrderItemPublic {
+  id: string;
+  book: BookPublic;
+  price: number;
+  commission_rate: number;
+  author_earning: number;
+  platform_fee: number;
+}
+
+export interface OrderPublic {
+  id: string;
+  order_number: string;
+  status: OrderStatus;
+  subtotal: number;
+  discount: number;
+  total: number;
+  currency: string;
+  payment_method: string | null;
+  paid_at: string | null;
+  expires_at: string | null;
+  created_at: string;
+  items: OrderItemPublic[];
+}
+
+export interface OrderCheckout {
+  order: OrderPublic;
+  payment_url: string | null;
+}
+
+export interface OrderList {
+  items: OrderPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+// ---------- Library ----------
+
+export interface UserLibraryItem {
+  id: string;
+  book: BookPublic;
+  watermarked_url: string | null;
+  downloaded_count: number;
+  last_downloaded_at: string | null;
+  acquired_at: string;
+}
+
+export interface UserLibraryList {
+  items: UserLibraryItem[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface DownloadResponse {
+  url: string;
+  expires_in: number;
+}
+
+// ---------- Author balance + withdrawals ----------
+
+export interface AuthorBalance {
+  available_balance: number;
+  pending_balance: number;
+  total_revenue: number;
+  total_sales: number;
+  commission_rate: number;
+  currency: string;
+}
+
+export type WithdrawalStatus =
+  | "requested"
+  | "approved"
+  | "processing"
+  | "completed"
+  | "rejected"
+  | "cancelled";
+
+export interface WithdrawalPublic {
+  id: string;
+  amount: number;
+  currency: string;
+  status: WithdrawalStatus;
+  bank_details: Record<string, unknown>;
+  admin_notes: string | null;
+  transaction_ref: string | null;
+  processed_at: string | null;
+  created_at: string;
+}
+
+export interface WithdrawalList {
+  items: WithdrawalPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
