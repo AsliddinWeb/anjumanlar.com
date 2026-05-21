@@ -115,6 +115,7 @@ async def test_login_success_writes_audit():
             await s.commit()
 
 
+@pytest.mark.audit_enabled
 @pytest.mark.asyncio
 async def test_login_failed_writes_audit_with_null_user_id(
     api_client: AsyncClient, active_user: User

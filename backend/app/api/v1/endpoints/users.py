@@ -7,8 +7,9 @@ Role-aware endpoints (admin moderation etc.) land in Phase 5.
 from __future__ import annotations
 
 from typing import Annotated
+from uuid import UUID
 
-from fastapi import APIRouter, Cookie, Depends, File, Response, UploadFile, status
+from fastapi import APIRouter, Cookie, Depends, File, Query, Response, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.endpoints.auth import REFRESH_COOKIE_NAME, _clear_refresh_cookie
@@ -22,7 +23,8 @@ from app.schemas.auth import (
     UserPublic,
     UserUpdate,
 )
-from app.services import auth_service, user_service
+from app.schemas.wishlist import WishlistItem, WishlistList
+from app.services import auth_service, user_service, wishlist_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -110,6 +112,59 @@ async def delete_me(
     _clear_refresh_cookie(response)
     response.status_code = status.HTTP_204_NO_CONTENT
     return response
+
+
+# ---------------------------------------------------------------------------
+# Wishlist
+# ---------------------------------------------------------------------------
+
+
+@router.get(
+    "/me/wishlist",
+    response_model=WishlistList,
+    summary="List the logged-in user's wishlist",
+)
+async def list_wishlist(
+    user: Annotated[User, Depends(get_current_user)],
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+) -> WishlistList:
+    items, total = await wishlist_service.list_for_user(db, user, page=page, page_size=page_size)
+    return WishlistList(
+        items=[WishlistItem.model_validate(i) for i in items],
+        total=total,
+    )
+
+
+@router.post(
+    "/me/wishlist/{book_id}",
+    response_model=WishlistItem,
+    status_code=status.HTTP_201_CREATED,
+    summary="Add a book to the wishlist",
+)
+async def add_wishlist(
+    book_id: UUID,
+    user: Annotated[User, Depends(get_current_user)],
+    db: AsyncSession = Depends(get_db),
+) -> WishlistItem:
+    entry = await wishlist_service.add(db, user, book_id)
+    await db.commit()
+    return WishlistItem.model_validate(entry)
+
+
+@router.delete(
+    "/me/wishlist/{book_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Remove a book from the wishlist",
+)
+async def remove_wishlist(
+    book_id: UUID,
+    user: Annotated[User, Depends(get_current_user)],
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    await wishlist_service.remove(db, user, book_id)
+    await db.commit()
 
 
 # ---------------------------------------------------------------------------

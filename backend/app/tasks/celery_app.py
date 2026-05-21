@@ -18,6 +18,8 @@ celery_app = Celery(
     backend=settings.CELERY_RESULT_BACKEND,
     include=[
         "app.tasks.email_tasks",
+        "app.tasks.pdf_tasks",
+        "app.tasks.search_tasks",
     ],
 )
 

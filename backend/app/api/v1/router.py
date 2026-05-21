@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.endpoints import auth, users
+from app.api.v1.endpoints import auth, authors, books, categories, reviews, search, users
 from app.db.session import get_db
 
 api_router = APIRouter()
@@ -25,3 +25,10 @@ async def ready(db: AsyncSession = Depends(get_db)) -> dict[str, object]:
 
 api_router.include_router(auth.router)
 api_router.include_router(users.router)
+api_router.include_router(authors.router)
+api_router.include_router(categories.router)
+api_router.include_router(books.router)
+api_router.include_router(reviews.books_review_router)
+api_router.include_router(reviews.review_router)
+api_router.include_router(reviews.admin_review_router)
+api_router.include_router(search.router)

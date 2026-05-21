@@ -51,3 +51,18 @@ def remove_object(bucket: str, object_key: str) -> None:
     """Idempotent delete — missing objects are silently ignored."""
     with contextlib.suppress(Exception):  # pragma: no cover — best-effort cleanup
         minio_client.remove_object(bucket, object_key)
+
+
+def get_bytes(bucket: str, object_key: str) -> bytes:
+    """Read an object from MinIO into memory.
+
+    Used by Celery tasks that need to operate on the bytes (e.g. demo PDF
+    extraction). Don't call this for large files in user-facing handlers —
+    use signed URLs instead.
+    """
+    response = minio_client.get_object(bucket, object_key)
+    try:
+        return response.read()
+    finally:
+        response.close()
+        response.release_conn()

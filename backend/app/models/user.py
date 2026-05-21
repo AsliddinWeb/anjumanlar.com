@@ -18,6 +18,7 @@ from app.db.base import Base, TimestampMixin, UUIDMixin
 
 if TYPE_CHECKING:
     from app.models.auth_token import AuthToken
+    from app.models.author_profile import AuthorProfile
     from app.models.refresh_token import RefreshToken
 
 
@@ -78,6 +79,12 @@ class User(UUIDMixin, TimestampMixin, Base):
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,
+    )
+    author_profile: Mapped[AuthorProfile | None] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        uselist=False,
     )
 
     def __repr__(self) -> str:

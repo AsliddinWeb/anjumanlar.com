@@ -70,7 +70,7 @@ makemigration:
 	docker compose exec backend alembic revision --autogenerate -m "$(m)"
 
 seed:
-	docker compose exec backend python -m app.scripts.seed
+	docker compose exec backend python -m app.scripts.seed_phase2
 
 shell-backend:
 	docker compose exec backend /bin/bash

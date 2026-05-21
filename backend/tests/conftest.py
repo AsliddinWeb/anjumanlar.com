@@ -16,10 +16,30 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.core.limiter import limiter
 from app.db.session import engine, get_db
 from app.main import app
+from app.services import audit_service as _audit_module
 
 # Tests hammer login/register repeatedly and would otherwise trip the rate
 # limiter on themselves. The dedicated rate-limit test re-enables it locally.
 limiter.enabled = False
+
+
+@pytest.fixture(autouse=True)
+def _disable_audit_writes(request, monkeypatch):
+    """The audit service opens its own session and commits independently of
+    the rollback fixture. That means when a test creates a user inside the
+    rolled-back transaction and triggers a login, the audit write hits a
+    foreign-key violation that corrupts the connection pool and tanks
+    every subsequent test.
+
+    Default: no-op the audit hook. Opt back in with ``@pytest.mark.audit_enabled``
+    on tests that specifically verify audit rows."""
+    if "audit_enabled" in request.keywords:
+        return
+
+    async def _noop(*args, **kwargs):
+        return None
+
+    monkeypatch.setattr(_audit_module, "log_event", _noop)
 
 
 @pytest.fixture
