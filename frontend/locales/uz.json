@@ -29,7 +29,19 @@
       "cta_browse": "Kitoblarni ko'rish",
       "cta_become_author": "Muallif bo'lish"
     },
-    "skeleton_note": "Bu hozircha skeleton sahifa. Phase 3'da to'liq dizayn keladi."
+    "featured": "Tavsiya etilgan kitoblar",
+    "featured_subtitle": "Tahririyat tanloviga muvofiq mashhur monografiyalar",
+    "categories": "Kategoriyalar",
+    "categories_subtitle": "Tematik sohalar bo'yicha qidiring",
+    "categories_books": "{n} ta kitob",
+    "recent_books": "Yangi kitoblar",
+    "recent_subtitle": "So'nggi nashr etilganlar",
+    "see_all": "Hammasini ko'rish",
+    "become_author_cta": {
+      "title": "Siz ham muallifmisiz?",
+      "body": "Monografiyalaringizni Anjumanlar.com'da nashr eting. Biz to'lov, statistika va auditoriyani ta'minlaymiz.",
+      "button": "Muallif bo'lish"
+    }
   },
   "auth": {
     "login": {
@@ -95,9 +107,180 @@
     "logout": "Chiqish",
     "logout_all": "Hamma qurilmalardan chiqish"
   },
+  "about": {
+    "title": "Anjumanlar.com haqida",
+    "subtitle": "Akademik monografiyalar uchun raqamli bozor",
+    "mission_title": "Bizning maqsadimiz",
+    "mission_body": "Anjumanlar.com — O'zbekistonda akademik monografiyalarni nashr etish va sotish uchun yagona platforma. Bizning maqsadimiz — ilm-fan natijalarini keng o'quvchilar auditoriyasiga yetkazish, mualliflarga shaffof daromad imkoniyatini taqdim etish.",
+    "for_authors_title": "Mualliflar uchun",
+    "for_authors_body": "Monografiyalaringizni yuklang, narxni o'zingiz belgilang. Biz Payme.uz orqali to'lov, MinIO orqali xavfsiz saqlash, statistika va auditoriya bilan ta'minlaymiz. Har sotuvdan 70% muallifga, 30% platformaga.",
+    "for_readers_title": "O'quvchilar uchun",
+    "for_readers_body": "Tibbiyot, iqtisod, tarix, falsafa va boshqa sohalardagi 1000+ monografiyaga kirish. Demo varaqlarni ko'rib chiqib, faqat yoqgan kitobni sotib oling. Sharhlar va reytinglar yordamida tanlash oson.",
+    "stats_title": "Raqamlarda",
+    "stat_books": "Kitoblar",
+    "stat_authors": "Mualliflar",
+    "stat_categories": "Kategoriyalar",
+    "stat_readers": "O'quvchilar",
+    "contact_title": "Bog'lanish",
+    "contact_email": "Pochta",
+    "contact_telegram": "Telegram"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Yangiliklar, qo'llanmalar va muallif intervyulari",
+    "coming_soon_title": "Tez orada",
+    "coming_soon_body": "Blog tizimi ishlab chiqilmoqda. Yangiliklarga obuna bo'ling — birinchi maqolalar tayyor bo'lganda xabar beramiz."
+  },
+  "footer": {
+    "tagline": "Akademik monografiyalar bozori",
+    "explore": "Ko'rib chiqing",
+    "company": "Kompaniya",
+    "legal": "Yuridik",
+    "follow": "Ijtimoiy tarmoqlar",
+    "rights": "Barcha huquqlar himoyalangan.",
+    "terms": "Foydalanish shartlari",
+    "privacy": "Maxfiylik siyosati"
+  },
+  "legal": {
+    "draft_title": "Hujjat tayyorlanmoqda",
+    "draft_body": "Bu hujjat yuridik bo'lim tomonidan ishlab chiqilmoqda. Tez orada to'liq matn yuklanadi.",
+    "last_updated": "Oxirgi yangilanish: {date}"
+  },
+  "error": {
+    "404_title": "Sahifa topilmadi",
+    "404_body": "Siz izlagan sahifa mavjud emas yoki ko'chirilgan.",
+    "500_title": "Server xatosi",
+    "500_body": "Nimadir noto'g'ri ketdi. Iltimos, keyinroq qayta urinib ko'ring.",
+    "go_home": "Bosh sahifaga qaytish"
+  },
+  "search": {
+    "title": "Qidiruv",
+    "placeholder": "Kitob, muallif yoki kalit so'z bo'yicha izlash",
+    "submit": "Izlash",
+    "results_for": "\"{q}\" bo'yicha natijalar",
+    "results_count": "{n} ta natija topildi",
+    "empty_query_title": "Qidiruvni boshlang",
+    "empty_query_body": "Yuqoridagi maydonga kitob nomi, muallif yoki kalit so'zni kiriting.",
+    "no_results": "Natijalar topilmadi",
+    "no_results_body": "Boshqa kalit so'z bilan urinib ko'ring yoki filterlarni o'zgartiring."
+  },
+  "category": {
+    "not_found": "Kategoriya topilmadi",
+    "subcategories": "Sub-kategoriyalar",
+    "books_in_category": "Kategoriyadagi kitoblar",
+    "no_books": "Bu kategoriyada hozircha kitob yo'q",
+    "books_count": "{n} ta kitob"
+  },
+  "authors": {
+    "title": "Mualliflar",
+    "subtitle": "Anjumanlar.com'da chiqargan mualliflar",
+    "results": "{n} ta muallif",
+    "search_placeholder": "Ism yoki muassasa bo'yicha izlash",
+    "no_authors": "Mualliflar topilmadi",
+    "verified": "Tasdiqlangan",
+    "featured": "Tanlangan",
+    "profile_not_found": "Muallif topilmadi",
+    "books_by": "{name}ning kitoblari",
+    "no_books_by": "Hozircha kitob yo'q",
+    "institution": "Muassasa",
+    "academic_title": "Akademik unvon",
+    "website": "Sayt",
+    "total_sales": "Jami sotuvlar: {n}",
+    "joined_at": "{date}dan beri"
+  },
+  "catalog": {
+    "title": "Kitoblar katalogi",
+    "subtitle": "Kategoriyalar, til va narx bo'yicha izlang",
+    "results": "{n} ta natija",
+    "no_results": "Hech narsa topilmadi",
+    "no_results_body": "Filterlarni o'zgartirib qaytadan urinib ko'ring.",
+    "filters": {
+      "label": "Filtrlar",
+      "category": "Kategoriya",
+      "category_any": "Hammasi",
+      "language": "Til",
+      "language_any": "Barcha tillar",
+      "price_range": "Narx oralig'i",
+      "min_price": "Dan",
+      "max_price": "Gacha",
+      "free_only": "Faqat bepul",
+      "featured_only": "Faqat tavsiya etilgan",
+      "apply": "Qo'llash",
+      "clear": "Tozalash"
+    },
+    "sort": {
+      "label": "Saralash",
+      "newest": "Yangi",
+      "oldest": "Eski",
+      "price_asc": "Arzon birinchi",
+      "price_desc": "Qimmat birinchi",
+      "rating": "Yuqori reyting",
+      "sales": "Eng ko'p sotilgan",
+      "views": "Eng ko'p ko'rilgan"
+    }
+  },
+  "book": {
+    "free": "Bepul",
+    "featured": "Tavsiya etilgan",
+    "no_reviews": "Sharhlar yo'q",
+    "no_description": "Tavsif kiritilmagan",
+    "not_found": "Kitob topilmadi",
+    "by_author": "Muallif: {name}",
+    "buy": "Sotib olish",
+    "preview": "Demo ko'rish",
+    "add_to_wishlist": "Sevimliga qo'shish",
+    "remove_from_wishlist": "Sevimlilardan olib tashlash",
+    "category": "Kategoriya",
+    "language": "Til",
+    "lang_mixed": "Aralash",
+    "pages": "{n} sahifa",
+    "pages_label": "Sahifalar soni",
+    "published_in": "Nashr yili: {year}",
+    "published_year": "Nashr yili",
+    "released_on": "E'lon qilingan sana",
+    "publisher": "Nashriyot",
+    "isbn": "ISBN",
+    "description": "Tavsif",
+    "reviews": "Sharhlar",
+    "reviews_placeholder": "Sharhlar bo'limi tez orada ishga tushadi",
+    "reviews_loading": "Sharhlar yuklanmoqda…",
+    "write_review": "Sharh yozish",
+    "review_helpful": "{n} kishi foydali deb topdi",
+    "review_form": {
+      "title": "Sarlavha (ixtiyoriy)",
+      "body": "Sharh matni",
+      "rating": "Bahoyingiz",
+      "submit": "Yuborish",
+      "submitting": "Yuborilmoqda…",
+      "success": "Sharhingiz moderatsiyaga yuborildi. Tasdiqlangach paydo bo'ladi.",
+      "login_to_review": "Sharh yozish uchun hisobingizga kiring.",
+      "error_generic": "Sharhni yuborishda xatolik yuz berdi"
+    },
+    "similar_books": "O'xshash kitoblar",
+    "author_more_link": "Muallif haqida batafsil ma'lumot uning profilida.",
+    "author_view_profile": "Muallif profilini ko'rish",
+    "cta": {
+      "read": "O'qish",
+      "coming_soon": "To'lov tizimi keyingi bosqichda ulanadi"
+    },
+    "demo_title": "Demo varaqlar",
+    "demo_subtitle": "Sotib olishdan oldin bir nechta sahifani ko'rib chiqing",
+    "demo_open_new_tab": "Yangi oynada ochish",
+    "demo_unavailable": "Bu kitob uchun demo mavjud emas",
+    "tabs": {
+      "description": "Tavsif",
+      "author": "Muallif",
+      "reviews": "Sharhlar"
+    }
+  },
   "common": {
     "loading": "Yuklanmoqda…",
     "error": "Xatolik yuz berdi",
-    "required": "Bu maydon majburiy"
+    "required": "Bu maydon majburiy",
+    "empty": "Hech narsa topilmadi",
+    "retry": "Qayta urinish",
+    "next": "Keyingi",
+    "prev": "Oldingi",
+    "cancel": "Bekor qilish"
   }
 }

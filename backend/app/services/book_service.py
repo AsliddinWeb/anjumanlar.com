@@ -271,6 +271,7 @@ async def list_public(
     page_size: int,
     search: str | None = None,
     category_slug: str | None = None,
+    author_slug: str | None = None,
     language: str | None = None,
     min_price: float | None = None,
     max_price: float | None = None,
@@ -295,6 +296,8 @@ async def list_public(
         )
     if category_slug:
         base = base.join(Book.categories).where(Category.slug == category_slug)
+    if author_slug:
+        base = base.join(Book.author).where(AuthorProfile.slug == author_slug)
     if language:
         base = base.where(Book.language == language)
     if min_price is not None:

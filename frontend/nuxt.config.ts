@@ -34,9 +34,15 @@ export default defineNuxtConfig({
     },
   },
 
-  // Nuxt auto-substitutes NUXT_PUBLIC_* env vars into ``runtimeConfig.public``
-  // at boot, so the defaults below act as dev fallbacks only.
+  // Nuxt auto-substitutes NUXT_*  /  NUXT_PUBLIC_* env vars into the
+  // runtimeConfig tree at boot; the defaults below act as dev fallbacks only.
+  //
+  // ``apiBaseInternal`` is server-only — Nuxt SSR runs inside the frontend
+  // Docker container which can't reach ``localhost:8307`` (the host port),
+  // so server-rendered requests must use the in-network ``backend:8000``
+  // hostname. The browser uses ``public.apiBase`` for the same calls.
   runtimeConfig: {
+    apiBaseInternal: "http://backend:8000/api/v1",
     public: {
       apiBase: "http://localhost:8307/api/v1",
       siteUrl: "http://localhost:8308",

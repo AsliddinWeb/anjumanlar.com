@@ -29,7 +29,19 @@
       "cta_browse": "Browse books",
       "cta_become_author": "Become an author"
     },
-    "skeleton_note": "This is a skeleton page. The full design lands in Phase 3."
+    "featured": "Featured books",
+    "featured_subtitle": "Editor's pick of standout monographs",
+    "categories": "Categories",
+    "categories_subtitle": "Browse by topic area",
+    "categories_books": "{n} books",
+    "recent_books": "New arrivals",
+    "recent_subtitle": "Recently published",
+    "see_all": "See all",
+    "become_author_cta": {
+      "title": "Are you an author too?",
+      "body": "Publish your monographs on Anjumanlar.com. We handle payments, analytics, and audience.",
+      "button": "Become an author"
+    }
   },
   "auth": {
     "login": {
@@ -95,9 +107,180 @@
     "logout": "Log out",
     "logout_all": "Log out everywhere"
   },
+  "about": {
+    "title": "About Anjumanlar.com",
+    "subtitle": "A digital marketplace for academic monographs",
+    "mission_title": "Our mission",
+    "mission_body": "Anjumanlar.com is a unified platform for publishing and selling academic monographs in Uzbekistan. Our mission is to bring research output to a wider audience and give authors a transparent way to earn from their work.",
+    "for_authors_title": "For authors",
+    "for_authors_body": "Upload your monographs and set your own price. We handle payments via Payme.uz, secure storage on MinIO, analytics and audience reach. Authors receive 70% of every sale; the platform keeps 30%.",
+    "for_readers_title": "For readers",
+    "for_readers_body": "Access 1000+ monographs in medicine, economics, history, philosophy and more. Preview demo pages before you buy. Reviews and ratings make picking the right book easy.",
+    "stats_title": "By the numbers",
+    "stat_books": "Books",
+    "stat_authors": "Authors",
+    "stat_categories": "Categories",
+    "stat_readers": "Readers",
+    "contact_title": "Contact",
+    "contact_email": "Email",
+    "contact_telegram": "Telegram"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "News, guides and author interviews",
+    "coming_soon_title": "Coming soon",
+    "coming_soon_body": "The blog is under construction. Subscribe to our newsletter — we'll notify you when the first posts go live."
+  },
+  "footer": {
+    "tagline": "A marketplace for academic monographs",
+    "explore": "Explore",
+    "company": "Company",
+    "legal": "Legal",
+    "follow": "Follow us",
+    "rights": "All rights reserved.",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy"
+  },
+  "legal": {
+    "draft_title": "Document in preparation",
+    "draft_body": "This document is being drafted by our legal team. The full text will be published soon.",
+    "last_updated": "Last updated: {date}"
+  },
+  "error": {
+    "404_title": "Page not found",
+    "404_body": "The page you are looking for does not exist or has been moved.",
+    "500_title": "Server error",
+    "500_body": "Something went wrong. Please try again later.",
+    "go_home": "Back to home"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search by book, author or keyword",
+    "submit": "Search",
+    "results_for": "Results for \"{q}\"",
+    "results_count": "{n} results found",
+    "empty_query_title": "Start your search",
+    "empty_query_body": "Type a book title, author name or keyword above.",
+    "no_results": "No results found",
+    "no_results_body": "Try a different keyword or adjust the filters."
+  },
+  "category": {
+    "not_found": "Category not found",
+    "subcategories": "Subcategories",
+    "books_in_category": "Books in this category",
+    "no_books": "No books in this category yet",
+    "books_count": "{n} books"
+  },
+  "authors": {
+    "title": "Authors",
+    "subtitle": "Authors publishing on Anjumanlar.com",
+    "results": "{n} authors",
+    "search_placeholder": "Search by name or institution",
+    "no_authors": "No authors found",
+    "verified": "Verified",
+    "featured": "Featured",
+    "profile_not_found": "Author not found",
+    "books_by": "Books by {name}",
+    "no_books_by": "No books yet",
+    "institution": "Institution",
+    "academic_title": "Academic title",
+    "website": "Website",
+    "total_sales": "Total sales: {n}",
+    "joined_at": "Joined {date}"
+  },
+  "catalog": {
+    "title": "Books catalogue",
+    "subtitle": "Browse by category, language and price",
+    "results": "{n} results",
+    "no_results": "Nothing found",
+    "no_results_body": "Try adjusting the filters.",
+    "filters": {
+      "label": "Filters",
+      "category": "Category",
+      "category_any": "Any",
+      "language": "Language",
+      "language_any": "Any language",
+      "price_range": "Price range",
+      "min_price": "From",
+      "max_price": "To",
+      "free_only": "Free only",
+      "featured_only": "Featured only",
+      "apply": "Apply",
+      "clear": "Clear"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "price_asc": "Cheapest first",
+      "price_desc": "Most expensive first",
+      "rating": "Top rated",
+      "sales": "Best sellers",
+      "views": "Most viewed"
+    }
+  },
+  "book": {
+    "free": "Free",
+    "featured": "Featured",
+    "no_reviews": "No reviews",
+    "no_description": "No description provided",
+    "not_found": "Book not found",
+    "by_author": "Author: {name}",
+    "buy": "Buy",
+    "preview": "View demo",
+    "add_to_wishlist": "Add to wishlist",
+    "remove_from_wishlist": "Remove from wishlist",
+    "category": "Category",
+    "language": "Language",
+    "lang_mixed": "Mixed",
+    "pages": "{n} pages",
+    "pages_label": "Page count",
+    "published_in": "Published in {year}",
+    "published_year": "Year published",
+    "released_on": "Released on",
+    "publisher": "Publisher",
+    "isbn": "ISBN",
+    "description": "Description",
+    "reviews": "Reviews",
+    "reviews_placeholder": "Reviews are coming soon",
+    "reviews_loading": "Loading reviews…",
+    "write_review": "Write a review",
+    "review_helpful": "{n} people found this helpful",
+    "review_form": {
+      "title": "Title (optional)",
+      "body": "Review text",
+      "rating": "Your rating",
+      "submit": "Submit",
+      "submitting": "Submitting…",
+      "success": "Your review has been sent for moderation. It will appear once approved.",
+      "login_to_review": "Sign in to leave a review.",
+      "error_generic": "Failed to submit review"
+    },
+    "similar_books": "Similar books",
+    "author_more_link": "More about the author on their profile page.",
+    "author_view_profile": "View author profile",
+    "cta": {
+      "read": "Read",
+      "coming_soon": "Payment integration arrives in the next phase"
+    },
+    "demo_title": "Demo pages",
+    "demo_subtitle": "Preview a few pages before purchase",
+    "demo_open_new_tab": "Open in a new tab",
+    "demo_unavailable": "No demo available for this book",
+    "tabs": {
+      "description": "Description",
+      "author": "Author",
+      "reviews": "Reviews"
+    }
+  },
   "common": {
     "loading": "Loading…",
     "error": "Something went wrong",
-    "required": "This field is required"
+    "required": "This field is required",
+    "empty": "Nothing found",
+    "retry": "Retry",
+    "next": "Next",
+    "prev": "Previous",
+    "cancel": "Cancel"
   }
 }
