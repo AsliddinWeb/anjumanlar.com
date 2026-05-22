@@ -1,0 +1,265 @@
+# ============================================================
+# Anjumanlar.com — production docker-compose
+#
+# Differences vs. docker-compose.yml (dev):
+#  - No volume-mounted source — code is baked into the image.
+#  - Internal services (postgres, redis, meilisearch, mailhog) bind to
+#    127.0.0.1:<8300+> on the host so the host nginx (if any) can still
+#    reach them, but the public NIC only exposes 80/443 via the
+#    containerised nginx.
+#  - Backend runs uvicorn with workers (no --reload).
+#  - Frontend runs the Nuxt prebuilt server (.output/server/index.mjs).
+#  - Nginx container terminates 80/443; certbot is run separately
+#    against this nginx (see scripts/certbot.sh).
+# ============================================================
+
+name: anjumanlar
+
+networks:
+  anjumanlar:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  meilisearch_data:
+  certbot_certs:
+  certbot_www:
+
+services:
+
+  # ---------- PostgreSQL 16 ----------
+  postgres:
+    image: postgres:16-alpine
+    container_name: anjumanlar-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      TZ: ${TZ:-Asia/Tashkent}
+      PGTZ: ${TZ:-Asia/Tashkent}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-8300}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [anjumanlar]
+
+  # ---------- Redis 7 ----------
+  redis:
+    image: redis:7-alpine
+    container_name: anjumanlar-redis
+    restart: always
+    command: redis-server --appendonly yes --save 60 1
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-8301}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [anjumanlar]
+
+  # ---------- MinIO ----------
+  minio:
+    image: minio/minio:latest
+    container_name: anjumanlar-minio
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_PUBLIC_ENDPOINT}
+    ports:
+      - "127.0.0.1:${MINIO_API_PORT:-8302}:9000"
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-8303}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [anjumanlar]
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: anjumanlar-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET_BOOKS: ${MINIO_BUCKET_BOOKS:-books}
+      MINIO_BUCKET_BOOKS_WM: ${MINIO_BUCKET_BOOKS_WM:-books-watermarked}
+      MINIO_BUCKET_COVERS: ${MINIO_BUCKET_COVERS:-covers}
+      MINIO_BUCKET_AVATARS: ${MINIO_BUCKET_AVATARS:-avatars}
+      MINIO_BUCKET_DEMOS: ${MINIO_BUCKET_DEMOS:-demos}
+      MINIO_BUCKET_BLOG: ${MINIO_BUCKET_BLOG:-blog}
+    volumes:
+      - ./docker/minio/setup.sh:/setup.sh:ro
+    entrypoint: ["/bin/sh", "/setup.sh"]
+    networks: [anjumanlar]
+    restart: "no"
+
+  # ---------- Meilisearch ----------
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    container_name: anjumanlar-meilisearch
+    restart: always
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "127.0.0.1:${MEILISEARCH_PORT:-8304}:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [anjumanlar]
+
+  # ---------- Backend (FastAPI) ----------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    image: anjumanlar-backend:prod
+    container_name: anjumanlar-backend
+    restart: always
+    env_file: [.env]
+    environment:
+      ENVIRONMENT: production
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8307}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [anjumanlar]
+
+  # ---------- Frontend (Nuxt 3, prebuilt) ----------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+        NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL}
+        NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Anjumanlar.com}
+        NUXT_PUBLIC_DEFAULT_LOCALE: ${NUXT_PUBLIC_DEFAULT_LOCALE:-uz}
+    image: anjumanlar-frontend:prod
+    container_name: anjumanlar-frontend
+    restart: always
+    environment:
+      NODE_ENV: production
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+      NUXT_API_BASE_INTERNAL: ${NUXT_API_BASE_INTERNAL}
+      NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL}
+      NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Anjumanlar.com}
+      NUXT_PUBLIC_DEFAULT_LOCALE: ${NUXT_PUBLIC_DEFAULT_LOCALE:-uz}
+      NUXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8308}:3000"
+    depends_on:
+      backend:
+        condition: service_started
+    networks: [anjumanlar]
+
+  # ---------- Celery worker ----------
+  celery_worker:
+    image: anjumanlar-backend:prod
+    container_name: anjumanlar-celery-worker
+    restart: always
+    env_file: [.env]
+    environment:
+      ENVIRONMENT: production
+      PYTHONUNBUFFERED: "1"
+    command:
+      ["celery", "-A", "app.tasks.celery_app:celery_app", "worker",
+       "--loglevel=info", "--concurrency=2"]
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks: [anjumanlar]
+
+  # ---------- Celery beat ----------
+  celery_beat:
+    image: anjumanlar-backend:prod
+    container_name: anjumanlar-celery-beat
+    restart: always
+    env_file: [.env]
+    environment:
+      ENVIRONMENT: production
+      PYTHONUNBUFFERED: "1"
+    command:
+      ["celery", "-A", "app.tasks.celery_app:celery_app", "beat",
+       "--loglevel=info"]
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks: [anjumanlar]
+
+  # ---------- Nginx (TLS terminator + reverse proxy) ----------
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: anjumanlar-nginx
+    restart: always
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+      # Optional: a place to drop dhparam.pem if you generate one.
+      - ./nginx/dhparam:/etc/nginx/dhparam:ro
+    depends_on:
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
+    networks: [anjumanlar]
+
+  # ---------- Certbot (one-shot; run manually to issue/renew certs) ----------
+  certbot:
+    image: certbot/certbot:latest
+    container_name: anjumanlar-certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    # Manual: ``docker compose -f docker-compose.prod.yml run --rm certbot ...``
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done"]
+    restart: always
+    networks: [anjumanlar]

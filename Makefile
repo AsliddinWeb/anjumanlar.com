@@ -1,4 +1,4 @@
-.PHONY: help up down restart logs ps build pull clean migrate makemigration seed shell-backend shell-db shell-redis test lint format env
+.PHONY: help up down restart logs ps build pull clean migrate makemigration seed shell-backend shell-db shell-redis test lint format env prod-build prod-up prod-down prod-deploy prod-migrate prod-seed prod-logs prod-ps
 
 # Default target
 help:
@@ -91,3 +91,31 @@ lint:
 format:
 	docker compose exec backend ruff format .
 	docker compose exec frontend pnpm format
+
+# ---------- production targets ----------
+
+PROD := docker compose -f docker-compose.prod.yml
+
+prod-build:
+	$(PROD) build
+
+prod-up:
+	$(PROD) up -d
+
+prod-down:
+	$(PROD) down
+
+prod-deploy:
+	./scripts/deploy.sh
+
+prod-migrate:
+	$(PROD) exec backend alembic upgrade head
+
+prod-seed:
+	$(PROD) exec backend python -m app.scripts.seed_categories
+
+prod-logs:
+	$(PROD) logs -f $(s)
+
+prod-ps:
+	$(PROD) ps
