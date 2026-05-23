@@ -246,19 +246,101 @@ Basic Auth username = `Paycom`, parol = `PAYME_SECRET_KEY` qiymatiga teng.
 
 ---
 
-## 5. Backup
+## 5. Sentry (xato monitoringi)
 
-PostgreSQL kunlik backup (cron'da):
+Backend va frontend uchun **ikkita alohida** Sentry projecti yarating
+(odatda "Anjumanlar Backend" + "Anjumanlar Frontend"). Har birining
+DSN'ini `.env`'ga qo'ying:
 
 ```bash
-# /etc/cron.daily/anjumanlar-backup
-#!/bin/bash
-TS=$(date +%Y%m%d-%H%M%S)
-cd /opt/anjumanlar.com
-docker compose -f docker-compose.prod.yml exec -T postgres \
-    pg_dump -U anjumanlar anjumanlar | gzip > "/var/backups/anjumanlar-$TS.sql.gz"
-# Saqlash muddati — 30 kun
-find /var/backups -name 'anjumanlar-*.sql.gz' -mtime +30 -delete
+# Backend
+SENTRY_DSN=https://...@o0.ingest.sentry.io/0
+SENTRY_ENVIRONMENT=production
+
+# Frontend (browser SDK alohida)
+NUXT_PUBLIC_SENTRY_DSN=https://...@o0.ingest.sentry.io/0
+NUXT_PUBLIC_SENTRY_ENVIRONMENT=production
 ```
 
-MinIO data'ni saqlash uchun `minio_data` volume'ini ham backup qilish kerak.
+So'ng:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d backend frontend
+```
+
+Init loglarini tekshirish:
+
+```bash
+docker compose -f docker-compose.prod.yml logs backend | grep "Sentry"
+# Sentry initialised env=production
+```
+
+DSN bo'sh bo'lsa init no-op qiladi — sayt ishlayveradi.
+
+---
+
+## 6. Backup va restore
+
+Repo'da `scripts/backup.sh` va `scripts/restore.sh` tayyor — ikkalasi
+ham PostgreSQL'ni `pg_dump` orqali va MinIO volume'ini `tar.gz` orqali
+saqlaydi. Backup default 30 kun saqlanadi (`BACKUP_RETENTION_DAYS`).
+
+### Qo'lda ishga tushirish
+
+```bash
+cd /opt/anjumanlar.com
+make prod-backup
+# Yoki to'g'ridan-to'g'ri: ./scripts/backup.sh
+```
+
+Natijada `/var/backups/anjumanlar/YYYYMMDD-HHMMSS/` ichida ikkita fayl
+paydo bo'ladi:
+
+- `postgres.dump.gz` — `pg_dump --format=custom` (pg_restore bilan ochiladi)
+- `minio_data.tar.gz` — MinIO volume'ining to'liq snapshot'i
+
+### Kunlik cron
+
+```bash
+sudo install -m 644 /dev/stdin /etc/cron.d/anjumanlar-backup <<'EOF'
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# Har kuni 03:15 da
+15 3 * * * deploy /opt/anjumanlar.com/scripts/backup.sh >> /var/log/anjumanlar-backup.log 2>&1
+EOF
+```
+
+Backup loglarini `/var/log/anjumanlar-backup.log` faylida kuzatasiz.
+
+### Restore
+
+```bash
+make prod-restore BACKUP=/var/backups/anjumanlar/20260801-030000
+```
+
+`users` jadvali bo'sh emasligini bilsa, script ishni to'xtatadi. Buni
+o'tkazib yuborish uchun:
+
+```bash
+make prod-restore BACKUP=/var/backups/anjumanlar/20260801-030000 FORCE=1
+```
+
+Restore'dan keyin migration'larni qayta qo'llang (yangi commit'larda
+keyingi migration bo'lishi mumkin):
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend alembic upgrade head
+docker compose -f docker-compose.prod.yml restart backend celery_worker celery_beat
+```
+
+### Saqlash joyini boshqa volume'ga ko'chirish
+
+Defolt `/var/backups`. O'zgartirish uchun cron qatorida `BACKUP_DIR`
+ni ko'rsating:
+
+```cron
+15 3 * * * deploy BACKUP_DIR=/mnt/backup-disk /opt/anjumanlar.com/scripts/backup.sh
+```
+
+Off-site saqlash uchun bu papkani `rsync`/`rclone` orqali keyin uzoq
+serverga ko'chirish tavsiya etiladi.

@@ -48,6 +48,10 @@ export default defineNuxtConfig({
       siteUrl: "http://localhost:8308",
       siteName: "Anjumanlar.com",
       defaultLocale: "uz",
+      // Sentry — left blank in dev so the plugin no-ops. Production
+      // wires it via NUXT_PUBLIC_SENTRY_DSN + NUXT_PUBLIC_SENTRY_ENV.
+      sentryDsn: "",
+      sentryEnvironment: "development",
     },
   },
 

@@ -50,6 +50,9 @@ dependencies = [
     "python-slugify>=8.0.4",
     "structlog>=24.1.0",
     "orjson>=3.9.15",
+
+    # Observability — wired only when SENTRY_DSN is set.
+    "sentry-sdk[fastapi]>=2.10.0",
 ]
 
 [project.optional-dependencies]

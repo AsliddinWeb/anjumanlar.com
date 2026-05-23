@@ -1,4 +1,4 @@
-.PHONY: help up down restart logs ps build pull clean migrate makemigration seed shell-backend shell-db shell-redis test lint format env prod-build prod-up prod-down prod-deploy prod-migrate prod-seed prod-create-admin prod-logs prod-ps
+.PHONY: help up down restart logs ps build pull clean migrate makemigration seed shell-backend shell-db shell-redis test lint format env prod-build prod-up prod-down prod-deploy prod-migrate prod-seed prod-create-admin prod-logs prod-ps prod-backup prod-restore
 
 # Default target
 help:
@@ -125,3 +125,12 @@ prod-logs:
 
 prod-ps:
 	$(PROD) ps
+
+prod-backup:
+	./scripts/backup.sh
+
+# Restore from a backup directory. Usage:
+#   make prod-restore BACKUP=/var/backups/anjumanlar/20260801-030000
+# Add FORCE=1 to overwrite a populated database.
+prod-restore:
+	./scripts/restore.sh $(if $(FORCE),--force,) "$(BACKUP)"

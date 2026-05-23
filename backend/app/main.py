@@ -20,6 +20,43 @@ logging.basicConfig(
 )
 
 
+def _init_sentry() -> None:
+    """Wire Sentry only when a DSN is configured.
+
+    Skipping the call when the DSN is blank means dev/test runs don't
+    accidentally ship local errors upstream, and unit tests stay
+    sentry-free without monkey-patching anything.
+    """
+    if not settings.SENTRY_DSN:
+        return
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+        from sentry_sdk.integrations.starlette import StarletteIntegration
+
+        sentry_sdk.init(
+            dsn=settings.SENTRY_DSN,
+            environment=settings.SENTRY_ENVIRONMENT or settings.ENVIRONMENT,
+            release=__version__,
+            integrations=[
+                StarletteIntegration(),
+                FastApiIntegration(),
+                SqlalchemyIntegration(),
+            ],
+            # 10% of requests get traced — bump if traffic is light, drop
+            # if Sentry quota starts hurting.
+            traces_sample_rate=0.1,
+            send_default_pii=False,
+        )
+        logger.info("Sentry initialised env=%s", settings.SENTRY_ENVIRONMENT)
+    except Exception:  # noqa: BLE001
+        logger.exception("Sentry init failed — continuing without it")
+
+
+_init_sentry()
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     logger.info("Starting anjumanlar backend (env=%s)", settings.ENVIRONMENT)
