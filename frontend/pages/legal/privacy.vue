@@ -2,7 +2,10 @@
 const { t, locale } = useI18n();
 const localePath = useLocalePath();
 
-useHead({ title: t("footer.privacy") });
+useSiteSeo({
+  title: t("footer.privacy"),
+  description: t("legal.draft_body"),
+});
 
 const breadcrumbs = computed(() => [
   { label: t("nav.home"), to: localePath("/") },

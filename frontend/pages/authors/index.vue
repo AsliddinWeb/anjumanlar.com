@@ -6,7 +6,10 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 
-useHead({ title: t("authors.title") });
+useSiteSeo({
+  title: t("authors.title"),
+  description: t("authors.subtitle"),
+});
 
 const PAGE_SIZE = 24;
 

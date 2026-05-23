@@ -50,12 +50,29 @@ const books = computed(() => booksRaw.value as BookList | null);
 
 const bio = computed(() => localised(author.value.bio));
 
-useHead({
+useSiteSeo({
   title: author.value.display_name,
-  meta: [
-    { name: "description", content: bio.value.slice(0, 160) || t("site.tagline") },
-  ],
+  description: bio.value.slice(0, 160) || t("site.tagline"),
+  ogType: "profile",
 });
+
+const runtime = useRuntimeConfig();
+const siteUrl = runtime.public.siteUrl as string;
+useStructuredData([
+  buildPersonSchema({
+    name: author.value.display_name,
+    url: `${siteUrl}/${locale.value}/authors/${author.value.slug}`,
+    description: bio.value || undefined,
+    worksFor: author.value.institution,
+    jobTitle: author.value.academic_title,
+    sameAs: author.value.website ? [author.value.website] : undefined,
+  }),
+  buildBreadcrumbList([
+    { name: t("nav.home"), url: `${siteUrl}/${locale.value}` },
+    { name: t("authors.title"), url: `${siteUrl}/${locale.value}/authors` },
+    { name: author.value.display_name, url: `${siteUrl}/${locale.value}/authors/${author.value.slug}` },
+  ]),
+]);
 
 const breadcrumbs = computed(() => [
   { label: t("nav.home"), to: localePath("/") },

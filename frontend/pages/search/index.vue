@@ -7,7 +7,11 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 
-useHead({ title: t("search.title") });
+useSiteSeo({
+  title: t("search.title"),
+  description: t("search.placeholder"),
+  noindex: true,
+});
 
 const PAGE_SIZE = 20;
 

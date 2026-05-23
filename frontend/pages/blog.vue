@@ -2,7 +2,10 @@
 const { t } = useI18n();
 const localePath = useLocalePath();
 
-useHead({ title: t("blog.title") });
+useSiteSeo({
+  title: t("blog.title"),
+  description: t("blog.subtitle"),
+});
 </script>
 
 <template>

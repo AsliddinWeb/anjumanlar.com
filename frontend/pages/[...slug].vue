@@ -11,7 +11,11 @@ definePageMeta({
 
 setResponseStatus(404);
 
-useHead({ title: t("error.404_title") });
+useSiteSeo({
+  title: t("error.404_title"),
+  description: t("error.404_body"),
+  noindex: true,
+});
 </script>
 
 <template>

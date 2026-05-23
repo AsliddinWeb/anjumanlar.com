@@ -66,14 +66,10 @@ const books = computed(() => booksRaw.value as BookList | null);
 const categoryName = computed(() => localised(category.value.name, category.value.slug));
 const categoryDescription = computed(() => localised(category.value.description));
 
-useHead({
+useSiteSeo({
   title: categoryName.value,
-  meta: [
-    {
-      name: "description",
-      content: categoryDescription.value.slice(0, 160) || t("site.tagline"),
-    },
-  ],
+  description: categoryDescription.value.slice(0, 160) || t("site.tagline"),
+  image: category.value.image_url ?? undefined,
 });
 
 const breadcrumbs = computed(() => {

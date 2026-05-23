@@ -6,10 +6,20 @@ const localePath = useLocalePath();
 const { localised } = useLocaleText();
 const api = useApi();
 
-useHead({
-  title: t("nav.home"),
-  meta: [{ name: "description", content: t("site.tagline") }],
+useSiteSeo({
+  title: t("home.hero.title"),
+  description: t("home.hero.subtitle"),
 });
+
+// Organization schema lives only on the homepage so search engines
+// associate it with the brand's primary URL.
+const runtime = useRuntimeConfig();
+useStructuredData(
+  buildOrganizationSchema({
+    siteUrl: runtime.public.siteUrl as string,
+    siteName: runtime.public.siteName as string,
+  }),
+);
 
 const { data: featured } = await useAsyncData("home:featured", () =>
   api<BookList>("/books", { params: { featured: true, page_size: 6 } }),

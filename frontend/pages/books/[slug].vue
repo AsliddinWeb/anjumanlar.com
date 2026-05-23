@@ -29,12 +29,38 @@ const title = computed(() => localised(book.value.title, book.value.slug));
 const subtitle = computed(() => localised(book.value.subtitle));
 const description = computed(() => localised(book.value.description));
 
-useHead({
+useSiteSeo({
   title: title.value,
-  meta: [
-    { name: "description", content: description.value.slice(0, 160) || t("site.tagline") },
-  ],
+  description: description.value.slice(0, 160) || t("site.tagline"),
+  image: book.value.cover_url ?? undefined,
+  ogType: "book",
 });
+
+const runtime = useRuntimeConfig();
+const siteUrl = runtime.public.siteUrl as string;
+useStructuredData([
+  buildBookSchema({
+    name: title.value,
+    description: description.value || title.value,
+    url: `${siteUrl}/${locale.value}/books/${book.value.slug}`,
+    image: book.value.cover_url,
+    isbn: book.value.isbn,
+    inLanguage: book.value.language,
+    datePublished: book.value.published_at,
+    authorName: book.value.author.display_name,
+    authorUrl: `${siteUrl}/${locale.value}/authors/${book.value.author.slug}`,
+    publisher: book.value.publisher,
+    priceUzs: book.value.is_free ? 0 : (book.value.discount_price ?? book.value.price),
+    isFree: book.value.is_free,
+    ratingValue: book.value.average_rating > 0 ? book.value.average_rating : null,
+    ratingCount: book.value.reviews_count,
+  }),
+  buildBreadcrumbList([
+    { name: t("nav.home"), url: `${siteUrl}/${locale.value}` },
+    { name: t("nav.books"), url: `${siteUrl}/${locale.value}/books` },
+    { name: title.value, url: `${siteUrl}/${locale.value}/books/${book.value.slug}` },
+  ]),
+]);
 
 const primaryCategory = computed(() => book.value.categories[0] ?? null);
 

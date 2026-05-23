@@ -8,7 +8,10 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 
-useHead({ title: t("catalog.title") });
+useSiteSeo({
+  title: t("catalog.title"),
+  description: t("catalog.subtitle"),
+});
 
 const PAGE_SIZE = 20;
 

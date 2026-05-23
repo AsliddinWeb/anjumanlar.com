@@ -86,6 +86,12 @@ def create_app() -> FastAPI:
 
     app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
+    # SEO routes mount at the application root (no /api/v1 prefix) so
+    # crawlers can hit /sitemap.xml + /robots.txt directly.
+    from app.api.v1.endpoints import seo
+
+    app.include_router(seo.router)
+
     return app
 
 

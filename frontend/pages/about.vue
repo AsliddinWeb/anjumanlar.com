@@ -5,9 +5,9 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const api = useApi();
 
-useHead({
+useSiteSeo({
   title: t("about.title"),
-  meta: [{ name: "description", content: t("about.subtitle") }],
+  description: t("about.subtitle"),
 });
 
 const { data: stats } = await useAsyncData("about:stats", async () => {
