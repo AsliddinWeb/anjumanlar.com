@@ -97,7 +97,15 @@
       "withdrawals_open": "Open requests",
       "withdrawals_amount": "Pending amount",
       "needs_attention": "Needs attention",
-      "all_clear": "Nothing in queue"
+      "all_clear": "Nothing in queue",
+      "action_items_count": "{n} items",
+      "overview": "Overview",
+      "financials": "Financials",
+      "all_clear_desc": "Nothing requires action right now.",
+      "books_pending_desc": "Books awaiting moderation",
+      "reviews_pending_desc": "Reviews awaiting approval",
+      "withdrawals_open_desc": "New withdrawal requests",
+      "withdrawals_open_count": "{n} open requests"
     },
     "nav": {
       "toggle": "Menu",
@@ -145,7 +153,17 @@
       "reject_reason_placeholder": "Note visible to the author — what's off or insufficient?",
       "reject_submit": "Reject",
       "reject_cancel": "Cancel",
-      "reject_reason_required": "Please provide a reason"
+      "reject_reason_required": "Please provide a reason",
+      "search_placeholder": "Search by title, author or slug...",
+      "filter_demo_any": "Demo: any",
+      "filter_demo_yes": "Has demo",
+      "filter_demo_no": "No demo",
+      "queue_count": "{n} pending",
+      "status_pending": "Pending review",
+      "approve_success": "\"{title}\" approved",
+      "reject_success": "\"{title}\" rejected",
+      "approve_modal_title": "Confirm approval",
+      "approve_modal_body": "Publish book \"{title}\"? The author will be notified."
     },
     "reviews": {
       "title": "Review moderation",
@@ -158,7 +176,17 @@
       "reject_confirm": "Reject this review?",
       "by_user": "User",
       "book_label": "Book",
-      "open_book": "Open book"
+      "open_book": "Open book",
+      "search_placeholder": "Search by user, title or text...",
+      "queue_count": "{n} reviews",
+      "rating_any": "Any rating",
+      "status_pending": "Pending",
+      "approve_success": "Review approved",
+      "reject_success": "Review rejected",
+      "approve_modal_title": "Confirm review",
+      "approve_modal_body": "Make this review visible on the site?",
+      "reject_modal_title": "Reject review",
+      "reject_modal_body": "The review will not appear on the site. This cannot be undone."
     },
     "categories": {
       "title": "Categories",
@@ -194,11 +222,23 @@
         "submitting": "Saving…",
         "cancel": "Cancel",
         "slug_required": "Slug is required",
-        "name_required": "Provide a name in at least one language"
+        "name_required": "Provide a name in at least one language",
+        "section_identity": "Core details",
+        "section_display": "Display & ordering",
+        "icon_preview": "Preview",
+        "create_subtitle": "Create a new category and translate its name across all languages."
       },
       "delete": "Delete",
       "delete_confirm": "Delete this category? Subcategories will become top-level.",
-      "edit": "Edit"
+      "edit": "Edit",
+      "search_placeholder": "Search by name or slug...",
+      "filter_active_only": "Active only",
+      "active": "Active",
+      "inactive": "Inactive",
+      "create_success": "Category created",
+      "update_success": "Category updated",
+      "delete_success": "{name} deleted",
+      "delete_confirm_body": "Delete category \"{name}\"? This may affect related books."
     },
     "users": {
       "title": "Users",
@@ -236,7 +276,18 @@
         "unblock": "Unblock",
         "block_confirm": "Block this user? All their sessions will end.",
         "unblock_confirm": "Unblock this user?"
-      }
+      },
+      "you": "you",
+      "set_role": "Change role to '{role}'",
+      "role_modal_title": "Change role",
+      "role_modal_body": "\"{name}\"'s role will be changed to '{role}'. This can be reverted later.",
+      "block_modal_title": "Block user",
+      "block_modal_body": "\"{name}\" won't be able to sign in. You can unblock later.",
+      "unblock_modal_title": "Unblock user",
+      "unblock_modal_body": "\"{name}\" will be able to sign in again.",
+      "role_success": "{name} is now {role}",
+      "block_success": "User blocked",
+      "unblock_success": "User unblocked"
     },
     "withdrawals": {
       "title": "Withdrawal requests",
@@ -267,7 +318,16 @@
         "submit": "Confirm",
         "cancel": "Cancel"
       },
-      "process_confirm": "Mark this request as in-progress?"
+      "process_confirm": "Mark this request as in-progress?",
+      "total": "{n} requests",
+      "queue_pending": "{n} new",
+      "queue_processing": "{n} processing",
+      "approve_success": "Request approved",
+      "reject_success": "Request rejected",
+      "complete_success": "Payout completed",
+      "process_success": "Status changed to processing",
+      "process_title": "Start processing",
+      "process_body": "Move the {amount} request to processing? The author will be emailed."
     },
     "blog": {
       "title": "Blog posts",
@@ -308,7 +368,13 @@
         "submit_edit": "Save",
         "cancel": "Cancel",
         "slug_required": "Slug is required",
-        "title_required": "Provide a title in at least one language"
+        "title_required": "Provide a title in at least one language",
+        "section_identity": "Core details",
+        "lang_hint": "Edit per language",
+        "title_field": "Title — {lang}",
+        "excerpt_field": "Excerpt — {lang}",
+        "body_field": "Body — {lang}",
+        "create_subtitle": "Create a new blog post. It is saved as a draft."
       },
       "actions": {
         "publish": "Publish",
@@ -316,7 +382,15 @@
         "edit": "Edit",
         "delete": "Delete",
         "delete_confirm": "Delete this post?"
-      }
+      },
+      "search_placeholder": "Search by title or slug...",
+      "total": "{n} posts",
+      "create_success": "Post created",
+      "update_success": "Post updated",
+      "delete_success": "Post deleted",
+      "publish_success": "Post published",
+      "unpublish_success": "Post unpublished",
+      "delete_confirm_body": "Delete post \"{title}\"?"
     },
     "audit": {
       "title": "Audit log",
@@ -340,8 +414,51 @@
         "avatar_uploaded": "Avatar uploaded",
         "account_deleted": "Account deleted"
       },
-      "anonymous": "(anonymous)"
-    }
+      "anonymous": "(anonymous)",
+      "col_action": "Action",
+      "col_user": "User",
+      "col_ip": "IP address",
+      "col_when": "When",
+      "search_placeholder": "Search by user ID, IP or action...",
+      "total": "{n} entries"
+    },
+    "filters": {
+      "search_placeholder": "Search...",
+      "reset": "Clear",
+      "all": "All",
+      "status": "Status",
+      "from_date": "From date",
+      "to_date": "To date",
+      "no_results": "Nothing found",
+      "no_results_desc": "No records match the current filters. Try clearing them."
+    },
+    "sidebar": {
+      "collapse": "Collapse sidebar",
+      "expand": "Expand sidebar",
+      "toggle_mobile": "Open menu"
+    },
+    "actions": {
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "back": "Back",
+      "view": "View",
+      "more": "More actions",
+      "delete_confirm_title": "Confirm deletion",
+      "delete_confirm_body": "This action cannot be undone."
+    },
+    "form": {
+      "required_field": "Required field",
+      "saved": "Saved",
+      "save_failed": "Could not save",
+      "deleted": "Deleted",
+      "delete_failed": "Could not delete"
+    },
+    "greeting_morning": "Good morning",
+    "greeting_afternoon": "Good afternoon",
+    "greeting_evening": "Good evening"
   },
   "balance": {
     "title": "Earnings",

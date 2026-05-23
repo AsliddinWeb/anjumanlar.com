@@ -17,31 +17,31 @@ interface StatsSnapshot {
   generated_at: string;
 }
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const { user } = useAuth();
 const api = useApi();
 
 useHead({ title: t("admin.title") });
 
-const { data: statsRaw } = await useAsyncData(
+const { data: statsRaw, pending } = await useAsyncData(
   "admin:stats",
   () => api<StatsSnapshot>("/admin/stats"),
 );
 
 const stats = computed(() => statsRaw.value as StatsSnapshot | null);
 
-// Action items — surface anything that needs admin attention.
 const actionItems = computed(() => {
   const s = stats.value;
   if (!s) return [];
-  const items: { to: string; icon: IconName; title: string; count: number }[] = [];
+  const items: { to: string; icon: IconName; title: string; count: number; description: string }[] = [];
   if (s.books.pending > 0)
     items.push({
       to: "/admin/books",
       icon: "book",
       title: t("admin.kpi.books_pending"),
       count: s.books.pending,
+      description: t("admin.kpi.books_pending_desc"),
     });
   if (s.reviews.pending > 0)
     items.push({
@@ -49,6 +49,7 @@ const actionItems = computed(() => {
       icon: "chat",
       title: t("admin.kpi.reviews_pending"),
       count: s.reviews.pending,
+      description: t("admin.kpi.reviews_pending_desc"),
     });
   if (s.withdrawals.open > 0)
     items.push({
@@ -56,89 +57,153 @@ const actionItems = computed(() => {
       icon: "money",
       title: t("admin.kpi.withdrawals_open"),
       count: s.withdrawals.open,
+      description: t("admin.kpi.withdrawals_open_desc"),
     });
   return items;
+});
+
+const greeting = computed(() => {
+  const h = new Date().getHours();
+  if (h < 12) return t("admin.greeting_morning");
+  if (h < 18) return t("admin.greeting_afternoon");
+  return t("admin.greeting_evening");
+});
+
+const generatedAt = computed(() => {
+  if (!stats.value) return "";
+  return new Intl.DateTimeFormat(locale.value, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(stats.value.generated_at));
 });
 </script>
 
 <template>
   <section class="space-y-8">
-    <header class="space-y-1">
-      <h1 class="font-serif text-3xl text-ink">
+    <header class="space-y-2">
+      <p class="text-sm text-ink-tertiary">{{ greeting }}</p>
+      <h1 class="font-serif text-3xl md:text-4xl text-ink leading-tight">
         {{ t("admin.welcome", { name: user?.full_name ?? "" }) }}
       </h1>
-      <p class="text-sm text-ink-secondary">{{ t("admin.welcome_subtitle") }}</p>
+      <p class="text-sm text-ink-secondary">
+        {{ t("admin.welcome_subtitle") }}
+      </p>
     </header>
 
-    <!-- Action items -->
-    <section v-if="stats" class="space-y-3">
-      <h2 class="font-medium text-ink">{{ t("admin.kpi.needs_attention") }}</h2>
-      <div v-if="actionItems.length > 0" class="grid sm:grid-cols-3 gap-3">
-        <NuxtLink
-          v-for="item in actionItems"
-          :key="item.to"
-          :to="localePath(item.to)"
-          class="rounded border border-warning/40 bg-warning/5 p-4 hover:border-warning hover:bg-warning/10 transition-colors"
-        >
-          <div class="flex items-center gap-3">
-            <Icon :name="item.icon" class="h-7 w-7 text-warning" />
-            <div>
-              <div class="text-xs text-ink-tertiary">{{ item.title }}</div>
-              <div class="font-serif text-2xl text-warning">{{ item.count }}</div>
-            </div>
-          </div>
-        </NuxtLink>
-      </div>
-      <p v-else class="flex items-center gap-1 text-sm text-success">
-        <Icon name="check-circle-solid" class="h-4 w-4" />
-        {{ t("admin.kpi.all_clear") }}
-      </p>
-    </section>
+    <div v-if="pending && !stats" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <UiSkeleton v-for="i in 8" :key="i" height="6rem" block />
+    </div>
 
-    <!-- KPI grid -->
-    <section v-if="stats" class="space-y-3">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div class="rounded border border-border bg-bg-card p-4">
-          <div class="text-xs text-ink-tertiary">{{ t("admin.kpi.users_total") }}</div>
-          <div class="font-serif text-2xl text-ink mt-1">{{ stats.users.total }}</div>
-          <div class="text-xs text-ink-tertiary mt-1">
-            {{ t("admin.kpi.users_last_7d", { n: stats.users.last_7d }) }}
-          </div>
+    <template v-else-if="stats">
+      <section v-if="actionItems.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+            {{ t("admin.kpi.needs_attention") }}
+          </h2>
+          <AdminStatusPill
+            tone="warning"
+            icon="warning"
+            :label="t('admin.kpi.action_items_count', { n: actionItems.length })"
+            pulse
+          />
         </div>
-        <div class="rounded border border-border bg-bg-card p-4">
-          <div class="text-xs text-ink-tertiary">{{ t("admin.kpi.authors") }}</div>
-          <div class="font-serif text-2xl text-ink mt-1">{{ stats.users.authors }}</div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <NuxtLink
+            v-for="item in actionItems"
+            :key="item.to"
+            :to="localePath(item.to)"
+            class="group rounded-md border border-warning/40 bg-warning/5 p-4 hover:border-warning hover:bg-warning/10 transition-colors"
+          >
+            <div class="flex items-start gap-3">
+              <div class="h-10 w-10 rounded bg-warning/15 text-warning flex items-center justify-center shrink-0">
+                <Icon :name="item.icon" class="h-5 w-5" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline gap-2">
+                  <div class="font-serif text-2xl text-warning">{{ item.count }}</div>
+                  <div class="text-sm font-medium text-ink truncate">{{ item.title }}</div>
+                </div>
+                <div class="text-xs text-ink-tertiary mt-0.5">{{ item.description }}</div>
+              </div>
+              <Icon name="arrow-right" class="h-4 w-4 text-ink-tertiary mt-1 group-hover:translate-x-0.5 group-hover:text-warning transition-all" />
+            </div>
+          </NuxtLink>
         </div>
-        <div class="rounded border border-border bg-bg-card p-4">
-          <div class="text-xs text-ink-tertiary">{{ t("admin.kpi.books_approved") }}</div>
-          <div class="font-serif text-2xl text-ink mt-1">{{ stats.books.approved }}</div>
+      </section>
+
+      <section v-else class="rounded-md border border-success/30 bg-success/5 p-4 flex items-center gap-3">
+        <Icon name="check-circle-solid" class="h-6 w-6 text-success shrink-0" />
+        <div>
+          <p class="font-medium text-ink">{{ t("admin.kpi.all_clear") }}</p>
+          <p class="text-xs text-ink-tertiary">{{ t("admin.kpi.all_clear_desc") }}</p>
         </div>
-        <div class="rounded border border-border bg-bg-card p-4">
-          <div class="text-xs text-ink-tertiary">{{ t("admin.kpi.orders_paid") }}</div>
-          <div class="font-serif text-2xl text-ink mt-1">{{ stats.orders.paid_total }}</div>
-          <div class="text-xs text-ink-tertiary mt-1">
-            {{ t("admin.kpi.orders_this_month", { n: stats.orders.paid_this_month }) }}
-          </div>
+      </section>
+
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+            {{ t("admin.kpi.overview") }}
+          </h2>
+          <span class="text-xs text-ink-tertiary inline-flex items-center gap-1">
+            <Icon name="arrow-path" class="h-3 w-3" />
+            {{ generatedAt }}
+          </span>
         </div>
-        <div class="rounded border border-border bg-bg-card p-4 col-span-2">
-          <div class="text-xs text-ink-tertiary">{{ t("admin.kpi.revenue_gross") }}</div>
-          <div class="font-serif text-2xl text-success mt-1">
-            {{ formatPrice(stats.revenue.gross) }}
-          </div>
-          <div class="text-xs text-ink-tertiary mt-1">
-            {{ t("admin.kpi.revenue_platform") }}: {{ formatPrice(stats.revenue.platform_fee) }}
-          </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <AdminKpiCard
+            :label="t('admin.kpi.users_total')"
+            :value="stats.users.total"
+            :hint="t('admin.kpi.users_last_7d', { n: stats.users.last_7d })"
+            icon="users"
+            tone="info"
+            :to="localePath('/admin/users')"
+          />
+          <AdminKpiCard
+            :label="t('admin.kpi.authors')"
+            :value="stats.users.authors"
+            icon="pencil"
+            :to="localePath('/admin/users') + '?role=author'"
+          />
+          <AdminKpiCard
+            :label="t('admin.kpi.books_approved')"
+            :value="stats.books.approved"
+            icon="book"
+            tone="success"
+          />
+          <AdminKpiCard
+            :label="t('admin.kpi.orders_paid')"
+            :value="stats.orders.paid_total"
+            :hint="t('admin.kpi.orders_this_month', { n: stats.orders.paid_this_month })"
+            icon="clipboard-check"
+          />
         </div>
-        <div class="rounded border border-border bg-bg-card p-4 col-span-2">
-          <div class="text-xs text-ink-tertiary">{{ t("admin.kpi.withdrawals_amount") }}</div>
-          <div class="font-serif text-2xl text-warning mt-1">
-            {{ formatPrice(stats.withdrawals.open_amount) }}
-          </div>
-          <div class="text-xs text-ink-tertiary mt-1">
-            {{ stats.withdrawals.open }} {{ t("admin.kpi.withdrawals_open").toLowerCase() }}
-          </div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+          {{ t("admin.kpi.financials") }}
+        </h2>
+        <div class="grid md:grid-cols-2 gap-3">
+          <AdminKpiCard
+            :label="t('admin.kpi.revenue_gross')"
+            :value="formatPrice(stats.revenue.gross)"
+            :hint="t('admin.kpi.revenue_platform') + ': ' + formatPrice(stats.revenue.platform_fee)"
+            icon="currency"
+            tone="success"
+          />
+          <AdminKpiCard
+            :label="t('admin.kpi.withdrawals_amount')"
+            :value="formatPrice(stats.withdrawals.open_amount)"
+            :hint="t('admin.kpi.withdrawals_open_count', { n: stats.withdrawals.open })"
+            icon="money"
+            tone="warning"
+            :to="localePath('/admin/withdrawals')"
+          />
         </div>
-      </div>
-    </section>
+      </section>
+    </template>
   </section>
 </template>

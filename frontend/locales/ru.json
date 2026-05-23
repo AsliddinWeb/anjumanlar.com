@@ -97,7 +97,15 @@
       "withdrawals_open": "Открытых заявок",
       "withdrawals_amount": "Запрошенная сумма",
       "needs_attention": "Требует внимания",
-      "all_clear": "В очереди ничего нет"
+      "all_clear": "В очереди ничего нет",
+      "action_items_count": "{n} задач",
+      "overview": "Обзор",
+      "financials": "Финансы",
+      "all_clear_desc": "Сейчас ничего не требует действий.",
+      "books_pending_desc": "Книги, ожидающие модерации",
+      "reviews_pending_desc": "Отзывы, ожидающие проверки",
+      "withdrawals_open_desc": "Новые запросы на вывод средств",
+      "withdrawals_open_count": "{n} открытых запросов"
     },
     "nav": {
       "toggle": "Меню",
@@ -145,7 +153,17 @@
       "reject_reason_placeholder": "Заметка, видимая автору — что не соответствует или недостаточно?",
       "reject_submit": "Отклонить",
       "reject_cancel": "Отмена",
-      "reject_reason_required": "Укажите причину"
+      "reject_reason_required": "Укажите причину",
+      "search_placeholder": "Поиск по названию, автору или slug...",
+      "filter_demo_any": "Демо: все",
+      "filter_demo_yes": "С демо",
+      "filter_demo_no": "Без демо",
+      "queue_count": "В очереди: {n}",
+      "status_pending": "На проверке",
+      "approve_success": "\"{title}\" одобрена",
+      "reject_success": "\"{title}\" отклонена",
+      "approve_modal_title": "Подтвердить одобрение",
+      "approve_modal_body": "Опубликовать книгу \"{title}\"? Автор получит уведомление."
     },
     "reviews": {
       "title": "Модерация отзывов",
@@ -158,7 +176,17 @@
       "reject_confirm": "Отклонить этот отзыв?",
       "by_user": "Пользователь",
       "book_label": "Книга",
-      "open_book": "Открыть книгу"
+      "open_book": "Открыть книгу",
+      "search_placeholder": "Поиск по пользователю, заголовку или тексту...",
+      "queue_count": "{n} отзывов",
+      "rating_any": "Любая оценка",
+      "status_pending": "На проверке",
+      "approve_success": "Отзыв одобрен",
+      "reject_success": "Отзыв отклонён",
+      "approve_modal_title": "Подтвердить отзыв",
+      "approve_modal_body": "Сделать отзыв видимым на сайте?",
+      "reject_modal_title": "Отклонить отзыв",
+      "reject_modal_body": "Отзыв не появится на сайте. Это нельзя отменить."
     },
     "categories": {
       "title": "Категории",
@@ -194,11 +222,23 @@
         "submitting": "Сохранение…",
         "cancel": "Отмена",
         "slug_required": "Укажите slug",
-        "name_required": "Введите название хотя бы на одном языке"
+        "name_required": "Введите название хотя бы на одном языке",
+        "section_identity": "Основная информация",
+        "section_display": "Внешний вид и порядок",
+        "icon_preview": "Предпросмотр",
+        "create_subtitle": "Создайте новую категорию и переведите её название на все языки."
       },
       "delete": "Удалить",
       "delete_confirm": "Удалить эту категорию? Подкатегории станут верхнеуровневыми.",
-      "edit": "Редактировать"
+      "edit": "Редактировать",
+      "search_placeholder": "Поиск по названию или slug...",
+      "filter_active_only": "Только активные",
+      "active": "Активна",
+      "inactive": "Неактивна",
+      "create_success": "Категория создана",
+      "update_success": "Категория обновлена",
+      "delete_success": "{name} удалена",
+      "delete_confirm_body": "Удалить категорию \"{name}\"? Это может повлиять на связанные книги."
     },
     "users": {
       "title": "Пользователи",
@@ -236,7 +276,18 @@
         "unblock": "Разблокировать",
         "block_confirm": "Заблокировать этого пользователя? Все сессии будут закрыты.",
         "unblock_confirm": "Разблокировать пользователя?"
-      }
+      },
+      "you": "вы",
+      "set_role": "Сменить роль на '{role}'",
+      "role_modal_title": "Изменить роль",
+      "role_modal_body": "Роль \"{name}\" будет изменена на '{role}'. Это можно отменить позже.",
+      "block_modal_title": "Заблокировать пользователя",
+      "block_modal_body": "\"{name}\" не сможет войти в систему. Вы сможете разблокировать позже.",
+      "unblock_modal_title": "Разблокировать",
+      "unblock_modal_body": "\"{name}\" снова сможет войти.",
+      "role_success": "{name} теперь {role}",
+      "block_success": "Пользователь заблокирован",
+      "unblock_success": "Пользователь разблокирован"
     },
     "withdrawals": {
       "title": "Заявки на выплату",
@@ -267,7 +318,16 @@
         "submit": "Подтвердить",
         "cancel": "Отмена"
       },
-      "process_confirm": "Перевести заявку в статус \"в работе\"?"
+      "process_confirm": "Перевести заявку в статус \"в работе\"?",
+      "total": "{n} запросов",
+      "queue_pending": "{n} новых",
+      "queue_processing": "{n} в работе",
+      "approve_success": "Запрос одобрен",
+      "reject_success": "Запрос отклонён",
+      "complete_success": "Выплата завершена",
+      "process_success": "Статус переведён в \"в работе\"",
+      "process_title": "Начать обработку",
+      "process_body": "Перевести запрос на {amount} в статус \"в работе\"? Автор получит email."
     },
     "blog": {
       "title": "Статьи блога",
@@ -308,7 +368,13 @@
         "submit_edit": "Сохранить",
         "cancel": "Отмена",
         "slug_required": "Укажите slug",
-        "title_required": "Введите заголовок хотя бы на одном языке"
+        "title_required": "Введите заголовок хотя бы на одном языке",
+        "section_identity": "Основные данные",
+        "lang_hint": "Редактируйте по языкам",
+        "title_field": "Заголовок — {lang}",
+        "excerpt_field": "Краткое описание — {lang}",
+        "body_field": "Содержание — {lang}",
+        "create_subtitle": "Создайте новую запись блога. Сохраняется как черновик."
       },
       "actions": {
         "publish": "Опубликовать",
@@ -316,7 +382,15 @@
         "edit": "Редактировать",
         "delete": "Удалить",
         "delete_confirm": "Удалить эту статью?"
-      }
+      },
+      "search_placeholder": "Поиск по заголовку или slug...",
+      "total": "{n} записей",
+      "create_success": "Запись создана",
+      "update_success": "Запись обновлена",
+      "delete_success": "Запись удалена",
+      "publish_success": "Запись опубликована",
+      "unpublish_success": "Запись снята с публикации",
+      "delete_confirm_body": "Удалить запись \"{title}\"?"
     },
     "audit": {
       "title": "Аудит-журнал",
@@ -340,8 +414,51 @@
         "avatar_uploaded": "Аватар загружен",
         "account_deleted": "Аккаунт удалён"
       },
-      "anonymous": "(анонимный)"
-    }
+      "anonymous": "(анонимный)",
+      "col_action": "Действие",
+      "col_user": "Пользователь",
+      "col_ip": "IP-адрес",
+      "col_when": "Время",
+      "search_placeholder": "Поиск по ID, IP или действию...",
+      "total": "{n} записей"
+    },
+    "filters": {
+      "search_placeholder": "Поиск...",
+      "reset": "Сбросить",
+      "all": "Все",
+      "status": "Статус",
+      "from_date": "С даты",
+      "to_date": "По дату",
+      "no_results": "Ничего не найдено",
+      "no_results_desc": "Нет записей, соответствующих фильтрам. Попробуйте их сбросить."
+    },
+    "sidebar": {
+      "collapse": "Свернуть боковую панель",
+      "expand": "Развернуть боковую панель",
+      "toggle_mobile": "Открыть меню"
+    },
+    "actions": {
+      "create": "Создать",
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "back": "Назад",
+      "view": "Посмотреть",
+      "more": "Больше действий",
+      "delete_confirm_title": "Подтвердите удаление",
+      "delete_confirm_body": "Это действие необратимо."
+    },
+    "form": {
+      "required_field": "Обязательное поле",
+      "saved": "Сохранено",
+      "save_failed": "Не удалось сохранить",
+      "deleted": "Удалено",
+      "delete_failed": "Не удалось удалить"
+    },
+    "greeting_morning": "Доброе утро",
+    "greeting_afternoon": "Добрый день",
+    "greeting_evening": "Добрый вечер"
   },
   "balance": {
     "title": "Доход",

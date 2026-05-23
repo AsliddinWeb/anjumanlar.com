@@ -96,8 +96,16 @@
       "revenue_platform": "Platforma daromadi",
       "withdrawals_open": "Ochiq so'rovlar",
       "withdrawals_amount": "So'ralgan summa",
-      "needs_attention": "Diqqat talab qiladi",
-      "all_clear": "Hech narsa kutilmagan"
+      "needs_attention": "E'tibor talab qiladi",
+      "all_clear": "Hech narsa kutilmagan",
+      "action_items_count": "{n} ta vazifa",
+      "overview": "Umumiy ko'rinish",
+      "financials": "Moliyaviy",
+      "all_clear_desc": "Hozircha hech qanday harakat talab qilinmaydi.",
+      "books_pending_desc": "Tasdiqlanishi kutilayotgan kitoblar",
+      "reviews_pending_desc": "Tasdiqlanishi kutilayotgan sharhlar",
+      "withdrawals_open_desc": "Yangi pul yechib olish so'rovlari",
+      "withdrawals_open_count": "{n} ta ochiq so'rov"
     },
     "nav": {
       "toggle": "Menyu",
@@ -145,7 +153,17 @@
       "reject_reason_placeholder": "Muallifga ko'rinadigan izoh — nima nostandart yoki yetarli emas?",
       "reject_submit": "Rad etish",
       "reject_cancel": "Bekor qilish",
-      "reject_reason_required": "Sabab kiriting"
+      "reject_reason_required": "Sabab kiriting",
+      "search_placeholder": "Kitob nomi, muallif yoki slug bo'yicha qidirish...",
+      "filter_demo_any": "Demo: hammasi",
+      "filter_demo_yes": "Demo bor",
+      "filter_demo_no": "Demo yo'q",
+      "queue_count": "{n} ta navbatda",
+      "status_pending": "Tekshiruvda",
+      "approve_success": "\"{title}\" tasdiqlandi",
+      "reject_success": "\"{title}\" rad etildi",
+      "approve_modal_title": "Tasdiqlash",
+      "approve_modal_body": "\"{title}\" kitobini chop etishni tasdiqlaysizmi? Muallifga xabarnoma yuboriladi."
     },
     "reviews": {
       "title": "Sharhlar moderatsiyasi",
@@ -158,7 +176,17 @@
       "reject_confirm": "Bu sharhni rad etishni istaysizmi?",
       "by_user": "Foydalanuvchi",
       "book_label": "Kitob",
-      "open_book": "Kitobni ochish"
+      "open_book": "Kitobni ochish",
+      "search_placeholder": "Foydalanuvchi, sarlavha yoki matn bo'yicha qidirish...",
+      "queue_count": "{n} ta sharh",
+      "rating_any": "Barcha reytinglar",
+      "status_pending": "Tekshiruvda",
+      "approve_success": "Sharh tasdiqlandi",
+      "reject_success": "Sharh rad etildi",
+      "approve_modal_title": "Sharhni tasdiqlash",
+      "approve_modal_body": "Bu sharh saytda ko'rinishini xohlaysizmi?",
+      "reject_modal_title": "Sharhni rad etish",
+      "reject_modal_body": "Sharh saytda chiqmaydi. Bu amalni qaytarish mumkin emas."
     },
     "categories": {
       "title": "Kategoriyalar",
@@ -194,11 +222,23 @@
         "submitting": "Saqlanmoqda…",
         "cancel": "Bekor qilish",
         "slug_required": "Slug talab qilinadi",
-        "name_required": "Kamida bitta tilda nom kiriting"
+        "name_required": "Kamida bitta tilda nom kiriting",
+        "section_identity": "Asosiy ma'lumotlar",
+        "section_display": "Ko'rinish va tartib",
+        "icon_preview": "Ko'rinish",
+        "create_subtitle": "Yangi kategoriya yarating va nomlarini barcha tillarga tarjima qiling."
       },
       "delete": "O'chirish",
       "delete_confirm": "Bu kategoriyani o'chirishni istaysizmi? Sub-kategoriyalari yuqori darajaga ko'tariladi.",
-      "edit": "Tahrirlash"
+      "edit": "Tahrirlash",
+      "search_placeholder": "Nomi yoki slug bo'yicha qidirish...",
+      "filter_active_only": "Faqat faollar",
+      "active": "Faol",
+      "inactive": "Faol emas",
+      "create_success": "Kategoriya yaratildi",
+      "update_success": "Kategoriya yangilandi",
+      "delete_success": "{name} o'chirildi",
+      "delete_confirm_body": "\"{name}\" kategoriyasini o'chirishni xohlaysizmi? Bunga bog'liq kitoblarga ta'sir qilishi mumkin."
     },
     "users": {
       "title": "Foydalanuvchilar",
@@ -236,7 +276,18 @@
         "unblock": "Blokdan chiqarish",
         "block_confirm": "Bu foydalanuvchini bloklashni istaysizmi? Barcha sessiyalari yopiladi.",
         "unblock_confirm": "Foydalanuvchini blokdan chiqarish?"
-      }
+      },
+      "you": "siz",
+      "set_role": "Rolni '{role}'ga o'zgartirish",
+      "role_modal_title": "Rolni o'zgartirish",
+      "role_modal_body": "\"{name}\" foydalanuvchining roli '{role}'ga o'zgartiriladi. Bu amalni keyin qaytarish mumkin.",
+      "block_modal_title": "Foydalanuvchini bloklash",
+      "block_modal_body": "\"{name}\" tizimga kira olmaydi. Keyin yana ochishingiz mumkin.",
+      "unblock_modal_title": "Blokdan chiqarish",
+      "unblock_modal_body": "\"{name}\" tizimga yana kira oladi.",
+      "role_success": "{name} endi {role}",
+      "block_success": "Foydalanuvchi bloklandi",
+      "unblock_success": "Foydalanuvchi blokdan chiqarildi"
     },
     "withdrawals": {
       "title": "Pul yechish so'rovlari",
@@ -267,7 +318,16 @@
         "submit": "Tasdiqlash",
         "cancel": "Bekor qilish"
       },
-      "process_confirm": "So'rovni \"jarayonda\" deb belgilashni istaysizmi?"
+      "process_confirm": "So'rovni \"jarayonda\" deb belgilashni istaysizmi?",
+      "total": "{n} ta so'rov",
+      "queue_pending": "{n} ta yangi",
+      "queue_processing": "{n} ta jarayonda",
+      "approve_success": "So'rov tasdiqlandi",
+      "reject_success": "So'rov rad etildi",
+      "complete_success": "To'lov yakunlandi",
+      "process_success": "Holat \"jarayonda\"ga o'zgartirildi",
+      "process_title": "Jarayonni boshlash",
+      "process_body": "{amount} miqdoridagi so'rovni \"jarayonda\" holatiga o'tkazasizmi? Muallifga email yuboriladi."
     },
     "blog": {
       "title": "Blog maqolalari",
@@ -308,7 +368,13 @@
         "submit_edit": "Saqlash",
         "cancel": "Bekor qilish",
         "slug_required": "Slug talab qilinadi",
-        "title_required": "Kamida bitta tilda sarlavha kiriting"
+        "title_required": "Kamida bitta tilda sarlavha kiriting",
+        "section_identity": "Asosiy ma'lumotlar",
+        "lang_hint": "Til bo'yicha alohida tahrirlang",
+        "title_field": "Sarlavha — {lang}",
+        "excerpt_field": "Qisqacha — {lang}",
+        "body_field": "Matn — {lang}",
+        "create_subtitle": "Yangi blog yozuvi yarating. Avval qoralama sifatida saqlanadi."
       },
       "actions": {
         "publish": "Nashr etish",
@@ -316,7 +382,15 @@
         "edit": "Tahrirlash",
         "delete": "O'chirish",
         "delete_confirm": "Maqolani o'chirishni istaysizmi?"
-      }
+      },
+      "search_placeholder": "Sarlavha yoki slug bo'yicha qidirish...",
+      "total": "{n} ta yozuv",
+      "create_success": "Yozuv yaratildi",
+      "update_success": "Yozuv yangilandi",
+      "delete_success": "Yozuv o'chirildi",
+      "publish_success": "Yozuv chop etildi",
+      "unpublish_success": "Yozuv chop etilmagan holatga o'tkazildi",
+      "delete_confirm_body": "\"{title}\" yozuvini o'chirishni xohlaysizmi?"
     },
     "audit": {
       "title": "Audit log",
@@ -340,8 +414,51 @@
         "avatar_uploaded": "Avatar yuklandi",
         "account_deleted": "Hisob o'chirildi"
       },
-      "anonymous": "(anonim)"
-    }
+      "anonymous": "(anonim)",
+      "col_action": "Amal",
+      "col_user": "Foydalanuvchi",
+      "col_ip": "IP manzil",
+      "col_when": "Vaqt",
+      "search_placeholder": "User ID, IP yoki amal bo'yicha qidirish...",
+      "total": "{n} ta yozuv"
+    },
+    "filters": {
+      "search_placeholder": "Qidirish...",
+      "reset": "Tozalash",
+      "all": "Hammasi",
+      "status": "Status",
+      "from_date": "Sanadan",
+      "to_date": "Sanagacha",
+      "no_results": "Hech narsa topilmadi",
+      "no_results_desc": "Qidiruv mezonlariga mos keladigan yozuv yo'q. Filtrlarni tozalab ko'ring."
+    },
+    "sidebar": {
+      "collapse": "Sidebar'ni yig'ish",
+      "expand": "Sidebar'ni yoyish",
+      "toggle_mobile": "Menyuni ochish"
+    },
+    "actions": {
+      "create": "Yaratish",
+      "edit": "Tahrirlash",
+      "delete": "O'chirish",
+      "save": "Saqlash",
+      "cancel": "Bekor qilish",
+      "back": "Orqaga",
+      "view": "Ko'rish",
+      "more": "Ko'proq amallar",
+      "delete_confirm_title": "O'chirishni tasdiqlang",
+      "delete_confirm_body": "Bu amalni ortga qaytarib bo'lmaydi."
+    },
+    "form": {
+      "required_field": "Majburiy maydon",
+      "saved": "Saqlandi",
+      "save_failed": "Saqlanmadi",
+      "deleted": "O'chirildi",
+      "delete_failed": "O'chirilmadi"
+    },
+    "greeting_morning": "Xayrli tong",
+    "greeting_afternoon": "Xayrli kun",
+    "greeting_evening": "Xayrli kech"
   },
   "balance": {
     "title": "Daromad",

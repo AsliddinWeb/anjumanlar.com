@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import type { AuditAction, AuditLogList } from "~/types/api";
+import type { AuditAction, AuditLogList, AuditLogPublic } from "~/types/api";
+import type { Column } from "~/components/admin/AdminDataTable.vue";
+import type { IconName } from "~/components/ui/Icon.vue";
 
 definePageMeta({
   layout: "admin",
@@ -17,6 +19,7 @@ useHead({ title: t("admin.audit.title") });
 const PAGE_SIZE = 50;
 const currentPage = computed(() => Math.max(1, Number(route.query.page) || 1));
 const actionFilter = computed(() => (route.query.action as string) || "");
+const searchQuery = computed(() => (route.query.q as string) || "");
 
 const queryParams = computed(() => {
   const p: Record<string, string | number> = {
@@ -35,6 +38,17 @@ const { data: rawList, pending } = await useAsyncData(
 
 const list = computed(() => rawList.value as AuditLogList | null);
 
+const filtered = computed<AuditLogPublic[]>(() => {
+  const items = list.value?.items ?? [];
+  const q = searchQuery.value.trim().toLowerCase();
+  if (!q) return items;
+  return items.filter((r) =>
+    (r.user_id ?? "").toLowerCase().includes(q)
+    || (r.ip_address ?? "").toLowerCase().includes(q)
+    || r.action.toLowerCase().includes(q),
+  );
+});
+
 function setQuery(updates: Record<string, string | number | undefined>) {
   const next: Record<string, string> = {};
   for (const [k, v] of Object.entries(route.query)) {
@@ -52,6 +66,12 @@ function changePage(page: number) {
   setQuery({ page });
   if (import.meta.client) window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+function resetFilters() {
+  router.replace({ query: {} });
+}
+
+const filtersDirty = computed(() => Boolean(actionFilter.value || searchQuery.value));
 
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(locale.value, {
@@ -79,95 +99,130 @@ const actionOptions: AuditAction[] = [
   "account_deleted",
 ];
 
-function actionTone(action: AuditAction) {
-  if (action === "login_failed") return "warning";
-  if (action === "account_deleted") return "neutral";
-  if (action.startsWith("login_") || action === "email_verified") return "success";
-  return "neutral";
+const ACTION_META: Record<string, { tone: "success" | "warning" | "error" | "neutral" | "info"; icon: IconName }> = {
+  register: { tone: "info", icon: "user-plus" },
+  email_verified: { tone: "success", icon: "check-circle" },
+  resend_verification: { tone: "info", icon: "envelope" },
+  login_success: { tone: "success", icon: "check" },
+  login_failed: { tone: "warning", icon: "warning" },
+  logout: { tone: "neutral", icon: "arrow-right" },
+  logout_all: { tone: "warning", icon: "arrow-right" },
+  password_changed: { tone: "info", icon: "key" },
+  password_reset_requested: { tone: "info", icon: "key" },
+  password_reset_completed: { tone: "success", icon: "check" },
+  profile_updated: { tone: "neutral", icon: "pencil" },
+  avatar_uploaded: { tone: "neutral", icon: "pencil" },
+  account_deleted: { tone: "error", icon: "trash" },
+};
+
+function meta(action: string) {
+  return ACTION_META[action] ?? { tone: "neutral" as const, icon: "clipboard-list" as IconName };
 }
 
-const breadcrumbs = computed(() => [
-  { label: t("admin.title"), to: localePath("/admin") },
-  { label: t("admin.audit.title") },
-]);
+const expanded = ref<Set<string>>(new Set());
+function toggleExpand(id: string) {
+  if (expanded.value.has(id)) expanded.value.delete(id);
+  else expanded.value.add(id);
+}
+
+const columns: Column<AuditLogPublic>[] = [
+  { key: "action", label: t("admin.audit.col_action"), width: "w-56" },
+  { key: "user", label: t("admin.audit.col_user") },
+  { key: "ip", label: t("admin.audit.col_ip"), width: "w-32" },
+  { key: "when", label: t("admin.audit.col_when"), width: "w-44" },
+];
 </script>
 
 <template>
-  <section class="space-y-6">
-    <UiBreadcrumbs :items="breadcrumbs" />
+  <section>
+    <AdminPageHeader
+      :title="t('admin.audit.title')"
+      :description="t('admin.audit.subtitle')"
+      icon="clipboard-list"
+      :breadcrumbs="[
+        { label: t('admin.title'), to: localePath('/admin') },
+        { label: t('admin.audit.title') },
+      ]"
+    >
+      <template #actions>
+        <AdminStatusPill
+          v-if="list"
+          tone="info"
+          icon="document"
+          :label="t('admin.audit.total', { n: list.total })"
+        />
+      </template>
+    </AdminPageHeader>
 
-    <header class="space-y-1">
-      <h1 class="font-serif text-2xl text-ink">{{ t("admin.audit.title") }}</h1>
-      <p class="text-sm text-ink-secondary">{{ t("admin.audit.subtitle") }}</p>
-    </header>
-
-    <div class="flex flex-wrap items-end gap-3">
+    <AdminFilterBar
+      :search="searchQuery"
+      :search-placeholder="t('admin.audit.search_placeholder')"
+      :dirty="filtersDirty"
+      @update:search="(v) => setQuery({ q: v })"
+      @reset="resetFilters"
+    >
       <UiSelect
         :model-value="actionFilter"
-        :label="t('admin.audit.filter_action')"
-        :placeholder="t('admin.audit.filter_action_any')"
-        :options="actionOptions.map((a) => ({ value: a, label: t(`admin.audit.actions.${a}`) }))"
+        size="sm"
+        :options="[
+          { value: '', label: t('admin.audit.filter_action_any') },
+          ...actionOptions.map((a) => ({ value: a, label: t(`admin.audit.actions.${a}`) })),
+        ]"
         @update:model-value="(v) => setQuery({ action: v })"
       />
-      <span class="text-sm text-ink-tertiary ml-auto">
-        {{ list?.total ?? 0 }}
-      </span>
-    </div>
+    </AdminFilterBar>
 
-    <div v-if="pending && !list" class="space-y-2">
-      <UiSkeleton v-for="i in 4" :key="i" :height="'3rem'" :block="true" />
-    </div>
+    <AdminDataTable
+      :columns="columns"
+      :rows="filtered"
+      :row-key="(r) => r.id"
+      :loading="pending"
+      :empty="{
+        icon: 'clipboard-list',
+        title: filtersDirty ? t('admin.filters.no_results') : t('admin.audit.empty_title'),
+        description: filtersDirty ? t('admin.filters.no_results_desc') : t('admin.audit.empty_body'),
+      }"
+    >
+      <template #cell-action="{ row }">
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 group"
+          @click="toggleExpand(row.id)"
+        >
+          <AdminStatusPill
+            :tone="meta(row.action).tone"
+            :icon="meta(row.action).icon"
+            :label="t(`admin.audit.actions.${row.action}`)"
+          />
+          <Icon
+            v-if="row.meta && Object.keys(row.meta).length"
+            name="chevron-down"
+            class="h-3 w-3 text-ink-tertiary transition-transform"
+            :class="expanded.has(row.id) ? 'rotate-180' : ''"
+          />
+        </button>
+      </template>
+      <template #cell-user="{ row }">
+        <code v-if="row.user_id" class="font-mono text-xs text-ink-secondary">
+          {{ row.user_id.slice(0, 8) }}…
+        </code>
+        <span v-else class="text-xs text-ink-tertiary italic">
+          {{ t("admin.audit.anonymous") }}
+        </span>
+      </template>
+      <template #cell-ip="{ row }">
+        <code class="font-mono text-xs text-ink-tertiary">{{ row.ip_address ?? "—" }}</code>
+      </template>
+      <template #cell-when="{ row }">
+        <span class="text-xs text-ink-tertiary whitespace-nowrap">{{ formatDate(row.created_at) }}</span>
+      </template>
+    </AdminDataTable>
 
-    <UiEmptyState
-      v-else-if="(list?.items.length ?? 0) === 0"
-      icon="clipboard-list"
-      :title="t('admin.audit.empty_title')"
-      :description="t('admin.audit.empty_body')"
-    />
-
-    <div v-else class="overflow-x-auto rounded border border-border">
-      <table class="w-full text-sm">
-        <thead class="bg-bg-secondary text-left text-xs text-ink-tertiary">
-          <tr>
-            <th class="px-3 py-2">{{ t("admin.audit.title") }}</th>
-            <th class="px-3 py-2">User</th>
-            <th class="px-3 py-2">IP</th>
-            <th class="px-3 py-2">When</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="row in list!.items"
-            :key="row.id"
-            class="border-t border-border hover:bg-bg-secondary/40"
-          >
-            <td class="px-3 py-2">
-              <UiBadge :tone="actionTone(row.action)" size="sm">
-                {{ t(`admin.audit.actions.${row.action}`) }}
-              </UiBadge>
-            </td>
-            <td class="px-3 py-2 font-mono text-xs text-ink-secondary">
-              <span v-if="row.user_id">{{ row.user_id }}</span>
-              <span v-else class="text-ink-tertiary italic">
-                {{ t("admin.audit.anonymous") }}
-              </span>
-            </td>
-            <td class="px-3 py-2 font-mono text-xs text-ink-tertiary">
-              {{ row.ip_address ?? "—" }}
-            </td>
-            <td class="px-3 py-2 text-xs text-ink-tertiary whitespace-nowrap">
-              {{ formatDate(row.created_at) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="pt-4">
+    <div v-if="list && list.total > PAGE_SIZE" class="pt-4">
       <UiPagination
         :page="currentPage"
         :page-size="PAGE_SIZE"
-        :total="list?.total ?? 0"
+        :total="list.total"
         @change="changePage"
       />
     </div>
