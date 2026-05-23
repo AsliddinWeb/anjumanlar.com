@@ -43,6 +43,41 @@ SUBJECTS: dict[str, dict[str, str]] = {
         "ru": "Сброс пароля",
         "en": "Password reset",
     },
+    "library_grant": {
+        "uz": "Sotib olingan kitob kutubxonangizga qo'shildi",
+        "ru": "Купленная книга добавлена в библиотеку",
+        "en": "Your book is in your library",
+    },
+    "order_paid": {
+        "uz": "To'lov muvaffaqiyatli amalga oshdi",
+        "ru": "Оплата прошла успешно",
+        "en": "Payment received",
+    },
+    "book_approved": {
+        "uz": "Kitobingiz tasdiqlandi",
+        "ru": "Книга одобрена",
+        "en": "Your book has been approved",
+    },
+    "book_rejected": {
+        "uz": "Kitobingiz rad etildi",
+        "ru": "Книга отклонена",
+        "en": "Your book was rejected",
+    },
+    "withdrawal_requested": {
+        "uz": "Pul yechish so'rovi qabul qilindi",
+        "ru": "Заявка на выплату принята",
+        "en": "Withdrawal request received",
+    },
+    "withdrawal_completed": {
+        "uz": "Pul yechish yakunlandi",
+        "ru": "Выплата завершена",
+        "en": "Withdrawal completed",
+    },
+    "withdrawal_rejected": {
+        "uz": "Pul yechish so'rovi rad etildi",
+        "ru": "Заявка на выплату отклонена",
+        "en": "Withdrawal request rejected",
+    },
 }
 
 

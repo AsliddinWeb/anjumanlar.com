@@ -1,0 +1,18 @@
+{% extends "_layout.html" %}
+{% set locale = "en" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Payment received</h1>
+<p style="margin:0 0 16px;">
+  Hi {{ full_name }}. We received <strong>{{ total }} UZS</strong>
+  for order {{ order_number }}. The books are now in your library.
+</p>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/en/account/library" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Open library
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  This message confirms your purchase. The full receipt is available
+  under "My orders" in your account.
+</p>
+{% endblock %}

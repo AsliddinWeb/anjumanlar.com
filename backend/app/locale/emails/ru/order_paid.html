@@ -1,0 +1,19 @@
+{% extends "_layout.html" %}
+{% set locale = "ru" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Оплата принята</h1>
+<p style="margin:0 0 16px;">
+  Здравствуйте, {{ full_name }}. По заказу {{ order_number }} принят
+  платёж на сумму <strong>{{ total }} сум</strong>. Книги добавлены
+  в вашу библиотеку.
+</p>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/ru/account/library" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Открыть библиотеку
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  Это письмо подтверждает покупку. Подробности доступны в разделе
+  «Мои заказы» в вашем кабинете.
+</p>
+{% endblock %}

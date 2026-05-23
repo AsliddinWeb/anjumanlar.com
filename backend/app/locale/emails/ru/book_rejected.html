@@ -1,0 +1,21 @@
+{% extends "_layout.html" %}
+{% set locale = "ru" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Книга отклонена</h1>
+<p style="margin:0 0 16px;">
+  Здравствуйте, {{ full_name }}. Ваша книга
+  <strong>«{{ book_title }}»</strong> не прошла модерацию. Учтите
+  комментарий ниже и отправьте на повторную проверку.
+</p>
+<div style="margin:0 0 24px;padding:12px 16px;background:#faf3eb;border-left:3px solid #8b4513;color:#1a1410;font-size:14px;">
+  {{ reason }}
+</div>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/ru/account" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Открыть кабинет
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  После внесения правок книгу можно отправить на повторное рассмотрение.
+</p>
+{% endblock %}

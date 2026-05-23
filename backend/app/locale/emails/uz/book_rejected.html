@@ -1,0 +1,21 @@
+{% extends "_layout.html" %}
+{% set locale = "uz" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Kitob rad etildi</h1>
+<p style="margin:0 0 16px;">
+  Salom, {{ full_name }}. <strong>"{{ book_title }}"</strong> kitobingiz
+  moderatsiyadan o'tmadi. Quyidagi izoh asosida tahrir kiritib, qayta
+  yuborishingiz mumkin.
+</p>
+<div style="margin:0 0 24px;padding:12px 16px;background:#faf3eb;border-left:3px solid #8b4513;color:#1a1410;font-size:14px;">
+  {{ reason }}
+</div>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/uz/account" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Kabinetga o'tish
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  Tahrir qilingach kitobingizni qayta jo'natishingiz mumkin.
+</p>
+{% endblock %}

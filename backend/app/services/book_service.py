@@ -214,6 +214,7 @@ async def approve(db: AsyncSession, admin: User, book_id: UUID) -> Book:
         book.published_at = book.moderated_at
     await db.flush()
     sync_book_to_meilisearch.delay(str(book.id))
+    await _notify_book_moderation(db, book, template="book_approved")
     return await _get_loaded(db, book.id)
 
 
@@ -232,7 +233,57 @@ async def reject(db: AsyncSession, admin: User, book_id: UUID, reason: str) -> B
     book.moderated_at = datetime.now(UTC)
     await db.flush()
     remove_book_from_meilisearch.delay(str(book.id))
+    await _notify_book_moderation(db, book, template="book_rejected", reason=reason)
     return await _get_loaded(db, book.id)
+
+
+async def _notify_book_moderation(
+    db: AsyncSession,
+    book: Book,
+    *,
+    template: str,
+    reason: str | None = None,
+) -> None:
+    """Fire-and-forget moderation email to the uploader.
+
+    Wrapped in a try/except: a Celery enqueue failure must not roll back
+    the state transition the moderator just made.
+    """
+    try:
+        from app.tasks.email_tasks import send_template_email
+
+        uploader = (
+            await db.execute(select(User).where(User.id == book.uploaded_by))
+        ).scalar_one_or_none()
+        if uploader is None:
+            return
+        title_map = book.title or {}
+        primary_title = (
+            title_map.get(uploader.preferred_locale)
+            or title_map.get("uz")
+            or title_map.get("en")
+            or next(iter(title_map.values()), book.slug)
+        )
+        context = {
+            "full_name": uploader.full_name,
+            "email": uploader.email,
+            "book_title": primary_title,
+            "book_slug": book.slug,
+        }
+        if reason is not None:
+            context["reason"] = reason
+        send_template_email.delay(
+            to=uploader.email,
+            template_name=template,
+            locale=uploader.preferred_locale or "uz",
+            context=context,
+        )
+    except Exception:
+        import logging
+
+        logging.getLogger(__name__).exception(
+            "book moderation email enqueue failed (book=%s)", book.id
+        )
 
 
 # ---------- Read paths ----------

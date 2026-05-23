@@ -1,0 +1,22 @@
+{% extends "_layout.html" %}
+{% set locale = "en" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">Withdrawal completed</h1>
+<p style="margin:0 0 16px;">
+  Hi {{ full_name }}. Your withdrawal of <strong>{{ amount }} UZS</strong>
+  has been marked completed. The funds were transferred to your bank account.
+</p>
+{% if transaction_ref %}
+<p style="margin:0 0 16px;color:#4a3f35;font-size:14px;">
+  Transaction reference: <span style="font-family:monospace;color:#8b4513;">{{ transaction_ref }}</span>
+</p>
+{% endif %}
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/en/account/withdrawals" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    View details
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  If the funds don't arrive within 1–2 business days, please reach out.
+</p>
+{% endblock %}

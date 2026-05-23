@@ -119,6 +119,7 @@ async def create_request(
     logger.info(
         "withdrawal.request author=%s amount=%s id=%s", profile.id, amount, row.id
     )
+    _enqueue_withdrawal_email(user, row, template="withdrawal_requested")
     return row
 
 
@@ -253,6 +254,7 @@ async def admin_mark_completed(
             0.0, round(float(profile.pending_balance) - float(row.amount), 2)
         )
     await db.flush()
+    await _enqueue_withdrawal_email_for_row(db, row, template="withdrawal_completed")
     return row
 
 
@@ -281,7 +283,51 @@ async def admin_reject(
     row.processed_by = admin.id
     row.processed_at = datetime.now(UTC)
     await db.flush()
+    await _enqueue_withdrawal_email_for_row(db, row, template="withdrawal_rejected")
     return row
+
+
+# ---------- notification helpers ----------
+
+
+def _enqueue_withdrawal_email(
+    user: User, row: Withdrawal, *, template: str
+) -> None:
+    """Fire the email through Celery — silent on enqueue failure."""
+    try:
+        from app.tasks.email_tasks import send_template_email
+
+        send_template_email.delay(
+            to=user.email,
+            template_name=template,
+            locale=user.preferred_locale or "uz",
+            context={
+                "full_name": user.full_name,
+                "email": user.email,
+                "amount": float(row.amount),
+                "transaction_ref": row.transaction_ref,
+                "admin_notes": row.admin_notes,
+            },
+        )
+    except Exception:
+        logger.exception(
+            "withdrawal email enqueue failed (withdrawal=%s template=%s)", row.id, template
+        )
+
+
+async def _enqueue_withdrawal_email_for_row(
+    db: AsyncSession, row: Withdrawal, *, template: str
+) -> None:
+    """Look up the author's user record from the withdrawal row, then send."""
+    profile = await db.get(AuthorProfile, row.author_id)
+    if profile is None:
+        return
+    user = (
+        await db.execute(select(User).where(User.id == profile.user_id))
+    ).scalar_one_or_none()
+    if user is None:
+        return
+    _enqueue_withdrawal_email(user, row, template=template)
 
 
 # ---------- internals ----------
