@@ -235,6 +235,39 @@ export interface AuditLogList {
   page_size: number;
 }
 
+// ---------- Blog ----------
+
+export type BlogPostStatus = "draft" | "published" | "archived";
+
+export interface BlogPostPublic {
+  id: string;
+  slug: string;
+  title: LocalisedText;
+  excerpt: LocalisedText;
+  body: LocalisedText;
+  cover_url: string | null;
+  published_at: string | null;
+  created_at: string;
+}
+
+export interface BlogPostAdminView extends BlogPostPublic {
+  status: BlogPostStatus;
+}
+
+export interface BlogPostList {
+  items: BlogPostPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface BlogPostAdminList {
+  items: BlogPostAdminView[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
 // ---------- Wishlist ----------
 
 export interface WishlistItem {

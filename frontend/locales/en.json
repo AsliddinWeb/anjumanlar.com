@@ -106,7 +106,8 @@
       "categories": "Categories",
       "users": "Users",
       "withdrawals": "Withdrawals",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "blog": "Blog"
     },
     "cards": {
       "books_title": "Book moderation",
@@ -266,6 +267,55 @@
         "cancel": "Cancel"
       },
       "process_confirm": "Mark this request as in-progress?"
+    },
+    "blog": {
+      "title": "Blog posts",
+      "subtitle": "Create, edit and publish blog articles",
+      "add_button": "New post",
+      "filter_status": "Status",
+      "filter_status_any": "Any",
+      "empty_title": "No posts",
+      "empty_body": "Create the first post.",
+      "table": {
+        "title_col": "Title",
+        "slug": "Slug",
+        "status": "Status",
+        "published_at": "Published at",
+        "actions": "Actions"
+      },
+      "statuses": {
+        "draft": "Draft",
+        "published": "Published",
+        "archived": "Archived"
+      },
+      "form": {
+        "create_title": "New post",
+        "edit_title": "Edit post",
+        "slug": "Slug",
+        "slug_hint": "URL fragment, e.g. first-post",
+        "title_uz": "Title (uz)",
+        "title_ru": "Title (ru)",
+        "title_en": "Title (en)",
+        "excerpt_uz": "Excerpt (uz)",
+        "excerpt_ru": "Excerpt (ru)",
+        "excerpt_en": "Excerpt (en)",
+        "body_uz": "Body (uz)",
+        "body_ru": "Body (ru)",
+        "body_en": "Body (en)",
+        "cover_url": "Cover URL",
+        "submit_create": "Create",
+        "submit_edit": "Save",
+        "cancel": "Cancel",
+        "slug_required": "Slug is required",
+        "title_required": "Provide a title in at least one language"
+      },
+      "actions": {
+        "publish": "Publish",
+        "unpublish": "Move to draft",
+        "edit": "Edit",
+        "delete": "Delete",
+        "delete_confirm": "Delete this post?"
+      }
     },
     "audit": {
       "title": "Audit log",
@@ -455,7 +505,13 @@
     "title": "Blog",
     "subtitle": "News, guides and author interviews",
     "coming_soon_title": "Coming soon",
-    "coming_soon_body": "The blog is under construction. Subscribe to our newsletter — we'll notify you when the first posts go live."
+    "coming_soon_body": "The blog is under construction. Subscribe to our newsletter — we'll notify you when the first posts go live.",
+    "empty_title": "No posts yet",
+    "empty_body": "The first articles are on the way.",
+    "read_more": "Read more",
+    "back_to_list": "Back to all posts",
+    "published_on": "Published {date}",
+    "not_found": "Post not found"
   },
   "footer": {
     "tagline": "A marketplace for academic monographs",

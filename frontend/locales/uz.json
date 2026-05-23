@@ -106,7 +106,8 @@
       "categories": "Kategoriyalar",
       "users": "Foydalanuvchilar",
       "withdrawals": "Pul yechish",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "blog": "Blog"
     },
     "cards": {
       "books_title": "Kitoblar moderatsiyasi",
@@ -266,6 +267,55 @@
         "cancel": "Bekor qilish"
       },
       "process_confirm": "So'rovni \"jarayonda\" deb belgilashni istaysizmi?"
+    },
+    "blog": {
+      "title": "Blog maqolalari",
+      "subtitle": "Maqolalarni yaratish, tahrirlash va nashr qilish",
+      "add_button": "Yangi maqola",
+      "filter_status": "Holat",
+      "filter_status_any": "Barchasi",
+      "empty_title": "Maqolalar yo'q",
+      "empty_body": "Birinchi maqolani yarating.",
+      "table": {
+        "title_col": "Sarlavha",
+        "slug": "Slug",
+        "status": "Holat",
+        "published_at": "Nashr sanasi",
+        "actions": "Amallar"
+      },
+      "statuses": {
+        "draft": "Qoralama",
+        "published": "Nashr etilgan",
+        "archived": "Arxivda"
+      },
+      "form": {
+        "create_title": "Yangi maqola",
+        "edit_title": "Maqolani tahrirlash",
+        "slug": "Slug",
+        "slug_hint": "URL'da paydo bo'ladigan nom, masalan: birinchi-maqola",
+        "title_uz": "Sarlavha (uz)",
+        "title_ru": "Sarlavha (ru)",
+        "title_en": "Sarlavha (en)",
+        "excerpt_uz": "Qisqacha (uz)",
+        "excerpt_ru": "Qisqacha (ru)",
+        "excerpt_en": "Qisqacha (en)",
+        "body_uz": "Asosiy matn (uz)",
+        "body_ru": "Asosiy matn (ru)",
+        "body_en": "Asosiy matn (en)",
+        "cover_url": "Muqova URL",
+        "submit_create": "Yaratish",
+        "submit_edit": "Saqlash",
+        "cancel": "Bekor qilish",
+        "slug_required": "Slug talab qilinadi",
+        "title_required": "Kamida bitta tilda sarlavha kiriting"
+      },
+      "actions": {
+        "publish": "Nashr etish",
+        "unpublish": "Qoralamaga qaytarish",
+        "edit": "Tahrirlash",
+        "delete": "O'chirish",
+        "delete_confirm": "Maqolani o'chirishni istaysizmi?"
+      }
     },
     "audit": {
       "title": "Audit log",
@@ -455,7 +505,13 @@
     "title": "Blog",
     "subtitle": "Yangiliklar, qo'llanmalar va muallif intervyulari",
     "coming_soon_title": "Tez orada",
-    "coming_soon_body": "Blog tizimi ishlab chiqilmoqda. Yangiliklarga obuna bo'ling — birinchi maqolalar tayyor bo'lganda xabar beramiz."
+    "coming_soon_body": "Blog tizimi ishlab chiqilmoqda. Yangiliklarga obuna bo'ling — birinchi maqolalar tayyor bo'lganda xabar beramiz.",
+    "empty_title": "Hozircha maqolalar yo'q",
+    "empty_body": "Birinchi maqolalar tayyorlanmoqda.",
+    "read_more": "Davomini o'qish",
+    "back_to_list": "Maqolalar ro'yxatiga qaytish",
+    "published_on": "{date}da nashr etilgan",
+    "not_found": "Maqola topilmadi"
   },
   "footer": {
     "tagline": "Akademik monografiyalar bozori",

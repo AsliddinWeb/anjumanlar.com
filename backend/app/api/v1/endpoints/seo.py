@@ -30,6 +30,8 @@ from app.config import settings
 from app.db.session import get_db
 from app.models import (
     AuthorProfile,
+    BlogPost,
+    BlogPostStatus,
     Book,
     BookStatus,
     Category,
@@ -122,6 +124,27 @@ async def sitemap(db: AsyncSession = Depends(get_db)) -> Response:
                 _url_entry(
                     loc=f"{site}/{lang}/category/{slug}",
                     lastmod=_iso(created_at),
+                    priority=0.6,
+                )
+            )
+
+    # --- Blog posts -------------------------------------------------------
+    blog_rows = (
+        (
+            await db.execute(
+                select(BlogPost.slug, BlogPost.published_at, BlogPost.updated_at).where(
+                    BlogPost.status == BlogPostStatus.published
+                )
+            )
+        )
+        .all()
+    )
+    for slug, published_at, updated_at in blog_rows:
+        for lang in LOCALES:
+            entries.append(
+                _url_entry(
+                    loc=f"{site}/{lang}/blog/{slug}",
+                    lastmod=_iso(updated_at or published_at),
                     priority=0.6,
                 )
             )

@@ -7,6 +7,8 @@ rows directly inside the test session.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -50,6 +52,8 @@ async def _seed_event(
     db: AsyncSession,
     user: User | None,
     action: AuditAction,
+    *,
+    created_at: "datetime | None" = None,
 ) -> AuditLog:
     row = AuditLog(
         user_id=user.id if user else None,
@@ -57,6 +61,8 @@ async def _seed_event(
         ip_address="127.0.0.1",
         meta={},
     )
+    if created_at is not None:
+        row.created_at = created_at
     db.add(row)
     await db.flush()
     await db.refresh(row)
@@ -69,11 +75,19 @@ async def _seed_event(
 @pytest.mark.asyncio
 async def test_list_audit_orders_newest_first(db_session: AsyncSession):
     user = await _make_user(db_session, "audit-order@example.com")
-    await _seed_event(db_session, user, AuditAction.register)
-    await _seed_event(db_session, user, AuditAction.login_success)
+    base = datetime.now(UTC)
+    await _seed_event(
+        db_session, user, AuditAction.register, created_at=base - timedelta(minutes=1)
+    )
+    await _seed_event(db_session, user, AuditAction.login_success, created_at=base)
 
-    items, total = await audit_service.list_audit(db_session, page=1, page_size=10)
-    assert total >= 2
+    # Filter by this test's user so audit rows from earlier tests
+    # (audit_service commits in its own session and survives the outer
+    # rollback) don't poison the ordering check.
+    items, total = await audit_service.list_audit(
+        db_session, page=1, page_size=10, user_id=user.id
+    )
+    assert total == 2
     # Most recent first.
     assert items[0].action == AuditAction.login_success
 

@@ -7,6 +7,7 @@ const items = computed(() => [
   { to: "/admin", icon: "📊", label: t("admin.nav.dashboard"), exact: true },
   { to: "/admin/books", icon: "📚", label: t("admin.nav.books") },
   { to: "/admin/reviews", icon: "💬", label: t("admin.nav.reviews") },
+  { to: "/admin/blog", icon: "📰", label: t("admin.nav.blog") },
   { to: "/admin/categories", icon: "🗂", label: t("admin.nav.categories") },
   { to: "/admin/users", icon: "👥", label: t("admin.nav.users") },
   { to: "/admin/withdrawals", icon: "💸", label: t("admin.nav.withdrawals") },

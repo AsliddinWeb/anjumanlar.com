@@ -10,6 +10,7 @@ from app.api.v1.endpoints import (
     admin_users,
     auth,
     authors,
+    blog,
     books,
     categories,
     libraries,
@@ -55,3 +56,5 @@ api_router.include_router(withdrawals.admin_router)
 api_router.include_router(admin_users.router)
 api_router.include_router(admin_stats.router)
 api_router.include_router(admin_audit.router)
+api_router.include_router(blog.router)
+api_router.include_router(blog.admin_router)
