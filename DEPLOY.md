@@ -130,7 +130,38 @@ Nginx'ni reload qilish:
 docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
 ```
 
-### 1.6 Holatni tekshirish
+### 1.6 Birinchi superadmin yaratish
+
+`POST /auth/register` doim `role=reader` qaytaradi (xavfsizlik uchun).
+Birinchi admin'ni quyidagi bootstrap script orqali yarating:
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend \
+    python -m app.scripts.create_admin \
+    --email you@anjumanlar.com \
+    --password 'StrongPass!2026' \
+    --name 'Site Admin'
+```
+
+Yoki Makefile orqali:
+
+```bash
+make prod-create-admin \
+    EMAIL=you@anjumanlar.com \
+    PASSWORD='StrongPass!2026' \
+    NAME='Site Admin'
+```
+
+Script idempotent — agar shu email allaqachon mavjud bo'lsa (masalan,
+saytda ro'yxatdan o'tgan bo'lsangiz), uni `superadmin` ga ko'taradi va
+`email_verified=true`, `status=active` qiladi. Parolni o'zgartirish
+uchun `--reset-password` flag qo'shing.
+
+Endi `https://anjumanlar.com/uz/auth/login` orqali kirib, header'dagi
+user dropdown'dan **⚙ Admin panel** linki orqali `/uz/admin` ga
+o'tasiz.
+
+### 1.7 Holatni tekshirish
 
 ```bash
 # Konteynerlar:

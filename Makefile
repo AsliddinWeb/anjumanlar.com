@@ -1,4 +1,4 @@
-.PHONY: help up down restart logs ps build pull clean migrate makemigration seed shell-backend shell-db shell-redis test lint format env prod-build prod-up prod-down prod-deploy prod-migrate prod-seed prod-logs prod-ps
+.PHONY: help up down restart logs ps build pull clean migrate makemigration seed shell-backend shell-db shell-redis test lint format env prod-build prod-up prod-down prod-deploy prod-migrate prod-seed prod-create-admin prod-logs prod-ps
 
 # Default target
 help:
@@ -113,6 +113,12 @@ prod-migrate:
 
 prod-seed:
 	$(PROD) exec backend python -m app.scripts.seed_categories
+
+# Create the first superadmin. Usage:
+#   make prod-create-admin EMAIL=you@anjumanlar.com PASSWORD='Strong!2026' NAME='Site Admin'
+prod-create-admin:
+	$(PROD) exec backend python -m app.scripts.create_admin \
+	    --email "$(EMAIL)" --password "$(PASSWORD)" --name "$(NAME)"
 
 prod-logs:
 	$(PROD) logs -f $(s)
