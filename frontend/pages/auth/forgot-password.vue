@@ -7,14 +7,35 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const api = useApi();
 
-useHead({ title: t("auth.forgot.title") });
+useSiteSeo({
+  title: t("auth.forgot.title"),
+  description: t("auth.forgot.subtitle"),
+  noindex: true,
+});
 
 const email = ref("");
 const submitting = ref(false);
 const error = ref<string | null>(null);
 const success = ref(false);
 
+const emailError = ref<string | null>(null);
+
+function validateEmail() {
+  if (!email.value) {
+    emailError.value = null;
+    return;
+  }
+  emailError.value =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value) ? null : t("auth.validation.email_invalid");
+}
+
+const canSubmit = computed(
+  () => email.value && !emailError.value && !submitting.value,
+);
+
 async function onSubmit() {
+  validateEmail();
+  if (emailError.value) return;
   submitting.value = true;
   error.value = null;
   try {
@@ -23,55 +44,70 @@ async function onSubmit() {
       body: { email: email.value },
     });
     success.value = true;
-  } catch (err) {
+  }
+  catch (err) {
     error.value = apiErrorMessage(err, t("common.error"));
-  } finally {
+  }
+  finally {
     submitting.value = false;
   }
 }
 </script>
 
 <template>
-  <div>
-    <h1 class="text-2xl font-serif text-ink mb-1">{{ t("auth.forgot.title") }}</h1>
-    <p class="text-sm text-ink-secondary mb-6">{{ t("auth.forgot.subtitle") }}</p>
-
-    <p
-      v-if="success"
-      class="text-sm text-ink-secondary p-3 rounded border border-border bg-bg-secondary"
+  <AuthCard
+    v-if="success"
+    badge="📧"
+    :title="t('auth.forgot.title')"
+    :subtitle="t('auth.forgot.success')"
+  >
+    <NuxtLink
+      :to="localePath('/auth/login')"
+      class="block w-full text-center px-4 py-2.5 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
     >
-      {{ t("auth.forgot.success") }}
-    </p>
+      ← {{ t("auth.forgot.back_to_login") }}
+    </NuxtLink>
+  </AuthCard>
 
-    <form v-else class="space-y-4" @submit.prevent="onSubmit">
-      <label class="block">
-        <span class="block text-sm text-ink-secondary mb-1">
-          {{ t("auth.forgot.email") }}
-        </span>
-        <input
-          v-model="email"
-          type="email"
-          required
-          autocomplete="email"
-          class="w-full px-3 py-2 rounded border border-border bg-bg-card text-ink focus:outline-none focus:border-primary"
-        >
-      </label>
+  <AuthCard
+    v-else
+    badge="🔑"
+    :title="t('auth.forgot.title')"
+    :subtitle="t('auth.forgot.subtitle')"
+  >
+    <form class="space-y-4" novalidate @submit.prevent="onSubmit">
+      <AuthAlert v-if="error">
+        {{ error }}
+      </AuthAlert>
 
-      <p v-if="error" class="text-sm text-error">{{ error }}</p>
+      <FormField
+        v-model="email"
+        :label="t('auth.forgot.email')"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        :error="emailError ?? undefined"
+        placeholder="name@example.com"
+        required
+        autofocus
+        @update:model-value="validateEmail"
+      />
 
-      <button
-        type="submit"
-        :disabled="submitting"
-        class="w-full px-4 py-2.5 rounded bg-primary text-ink-inverse hover:bg-primary-hover disabled:opacity-60 transition-colors shadow-sm"
-      >
-        {{ submitting ? t("auth.forgot.submitting") : t("auth.forgot.submit") }}
-      </button>
+      <AuthSubmit
+        :loading="submitting"
+        :disabled="!canSubmit"
+        :label="t('auth.forgot.submit')"
+        :loading-label="t('auth.forgot.submitting')"
+      />
     </form>
 
-    <p class="mt-6 text-sm text-center">
-      <NuxtLink :to="localePath('/auth/login')" class="text-primary hover:underline">
-        {{ t("auth.forgot.back_to_login") }}
+    <template #footer>
+      <NuxtLink
+        :to="localePath('/auth/login')"
+        class="text-primary hover:underline font-medium"
+      >
+        ← {{ t("auth.forgot.back_to_login") }}
       </NuxtLink>
-    </p>
-  </div>
+    </template>
+  </AuthCard>
 </template>

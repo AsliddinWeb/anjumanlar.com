@@ -8,85 +8,107 @@ const localePath = useLocalePath();
 const route = useRoute();
 const auth = useAuthStore();
 
-useHead({ title: t("auth.login.title") });
+useSiteSeo({
+  title: t("auth.login.title"),
+  description: t("auth.login.subtitle"),
+  noindex: true,
+});
 
 const email = ref("");
 const password = ref("");
 const submitting = ref(false);
 const error = ref<string | null>(null);
 
+const emailError = ref<string | null>(null);
+
+function validateEmail() {
+  if (!email.value) {
+    emailError.value = null;
+    return;
+  }
+  emailError.value =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value) ? null : t("auth.validation.email_invalid");
+}
+
+const canSubmit = computed(
+  () => email.value && password.value && !emailError.value && !submitting.value,
+);
+
 async function onSubmit() {
+  validateEmail();
+  if (emailError.value) return;
   submitting.value = true;
   error.value = null;
   try {
     await auth.login(email.value, password.value);
     const redirect = (route.query.redirect as string) || localePath("/account");
     await navigateTo(redirect);
-  } catch (err) {
+  }
+  catch (err) {
     error.value = apiErrorMessage(err, t("auth.login.error_generic"));
-  } finally {
+  }
+  finally {
     submitting.value = false;
   }
 }
 </script>
 
 <template>
-  <div>
-    <h1 class="text-2xl font-serif text-ink mb-1">{{ t("auth.login.title") }}</h1>
-    <p class="text-sm text-ink-secondary mb-6">{{ t("auth.login.subtitle") }}</p>
+  <AuthCard
+    badge="👋"
+    :title="t('auth.login.title')"
+    :subtitle="t('auth.login.subtitle')"
+  >
+    <form class="space-y-4" novalidate @submit.prevent="onSubmit">
+      <AuthAlert v-if="error">
+        {{ error }}
+      </AuthAlert>
 
-    <form class="space-y-4" @submit.prevent="onSubmit">
-      <label class="block">
-        <span class="block text-sm text-ink-secondary mb-1">
-          {{ t("auth.login.email") }}
-        </span>
-        <input
-          v-model="email"
-          type="email"
-          required
-          autocomplete="email"
-          class="w-full px-3 py-2 rounded border border-border bg-bg-card text-ink focus:outline-none focus:border-primary"
+      <FormField
+        v-model="email"
+        :label="t('auth.login.email')"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        :error="emailError ?? undefined"
+        :placeholder="'name@example.com'"
+        required
+        autofocus
+        @update:model-value="validateEmail"
+      />
+
+      <PasswordField
+        v-model="password"
+        :label="t('auth.login.password')"
+        autocomplete="current-password"
+        required
+      />
+
+      <div class="flex justify-end -mt-1">
+        <NuxtLink
+          :to="localePath('/auth/forgot-password')"
+          class="text-xs text-primary hover:underline"
         >
-      </label>
-
-      <label class="block">
-        <span class="block text-sm text-ink-secondary mb-1">
-          {{ t("auth.login.password") }}
-        </span>
-        <input
-          v-model="password"
-          type="password"
-          required
-          autocomplete="current-password"
-          minlength="1"
-          class="w-full px-3 py-2 rounded border border-border bg-bg-card text-ink focus:outline-none focus:border-primary"
-        >
-      </label>
-
-      <p v-if="error" class="text-sm text-error">{{ error }}</p>
-
-      <button
-        type="submit"
-        :disabled="submitting"
-        class="w-full px-4 py-2.5 rounded bg-primary text-ink-inverse hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-sm"
-      >
-        {{ submitting ? t("auth.login.submitting") : t("auth.login.submit") }}
-      </button>
-    </form>
-
-    <div class="mt-6 flex items-center justify-between text-sm">
-      <NuxtLink
-        :to="localePath('/auth/forgot-password')"
-        class="text-primary hover:underline"
-      >
-        {{ t("auth.login.forgot_link") }}
-      </NuxtLink>
-      <div class="text-ink-secondary">
-        {{ t("auth.login.no_account") }}
-        <NuxtLink :to="localePath('/auth/register')" class="text-primary hover:underline">
-          {{ t("auth.login.register_link") }}
+          {{ t("auth.login.forgot_link") }}
         </NuxtLink>
       </div>
-    </div>
-  </div>
+
+      <AuthSubmit
+        :loading="submitting"
+        :disabled="!canSubmit"
+        :label="t('auth.login.submit')"
+        :loading-label="t('auth.login.submitting')"
+      />
+    </form>
+
+    <template #footer>
+      {{ t("auth.login.no_account") }}
+      <NuxtLink
+        :to="localePath('/auth/register')"
+        class="text-primary hover:underline font-medium"
+      >
+        {{ t("auth.login.register_link") }}
+      </NuxtLink>
+    </template>
+  </AuthCard>
 </template>

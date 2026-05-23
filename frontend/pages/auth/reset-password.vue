@@ -8,15 +8,51 @@ const localePath = useLocalePath();
 const route = useRoute();
 const api = useApi();
 
-useHead({ title: t("auth.reset.title") });
+useSiteSeo({
+  title: t("auth.reset.title"),
+  description: t("auth.reset.subtitle"),
+  noindex: true,
+});
 
 const token = computed(() => (route.query.token as string | undefined) || "");
-const new_password = ref("");
+const newPassword = ref("");
 const submitting = ref(false);
 const error = ref<string | null>(null);
 const success = ref(false);
 
+const passwordError = ref<string | null>(null);
+
+function validatePassword() {
+  if (!newPassword.value) {
+    passwordError.value = null;
+    return;
+  }
+  if (newPassword.value.length < 8) {
+    passwordError.value = t("auth.validation.password_too_short");
+    return;
+  }
+  if (
+    !/[A-Z]/.test(newPassword.value)
+    || !/[a-z]/.test(newPassword.value)
+    || !/\d/.test(newPassword.value)
+  ) {
+    passwordError.value = t("auth.validation.password_weak");
+    return;
+  }
+  passwordError.value = null;
+}
+
+const canSubmit = computed(
+  () =>
+    token.value
+    && newPassword.value
+    && !passwordError.value
+    && !submitting.value,
+);
+
 async function onSubmit() {
+  validatePassword();
+  if (passwordError.value) return;
   if (!token.value) {
     error.value = t("auth.reset.invalid_token");
     return;
@@ -26,63 +62,77 @@ async function onSubmit() {
   try {
     await api("/auth/reset-password", {
       method: "POST",
-      body: { token: token.value, new_password: new_password.value },
+      body: { token: token.value, new_password: newPassword.value },
     });
     success.value = true;
-  } catch (err) {
+  }
+  catch (err) {
     error.value = apiErrorMessage(err, t("auth.reset.invalid_token"));
-  } finally {
+  }
+  finally {
     submitting.value = false;
   }
 }
 </script>
 
 <template>
-  <div>
-    <h1 class="text-2xl font-serif text-ink mb-1">{{ t("auth.reset.title") }}</h1>
-    <p class="text-sm text-ink-secondary mb-6">{{ t("auth.reset.subtitle") }}</p>
+  <AuthCard
+    v-if="success"
+    badge="🎉"
+    :title="t('auth.reset.title')"
+    :subtitle="t('auth.reset.success')"
+  >
+    <NuxtLink
+      :to="localePath('/auth/login')"
+      class="block w-full text-center px-4 py-2.5 rounded bg-primary text-ink-inverse hover:bg-primary-hover transition-colors shadow-sm"
+    >
+      {{ t("auth.reset.go_to_login") }}
+    </NuxtLink>
+  </AuthCard>
 
-    <template v-if="success">
-      <p
-        class="text-sm text-ink-secondary p-3 rounded border border-border bg-bg-secondary mb-4"
-      >
-        {{ t("auth.reset.success") }}
-      </p>
+  <AuthCard
+    v-else
+    badge="🔐"
+    :title="t('auth.reset.title')"
+    :subtitle="t('auth.reset.subtitle')"
+  >
+    <AuthAlert v-if="!token" tone="warning">
+      {{ t("auth.reset.invalid_token") }}
+    </AuthAlert>
+
+    <form v-else class="space-y-4" novalidate @submit.prevent="onSubmit">
+      <AuthAlert v-if="error">
+        {{ error }}
+      </AuthAlert>
+
+      <PasswordField
+        v-model="newPassword"
+        :label="t('auth.reset.new_password')"
+        :hint="t('auth.register.password_hint')"
+        :error="passwordError ?? undefined"
+        autocomplete="new-password"
+        :minlength="8"
+        show-strength
+        required
+        autofocus
+        @update:model-value="validatePassword"
+      />
+
+      <AuthSubmit
+        :loading="submitting"
+        :disabled="!canSubmit"
+        :label="t('auth.reset.submit')"
+        :loading-label="t('auth.reset.submitting')"
+      />
+    </form>
+
+    <template #footer>
       <NuxtLink
         :to="localePath('/auth/login')"
-        class="inline-block px-4 py-2 rounded bg-primary text-ink-inverse hover:bg-primary-hover"
+        class="text-primary hover:underline"
       >
-        {{ t("auth.reset.go_to_login") }}
+        ← {{ t("auth.forgot.back_to_login") }}
       </NuxtLink>
     </template>
-
-    <form v-else class="space-y-4" @submit.prevent="onSubmit">
-      <label class="block">
-        <span class="block text-sm text-ink-secondary mb-1">
-          {{ t("auth.reset.new_password") }}
-        </span>
-        <input
-          v-model="new_password"
-          type="password"
-          required
-          autocomplete="new-password"
-          minlength="8"
-          class="w-full px-3 py-2 rounded border border-border bg-bg-card text-ink focus:outline-none focus:border-primary"
-        >
-        <span class="block text-xs text-ink-tertiary mt-1">
-          {{ t("auth.register.password_hint") }}
-        </span>
-      </label>
-
-      <p v-if="error" class="text-sm text-error">{{ error }}</p>
-
-      <button
-        type="submit"
-        :disabled="submitting || !token"
-        class="w-full px-4 py-2.5 rounded bg-primary text-ink-inverse hover:bg-primary-hover disabled:opacity-60 transition-colors shadow-sm"
-      >
-        {{ submitting ? t("auth.reset.submitting") : t("auth.reset.submit") }}
-      </button>
-    </form>
-  </div>
+  </AuthCard>
 </template>

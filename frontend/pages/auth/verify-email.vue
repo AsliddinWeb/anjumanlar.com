@@ -8,7 +8,10 @@ const localePath = useLocalePath();
 const route = useRoute();
 const api = useApi();
 
-useHead({ title: t("auth.verify.title") });
+useSiteSeo({
+  title: t("auth.verify.title"),
+  noindex: true,
+});
 
 type State = "verifying" | "success" | "error";
 const state = ref<State>("verifying");
@@ -27,39 +30,49 @@ onMounted(async () => {
       body: { token },
     });
     state.value = "success";
-  } catch (err) {
+  }
+  catch (err) {
     error.value = apiErrorMessage(err, t("auth.verify.error"));
     state.value = "error";
   }
 });
+
+const badge = computed(() => {
+  if (state.value === "success") return "✅";
+  if (state.value === "error") return "⚠";
+  return "⏳";
+});
+const subtitle = computed(() => {
+  if (state.value === "success") return t("auth.verify.success");
+  if (state.value === "error") return error.value ?? t("auth.verify.error");
+  return t("auth.verify.in_progress");
+});
 </script>
 
 <template>
-  <div class="text-center">
-    <h1 class="text-2xl font-serif text-ink mb-4">{{ t("auth.verify.title") }}</h1>
+  <AuthCard
+    :badge="badge"
+    :title="t('auth.verify.title')"
+    :subtitle="subtitle"
+  >
+    <div v-if="state === 'verifying'" class="flex items-center justify-center py-2">
+      <UiSpinner class="h-6 w-6 text-primary" />
+    </div>
 
-    <p v-if="state === 'verifying'" class="text-ink-secondary">
-      {{ t("auth.verify.in_progress") }}
-    </p>
+    <NuxtLink
+      v-else-if="state === 'success'"
+      :to="localePath('/auth/login')"
+      class="block w-full text-center px-4 py-2.5 rounded bg-primary text-ink-inverse hover:bg-primary-hover transition-colors shadow-sm"
+    >
+      {{ t("auth.verify.go_to_login") }}
+    </NuxtLink>
 
-    <template v-else-if="state === 'success'">
-      <p class="text-success mb-6">{{ t("auth.verify.success") }}</p>
-      <NuxtLink
-        :to="localePath('/auth/login')"
-        class="inline-block px-4 py-2 rounded bg-primary text-ink-inverse hover:bg-primary-hover"
-      >
-        {{ t("auth.verify.go_to_login") }}
-      </NuxtLink>
-    </template>
-
-    <template v-else>
-      <p class="text-error mb-6">{{ error || t("auth.verify.error") }}</p>
-      <NuxtLink
-        :to="localePath('/auth/login')"
-        class="inline-block px-4 py-2 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
-      >
-        {{ t("auth.verify.go_to_login") }}
-      </NuxtLink>
-    </template>
-  </div>
+    <NuxtLink
+      v-else
+      :to="localePath('/auth/login')"
+      class="block w-full text-center px-4 py-2.5 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
+    >
+      {{ t("auth.verify.go_to_login") }}
+    </NuxtLink>
+  </AuthCard>
 </template>

@@ -420,7 +420,24 @@
       "button": "Muallif bo'lish"
     }
   },
+  "password": {
+    "show": "Parolni ko'rsatish",
+    "hide": "Parolni yashirish",
+    "caps_lock": "Caps Lock yoqilgan",
+    "strength": {
+      "weak": "Juda zaif parol",
+      "fair": "O'rtacha parol",
+      "good": "Yaxshi parol",
+      "strong": "Kuchli parol"
+    }
+  },
   "auth": {
+    "validation": {
+      "email_invalid": "Email manzili noto'g'ri formatda",
+      "password_too_short": "Parol kamida 8 ta belgi bo'lishi kerak",
+      "password_weak": "Parol kuchsiz — katta-kichik harf, raqam va belgi kiriting",
+      "name_too_short": "Ism kamida 2 ta belgi bo'lishi kerak"
+    },
     "login": {
       "title": "Hisobingizga kiring",
       "subtitle": "Email va parolingizni kiriting",
