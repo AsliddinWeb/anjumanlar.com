@@ -78,7 +78,7 @@ async function onSubmit() {
 <template>
   <AuthCard
     v-if="success"
-    badge="🎉"
+    icon="check-circle-solid"
     :title="t('auth.reset.title')"
     :subtitle="t('auth.reset.success')"
   >
@@ -92,7 +92,7 @@ async function onSubmit() {
 
   <AuthCard
     v-else
-    badge="🔐"
+    icon="lock"
     :title="t('auth.reset.title')"
     :subtitle="t('auth.reset.subtitle')"
   >
@@ -129,9 +129,10 @@ async function onSubmit() {
     <template #footer>
       <NuxtLink
         :to="localePath('/auth/login')"
-        class="text-primary hover:underline"
+        class="inline-flex items-center gap-1 text-primary hover:underline"
       >
-        ← {{ t("auth.forgot.back_to_login") }}
+        <Icon name="arrow-left" class="h-4 w-4" />
+        {{ t("auth.forgot.back_to_login") }}
       </NuxtLink>
     </template>
   </AuthCard>

@@ -61,7 +61,7 @@ async function onLogout() {
             :aria-expanded="drawerOpen"
             @click="drawerOpen = !drawerOpen"
           >
-            <span aria-hidden="true">{{ drawerOpen ? "✕" : "☰" }}</span>
+            <Icon :name="drawerOpen ? 'close' : 'menu'" class="h-5 w-5" />
           </button>
 
           <h1 class="font-serif text-lg text-ink truncate">
@@ -72,9 +72,10 @@ async function onLogout() {
 
           <NuxtLink
             :to="localePath('/')"
-            class="hidden sm:inline-flex items-center px-3 py-1 rounded border border-border text-sm text-ink-secondary hover:border-primary hover:text-primary"
+            class="hidden sm:inline-flex items-center gap-1 px-3 py-1 rounded border border-border text-sm text-ink-secondary hover:border-primary hover:text-primary"
           >
-            ← {{ t("admin.back_to_site") }}
+            <Icon name="arrow-left" class="h-4 w-4" />
+            {{ t("admin.back_to_site") }}
           </NuxtLink>
 
           <LanguageSwitcher />

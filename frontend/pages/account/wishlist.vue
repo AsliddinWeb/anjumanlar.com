@@ -70,7 +70,7 @@ watch(
 
     <UiEmptyState
       v-else-if="(wishlist?.items.length ?? 0) === 0"
-      icon="💝"
+      icon="heart"
       :title="t('wishlist.empty_title')"
       :description="t('wishlist.empty_body')"
     >

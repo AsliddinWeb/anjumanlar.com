@@ -75,7 +75,7 @@ async function onCheckout() {
 
     <UiEmptyState
       v-if="cart.count === 0"
-      icon="🛒"
+      icon="cart"
       :title="t('cart.empty_title')"
       :description="t('cart.empty_body')"
     >
@@ -116,11 +116,12 @@ async function onCheckout() {
               />
               <button
                 type="button"
-                class="text-xs text-ink-tertiary hover:text-error"
+                class="inline-flex items-center gap-1 text-xs text-ink-tertiary hover:text-error"
                 :aria-label="t('cart.remove')"
                 @click="cart.remove(book.id)"
               >
-                ✕ {{ t("cart.remove") }}
+                <Icon name="trash" class="h-3.5 w-3.5" />
+                {{ t("cart.remove") }}
               </button>
             </div>
           </div>

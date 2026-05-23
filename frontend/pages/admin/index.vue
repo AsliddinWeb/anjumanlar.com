@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatPrice } from "~/composables/useLocaleText";
+import type { IconName } from "~/components/ui/Icon.vue";
 
 definePageMeta({
   layout: "admin",
@@ -34,25 +35,25 @@ const stats = computed(() => statsRaw.value as StatsSnapshot | null);
 const actionItems = computed(() => {
   const s = stats.value;
   if (!s) return [];
-  const items: { to: string; icon: string; title: string; count: number }[] = [];
+  const items: { to: string; icon: IconName; title: string; count: number }[] = [];
   if (s.books.pending > 0)
     items.push({
       to: "/admin/books",
-      icon: "📚",
+      icon: "book",
       title: t("admin.kpi.books_pending"),
       count: s.books.pending,
     });
   if (s.reviews.pending > 0)
     items.push({
       to: "/admin/reviews",
-      icon: "💬",
+      icon: "chat",
       title: t("admin.kpi.reviews_pending"),
       count: s.reviews.pending,
     });
   if (s.withdrawals.open > 0)
     items.push({
       to: "/admin/withdrawals",
-      icon: "💸",
+      icon: "money",
       title: t("admin.kpi.withdrawals_open"),
       count: s.withdrawals.open,
     });
@@ -80,7 +81,7 @@ const actionItems = computed(() => {
           class="rounded border border-warning/40 bg-warning/5 p-4 hover:border-warning hover:bg-warning/10 transition-colors"
         >
           <div class="flex items-center gap-3">
-            <span class="text-2xl" aria-hidden="true">{{ item.icon }}</span>
+            <Icon :name="item.icon" class="h-7 w-7 text-warning" />
             <div>
               <div class="text-xs text-ink-tertiary">{{ item.title }}</div>
               <div class="font-serif text-2xl text-warning">{{ item.count }}</div>
@@ -88,7 +89,10 @@ const actionItems = computed(() => {
           </div>
         </NuxtLink>
       </div>
-      <p v-else class="text-sm text-ink-tertiary">✓ {{ t("admin.kpi.all_clear") }}</p>
+      <p v-else class="flex items-center gap-1 text-sm text-success">
+        <Icon name="check-circle-solid" class="h-4 w-4" />
+        {{ t("admin.kpi.all_clear") }}
+      </p>
     </section>
 
     <!-- KPI grid -->

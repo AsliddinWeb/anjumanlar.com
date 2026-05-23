@@ -271,7 +271,7 @@ const statusOptions = [
 
     <UiEmptyState
       v-else-if="(list?.items.length ?? 0) === 0"
-      icon="📰"
+      icon="news"
       :title="t('admin.blog.empty_title')"
       :description="t('admin.blog.empty_body')"
     />

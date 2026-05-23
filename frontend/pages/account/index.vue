@@ -24,9 +24,10 @@ async function onLogout() {
 
     <div
       v-if="!isVerified"
-      class="mb-6 p-3 rounded border border-warning/40 bg-warning/10 text-sm text-ink"
+      class="mb-6 flex items-start gap-2 p-3 rounded border border-warning/40 bg-warning/10 text-sm text-ink"
     >
-      ⚠ {{ t("account.email_unverified") }}
+      <Icon name="warning-solid" class="h-4 w-4 mt-0.5 shrink-0 text-warning" />
+      <span>{{ t("account.email_unverified") }}</span>
     </div>
 
     <dl class="grid grid-cols-2 gap-3 text-sm mb-8">
@@ -39,7 +40,7 @@ async function onLogout() {
         :to="localePath('/account/library')"
         class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
       >
-        <span class="text-2xl" aria-hidden="true">📚</span>
+        <Icon name="library" class="h-7 w-7 text-primary shrink-0" />
         <div>
           <div class="font-medium text-ink">{{ t("library.title") }}</div>
           <div class="text-xs text-ink-tertiary">{{ t("library.subtitle") }}</div>
@@ -49,7 +50,7 @@ async function onLogout() {
         :to="localePath('/account/orders')"
         class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
       >
-        <span class="text-2xl" aria-hidden="true">📋</span>
+        <Icon name="clipboard-check" class="h-7 w-7 text-primary shrink-0" />
         <div>
           <div class="font-medium text-ink">{{ t("orders.title") }}</div>
           <div class="text-xs text-ink-tertiary">{{ t("orders.subtitle") }}</div>
@@ -59,7 +60,7 @@ async function onLogout() {
         :to="localePath('/account/wishlist')"
         class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
       >
-        <span class="text-2xl" aria-hidden="true">💝</span>
+        <Icon name="heart-solid" class="h-7 w-7 text-error shrink-0" />
         <div>
           <div class="font-medium text-ink">{{ t("nav.wishlist") }}</div>
           <div class="text-xs text-ink-tertiary">{{ t("wishlist.subtitle") }}</div>
@@ -69,7 +70,7 @@ async function onLogout() {
         :to="localePath('/cart')"
         class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
       >
-        <span class="text-2xl" aria-hidden="true">🛒</span>
+        <Icon name="cart" class="h-7 w-7 text-primary shrink-0" />
         <div>
           <div class="font-medium text-ink">{{ t("cart.title") }}</div>
           <div class="text-xs text-ink-tertiary">{{ t("cart.subtitle") }}</div>
@@ -80,7 +81,7 @@ async function onLogout() {
           :to="localePath('/account/balance')"
           class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
         >
-          <span class="text-2xl" aria-hidden="true">💰</span>
+          <Icon name="currency" class="h-7 w-7 text-success shrink-0" />
           <div>
             <div class="font-medium text-ink">{{ t("balance.title") }}</div>
             <div class="text-xs text-ink-tertiary">{{ t("balance.subtitle") }}</div>
@@ -90,7 +91,7 @@ async function onLogout() {
           :to="localePath('/account/withdrawals')"
           class="rounded border border-border bg-bg-card p-4 hover:border-primary hover:shadow-sm flex items-center gap-3"
         >
-          <span class="text-2xl" aria-hidden="true">💸</span>
+          <Icon name="money" class="h-7 w-7 text-warning shrink-0" />
           <div>
             <div class="font-medium text-ink">{{ t("withdrawals.title") }}</div>
             <div class="text-xs text-ink-tertiary">{{ t("withdrawals.subtitle") }}</div>

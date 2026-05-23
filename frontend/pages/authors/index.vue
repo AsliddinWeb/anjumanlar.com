@@ -100,7 +100,7 @@ function changePage(page: number) {
 
     <UiEmptyState
       v-else-if="(authors?.items.length ?? 0) === 0"
-      icon="🧑‍🏫"
+      icon="academic"
       :title="t('authors.no_authors')"
       :description="''"
     />

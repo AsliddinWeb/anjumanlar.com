@@ -123,7 +123,7 @@ const breadcrumbs = computed(() => [
 
     <UiEmptyState
       v-else-if="(queue?.items.length ?? 0) === 0"
-      icon="📥"
+      icon="inbox-stack"
       :title="t('admin.books.empty_title')"
       :description="t('admin.books.empty_body')"
     />
@@ -198,9 +198,10 @@ const breadcrumbs = computed(() => [
               :href="book.demo_url"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-primary hover:underline"
+              class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
             >
-              {{ t("admin.books.view_preview") }} ↗
+              {{ t("admin.books.view_preview") }}
+              <Icon name="external" class="h-3 w-3" />
             </a>
             <span v-else class="text-xs text-ink-tertiary">
               {{ t("admin.books.no_demo") }}
@@ -222,7 +223,8 @@ const breadcrumbs = computed(() => [
               :disabled="approving.has(book.id)"
               @click="approveBook(book)"
             >
-              ✓ {{ t("admin.books.approve") }}
+              <Icon name="check" class="h-4 w-4" />
+              {{ t("admin.books.approve") }}
             </UiButton>
           </div>
         </div>

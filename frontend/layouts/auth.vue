@@ -18,9 +18,10 @@ const localePath = useLocalePath();
         <div class="flex items-center gap-2">
           <NuxtLink
             :to="localePath('/')"
-            class="hidden sm:inline-flex text-sm text-ink-secondary hover:text-primary mr-2"
+            class="hidden sm:inline-flex items-center gap-1 text-sm text-ink-secondary hover:text-primary mr-2"
           >
-            ← {{ t("nav.home") }}
+            <Icon name="arrow-left" class="h-4 w-4" />
+            {{ t("nav.home") }}
           </NuxtLink>
           <LanguageSwitcher />
           <ThemeToggle />

@@ -27,9 +27,10 @@ const href = computed(() => localePath(`/books/${props.book.slug}`));
       <UiBadge
         v-else-if="book.featured"
         tone="gold"
-        class="absolute top-2 left-2"
+        class="absolute top-2 left-2 inline-flex items-center gap-1"
       >
-        ★ {{ $t("book.featured") }}
+        <Icon name="star-solid" class="h-3.5 w-3.5" />
+        {{ $t("book.featured") }}
       </UiBadge>
       <div class="absolute top-2 right-2 flex flex-col gap-1.5">
         <WishlistButton :book-id="book.id" size="sm" />

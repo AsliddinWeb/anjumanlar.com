@@ -55,7 +55,7 @@ async function onSubmit() {
 
 <template>
   <AuthCard
-    badge="👋"
+    icon="hand"
     :title="t('auth.login.title')"
     :subtitle="t('auth.login.subtitle')"
   >

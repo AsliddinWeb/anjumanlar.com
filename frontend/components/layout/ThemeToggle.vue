@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { IconName } from "~/components/ui/Icon.vue";
+
 const colorMode = useColorMode();
 const { t } = useI18n();
 
@@ -11,10 +13,10 @@ function cycle() {
 }
 
 const label = computed(() => t(`theme.${colorMode.preference || "system"}`));
-const icon = computed(() => {
-  if (colorMode.preference === "dark") return "🌙";
-  if (colorMode.preference === "light") return "☀";
-  return "🖥";
+const icon = computed<IconName>(() => {
+  if (colorMode.preference === "dark") return "moon";
+  if (colorMode.preference === "light") return "sun";
+  return "desktop";
 });
 </script>
 
@@ -26,7 +28,7 @@ const icon = computed(() => {
     :title="`${t('theme.label')}: ${label}`"
     @click="cycle"
   >
-    <span aria-hidden="true">{{ icon }}</span>
+    <Icon :name="icon" class="h-4 w-4" />
     <span class="hidden sm:inline">{{ label }}</span>
   </button>
 </template>

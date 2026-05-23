@@ -55,7 +55,7 @@ function changePage(page: number) {
 
     <UiEmptyState
       v-else-if="(posts?.items.length ?? 0) === 0"
-      icon="📝"
+      icon="pencil"
       :title="t('blog.empty_title')"
       :description="t('blog.empty_body')"
     />
@@ -78,10 +78,9 @@ function changePage(page: number) {
           >
           <div
             v-else
-            class="w-full h-full flex items-center justify-center text-4xl font-serif text-primary/40"
-            aria-hidden="true"
+            class="w-full h-full flex items-center justify-center text-primary/40"
           >
-            📰
+            <Icon name="news" class="h-12 w-12" />
           </div>
         </NuxtLink>
         <div class="p-4 space-y-2">
@@ -99,9 +98,10 @@ function changePage(page: number) {
           </p>
           <NuxtLink
             :to="localePath(`/blog/${post.slug}`)"
-            class="inline-block text-sm text-primary hover:underline"
+            class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
           >
-            {{ t("blog.read_more") }} →
+            {{ t("blog.read_more") }}
+            <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
       </li>

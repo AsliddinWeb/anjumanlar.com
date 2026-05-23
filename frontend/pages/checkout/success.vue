@@ -28,8 +28,11 @@ useHead({ title: t(isPaid.value ? "checkout.success_title" : "checkout.success_p
 
 <template>
   <section class="max-w-md mx-auto px-4 py-16 text-center space-y-4">
-    <div class="text-5xl" aria-hidden="true">
-      {{ isPaid ? "✅" : "⏳" }}
+    <div
+      class="inline-flex h-16 w-16 items-center justify-center rounded-full"
+      :class="isPaid ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
+    >
+      <Icon :name="isPaid ? 'check-circle-solid' : 'arrow-path'" class="h-8 w-8" />
     </div>
     <h1 class="font-serif text-2xl text-ink">
       {{ isPaid ? t("checkout.success_title") : t("checkout.success_pending_title") }}

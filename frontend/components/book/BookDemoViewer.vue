@@ -58,9 +58,10 @@ useEscape(() => close(), { enabled: open });
                 :href="demoUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-xs text-primary hover:underline"
+                class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
               >
-                {{ t("book.demo_open_new_tab") }} ↗
+                {{ t("book.demo_open_new_tab") }}
+                <Icon name="external" class="h-3 w-3" />
               </a>
               <button
                 type="button"
@@ -68,7 +69,7 @@ useEscape(() => close(), { enabled: open });
                 :aria-label="t('common.cancel')"
                 @click="close"
               >
-                ✕
+                <Icon name="close" class="h-5 w-5" />
               </button>
             </div>
           </header>
@@ -87,9 +88,10 @@ useEscape(() => close(), { enabled: open });
                 :href="demoUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-primary hover:underline"
+                class="inline-flex items-center gap-1 text-primary hover:underline"
               >
-                {{ t("book.demo_open_new_tab") }} ↗
+                {{ t("book.demo_open_new_tab") }}
+                <Icon name="external" class="h-3.5 w-3.5" />
               </a>
             </div>
           </div>

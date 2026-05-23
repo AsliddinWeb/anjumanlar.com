@@ -196,7 +196,7 @@ const breadcrumbs = computed(() => [
 
     <UiEmptyState
       v-if="categories.length === 0"
-      icon="🗂"
+      icon="folder"
       :title="t('admin.categories.empty_title')"
       :description="t('admin.categories.empty_body')"
     />
@@ -229,7 +229,8 @@ const breadcrumbs = computed(() => [
             <td class="px-3 py-2 text-ink-tertiary">{{ c.book_count }}</td>
             <td class="px-3 py-2">
               <UiBadge :tone="c.is_active ? 'success' : 'neutral'" size="sm">
-                {{ c.is_active ? "✓" : "—" }}
+                <Icon v-if="c.is_active" name="check" class="h-3.5 w-3.5" />
+                <span v-else>—</span>
               </UiBadge>
             </td>
             <td class="px-3 py-2 text-right">
@@ -285,7 +286,7 @@ const breadcrumbs = computed(() => [
           </div>
 
           <div class="grid sm:grid-cols-2 gap-3">
-            <UiInput v-model="form.icon" :label="t('admin.categories.form.icon')" :placeholder="'📚'" />
+            <UiInput v-model="form.icon" :label="t('admin.categories.form.icon')" placeholder="book, academic, scale..." />
             <UiSelect
               :model-value="form.parent_id"
               :label="t('admin.categories.form.parent')"

@@ -120,7 +120,7 @@ const breadcrumbs = computed(() => [
 
     <UiEmptyState
       v-else-if="(list?.items.length ?? 0) === 0"
-      icon="📜"
+      icon="clipboard-list"
       :title="t('admin.audit.empty_title')"
       :description="t('admin.audit.empty_body')"
     />

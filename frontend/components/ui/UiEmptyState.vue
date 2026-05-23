@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { IconName } from "~/components/ui/Icon.vue";
+
 defineProps<{
   title?: string;
   description?: string;
-  icon?: string;
+  icon?: IconName;
 }>();
 </script>
 
@@ -10,10 +12,9 @@ defineProps<{
   <div class="text-center py-12 px-4">
     <div
       v-if="icon"
-      class="text-4xl mb-3 text-ink-tertiary"
-      aria-hidden="true"
+      class="inline-flex items-center justify-center h-14 w-14 rounded-full bg-bg-secondary text-ink-tertiary mb-3"
     >
-      {{ icon }}
+      <Icon :name="icon" class="h-7 w-7" />
     </div>
     <h3 v-if="title" class="font-serif text-lg text-ink mb-1">{{ title }}</h3>
     <p v-if="description" class="text-sm text-ink-secondary mb-4">

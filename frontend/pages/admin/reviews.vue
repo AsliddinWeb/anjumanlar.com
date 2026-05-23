@@ -72,7 +72,7 @@ const breadcrumbs = computed(() => [
 
     <UiEmptyState
       v-else-if="items.length === 0"
-      icon="💬"
+      icon="chat"
       :title="t('admin.reviews.empty_title')"
       :description="t('admin.reviews.empty_body')"
     />
@@ -123,7 +123,8 @@ const breadcrumbs = computed(() => [
             :disabled="busy.has(r.id)"
             @click="act(r.id, 'approve', 'admin.reviews.approve_confirm')"
           >
-            ✓ {{ t("admin.reviews.approve") }}
+            <Icon name="check" class="h-4 w-4" />
+            {{ t("admin.reviews.approve") }}
           </UiButton>
         </footer>
       </li>

@@ -1,17 +1,21 @@
 <script setup lang="ts">
+import type { IconName } from "~/components/ui/Icon.vue";
+
 const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 
-const items = computed(() => [
-  { to: "/admin", icon: "📊", label: t("admin.nav.dashboard"), exact: true },
-  { to: "/admin/books", icon: "📚", label: t("admin.nav.books") },
-  { to: "/admin/reviews", icon: "💬", label: t("admin.nav.reviews") },
-  { to: "/admin/blog", icon: "📰", label: t("admin.nav.blog") },
-  { to: "/admin/categories", icon: "🗂", label: t("admin.nav.categories") },
-  { to: "/admin/users", icon: "👥", label: t("admin.nav.users") },
-  { to: "/admin/withdrawals", icon: "💸", label: t("admin.nav.withdrawals") },
-  { to: "/admin/audit", icon: "📜", label: t("admin.nav.audit") },
+type Item = { to: string; icon: IconName; label: string; exact?: boolean };
+
+const items = computed<Item[]>(() => [
+  { to: "/admin", icon: "chart", label: t("admin.nav.dashboard"), exact: true },
+  { to: "/admin/books", icon: "book", label: t("admin.nav.books") },
+  { to: "/admin/reviews", icon: "chat", label: t("admin.nav.reviews") },
+  { to: "/admin/blog", icon: "news", label: t("admin.nav.blog") },
+  { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories") },
+  { to: "/admin/users", icon: "users", label: t("admin.nav.users") },
+  { to: "/admin/withdrawals", icon: "money", label: t("admin.nav.withdrawals") },
+  { to: "/admin/audit", icon: "clipboard-list", label: t("admin.nav.audit") },
 ]);
 
 function isActive(target: string, exact = false): boolean {
@@ -47,7 +51,7 @@ function isActive(target: string, exact = false): boolean {
                 : 'text-ink-secondary hover:bg-bg-card hover:text-ink'
             "
           >
-            <span class="text-base shrink-0" aria-hidden="true">{{ item.icon }}</span>
+            <Icon :name="item.icon" class="h-5 w-5 shrink-0" />
             <span class="truncate">{{ item.label }}</span>
           </NuxtLink>
         </li>
@@ -59,7 +63,7 @@ function isActive(target: string, exact = false): boolean {
         :to="localePath('/account')"
         class="flex items-center gap-2 px-3 py-2 rounded text-sm text-ink-secondary hover:bg-bg-card hover:text-ink"
       >
-        <span aria-hidden="true">←</span>
+        <Icon name="arrow-left" class="h-4 w-4" />
         <span>{{ $t("admin.back_to_account") }}</span>
       </NuxtLink>
     </div>

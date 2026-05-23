@@ -12,7 +12,9 @@ const props = withDefaults(
 
 const emit = defineEmits<{ "update:value": [n: number] }>();
 
-const sizePx = { sm: 16, md: 20, lg: 28 }[props.size];
+const sizeClass = computed(() => {
+  return { sm: "h-4 w-4", md: "h-5 w-5", lg: "h-7 w-7" }[props.size];
+});
 
 const hovered = ref(0);
 const display = computed(() => (hovered.value || props.value));
@@ -33,18 +35,17 @@ function setRating(n: number) {
       v-for="n in 5"
       :key="n"
       type="button"
-      class="leading-none transition-colors"
+      class="inline-flex items-center transition-colors"
       :class="[
         interactive ? 'cursor-pointer' : 'cursor-default',
         n <= display ? 'text-accent-gold' : 'text-ink-tertiary',
       ]"
-      :style="{ fontSize: sizePx + 'px' }"
       :disabled="!interactive"
       @click="setRating(n)"
       @mouseenter="interactive && (hovered = n)"
       @mouseleave="interactive && (hovered = 0)"
     >
-      ★
+      <Icon :name="n <= display ? 'star-solid' : 'star'" :class="sizeClass" />
     </button>
   </div>
 </template>

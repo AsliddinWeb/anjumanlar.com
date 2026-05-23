@@ -31,8 +31,9 @@ const initials = (name: string) =>
           <h3 class="font-medium text-ink truncate group-hover:text-primary">
             {{ author.display_name }}
           </h3>
-          <UiBadge v-if="author.verified" tone="success" size="sm">
-            ✓ {{ t("authors.verified") }}
+          <UiBadge v-if="author.verified" tone="success" size="sm" class="inline-flex items-center gap-1">
+            <Icon name="check-circle-solid" class="h-3 w-3" />
+            {{ t("authors.verified") }}
           </UiBadge>
         </div>
         <p v-if="author.academic_title" class="text-xs text-ink-tertiary truncate">

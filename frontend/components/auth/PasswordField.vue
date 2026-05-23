@@ -67,21 +67,22 @@ const strength = computed(() => {
       >
       <button
         type="button"
-        class="absolute inset-y-0 right-0 px-3 text-ink-tertiary hover:text-ink"
+        class="absolute inset-y-0 right-0 px-3 flex items-center text-ink-tertiary hover:text-ink"
         :aria-label="revealed ? t('password.hide') : t('password.show')"
         :aria-pressed="revealed"
         @click="revealed = !revealed"
       >
-        <span aria-hidden="true">{{ revealed ? "🙈" : "👁" }}</span>
+        <Icon :name="revealed ? 'eye-slash' : 'eye'" class="h-5 w-5" />
       </button>
     </div>
 
     <span
       v-if="capsLock"
-      class="block text-xs text-warning"
+      class="flex items-center gap-1 text-xs text-warning"
       role="status"
     >
-      ⚠ {{ t("password.caps_lock") }}
+      <Icon name="warning" class="h-3.5 w-3.5" />
+      {{ t("password.caps_lock") }}
     </span>
 
     <!-- Strength meter (register only) -->

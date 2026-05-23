@@ -95,7 +95,7 @@ async function cancelOne(w: WithdrawalPublic) {
 
     <UiEmptyState
       v-else-if="(list?.items.length ?? 0) === 0"
-      icon="💸"
+      icon="money"
       :title="t('withdrawals.empty_title')"
       :description="t('withdrawals.empty_body')"
     >

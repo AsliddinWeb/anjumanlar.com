@@ -31,12 +31,12 @@ const aspectClass = computed(() =>
       decoding="async"
       class="h-full w-full object-cover transition-transform group-hover:scale-105"
     >
-    <!-- Fallback: subtle gradient with the first letter of the title -->
     <div
       v-else
-      class="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent-burgundy/20 text-primary text-4xl font-serif"
+      class="relative h-full w-full flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-primary/15 to-accent-burgundy/15 text-primary"
     >
-      {{ alt.charAt(0).toUpperCase() }}
+      <Icon name="book" class="h-10 w-10 opacity-70" />
+      <span class="text-3xl font-serif">{{ alt.charAt(0).toUpperCase() }}</span>
     </div>
   </div>
 </template>

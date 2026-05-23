@@ -105,7 +105,7 @@ async function submitWithdrawal() {
 
     <UiEmptyState
       v-if="noProfile"
-      icon="✍️"
+      icon="pencil"
       :title="t('balance.no_author_profile_title')"
       :description="t('balance.no_author_profile_body')"
     >
@@ -152,14 +152,16 @@ async function submitWithdrawal() {
           <h2 class="font-medium text-ink">{{ t("withdrawals.request_title") }}</h2>
           <NuxtLink
             :to="localePath('/account/withdrawals')"
-            class="text-xs text-primary hover:underline"
+            class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
           >
-            {{ t("withdrawals.title") }} →
+            {{ t("withdrawals.title") }}
+            <Icon name="arrow-right" class="h-3.5 w-3.5" />
           </NuxtLink>
         </div>
 
-        <div v-if="formSuccess" class="text-sm text-success">
-          ✓ {{ t("common.loading") /* placeholder; success shown by refresh */ }}
+        <div v-if="formSuccess" class="flex items-center gap-1 text-sm text-success">
+          <Icon name="check-circle-solid" class="h-4 w-4" />
+          {{ t("common.loading") /* placeholder; success shown by refresh */ }}
         </div>
 
         <form v-if="formOpen" class="space-y-3" @submit.prevent="submitWithdrawal">

@@ -99,7 +99,7 @@ async function onSubmit() {
 <template>
   <AuthCard
     v-if="success"
-    badge="📬"
+    icon="envelope-open"
     :title="t('auth.register.success_title')"
     :subtitle="t('auth.register.success_body', { email })"
   >
@@ -113,7 +113,7 @@ async function onSubmit() {
 
   <AuthCard
     v-else
-    badge="✨"
+    icon="sparkles"
     :title="t('auth.register.title')"
     :subtitle="t('auth.register.subtitle')"
   >

@@ -87,9 +87,10 @@ const topCategories = computed(
           </div>
           <NuxtLink
             :to="localePath('/books') + '?featured=true'"
-            class="text-sm text-primary hover:underline"
+            class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
           >
-            {{ t("home.see_all") }} →
+            {{ t("home.see_all") }}
+            <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -113,7 +114,7 @@ const topCategories = computed(
             hoverable
             class="flex items-center gap-3"
           >
-            <div class="text-2xl" aria-hidden="true">{{ cat.icon ?? "📖" }}</div>
+            <Icon :name="cat.icon" fallback="book" class="h-7 w-7 text-primary shrink-0" />
             <div class="min-w-0">
               <div class="font-medium text-ink truncate">
                 {{ localised(cat.name, cat.slug) }}
@@ -135,8 +136,9 @@ const topCategories = computed(
             <h2 class="font-serif text-2xl text-ink">{{ t("home.recent_books") }}</h2>
             <p class="text-sm text-ink-secondary">{{ t("home.recent_subtitle") }}</p>
           </div>
-          <NuxtLink :to="localePath('/books')" class="text-sm text-primary hover:underline">
-            {{ t("home.see_all") }} →
+          <NuxtLink :to="localePath('/books')" class="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+            {{ t("home.see_all") }}
+            <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">

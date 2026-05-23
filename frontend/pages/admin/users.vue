@@ -206,7 +206,7 @@ function isImmutableSuperadmin(u: UserPublic) {
 
     <UiEmptyState
       v-else-if="(users?.items.length ?? 0) === 0"
-      icon="👥"
+      icon="users"
       :title="t('admin.users.empty_title')"
       :description="t('admin.users.empty_body')"
     />

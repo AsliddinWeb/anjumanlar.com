@@ -116,11 +116,13 @@ function changePage(page: number) {
       <div class="space-y-3">
         <div class="flex flex-wrap items-center gap-2">
           <h1 class="font-serif text-3xl text-ink">{{ author.display_name }}</h1>
-          <UiBadge v-if="author.verified" tone="success" size="sm">
-            ✓ {{ t("authors.verified") }}
+          <UiBadge v-if="author.verified" tone="success" size="sm" class="inline-flex items-center gap-1">
+            <Icon name="check-circle-solid" class="h-3.5 w-3.5" />
+            {{ t("authors.verified") }}
           </UiBadge>
-          <UiBadge v-if="author.featured" tone="gold" size="sm">
-            ★ {{ t("authors.featured") }}
+          <UiBadge v-if="author.featured" tone="gold" size="sm" class="inline-flex items-center gap-1">
+            <Icon name="star-solid" class="h-3.5 w-3.5" />
+            {{ t("authors.featured") }}
           </UiBadge>
         </div>
 
@@ -190,7 +192,7 @@ function changePage(page: number) {
 
       <UiEmptyState
         v-else-if="(books?.items.length ?? 0) === 0"
-        icon="📭"
+        icon="inbox"
         :title="t('authors.no_books_by')"
         :description="''"
       />

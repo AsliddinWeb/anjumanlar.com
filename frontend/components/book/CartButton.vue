@@ -26,9 +26,13 @@ const label = computed(() => (inCart.value ? t("cart.added") : t("cart.add")));
 
 const sizeClass = computed(() => {
   if (props.variant === "icon") {
-    return { sm: "h-7 w-7 text-base", md: "h-9 w-9 text-lg", lg: "h-10 w-10 text-xl" }[props.size];
+    return { sm: "h-7 w-7", md: "h-9 w-9", lg: "h-10 w-10" }[props.size];
   }
   return { sm: "px-2.5 py-1 text-xs", md: "px-4 py-2 text-sm", lg: "px-5 py-2.5 text-base" }[props.size];
+});
+
+const iconSize = computed(() => {
+  return { sm: "h-4 w-4", md: "h-5 w-5", lg: "h-5 w-5" }[props.size];
 });
 </script>
 
@@ -47,7 +51,7 @@ const sizeClass = computed(() => {
     ]"
     @click="onClick"
   >
-    <span aria-hidden="true">{{ inCart ? "✓" : "+" }}</span>
+    <Icon :name="inCart ? 'check' : 'plus'" :class="iconSize" />
   </button>
 
   <button
@@ -63,7 +67,7 @@ const sizeClass = computed(() => {
     ]"
     @click="onClick"
   >
-    <span aria-hidden="true">{{ inCart ? "✓" : "+" }}</span>
+    <Icon :name="inCart ? 'check' : 'plus'" :class="iconSize" />
     <span>{{ label }}</span>
   </button>
 </template>

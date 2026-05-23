@@ -121,7 +121,7 @@ function changePage(page: number) {
           hoverable
           class="flex items-center gap-3"
         >
-          <div class="text-2xl" aria-hidden="true">{{ sub.icon ?? "📖" }}</div>
+          <Icon :name="sub.icon" fallback="book" class="h-7 w-7 text-primary shrink-0" />
           <div class="min-w-0">
             <div class="font-medium text-ink truncate">
               {{ localised(sub.name, sub.slug) }}
@@ -150,7 +150,7 @@ function changePage(page: number) {
 
       <UiEmptyState
         v-else-if="(books?.items.length ?? 0) === 0"
-        icon="📭"
+        icon="inbox"
         :title="t('category.no_books')"
         :description="''"
       />

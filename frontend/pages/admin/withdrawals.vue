@@ -213,7 +213,7 @@ const statusOptions = [
 
     <UiEmptyState
       v-else-if="(list?.items.length ?? 0) === 0"
-      icon="💸"
+      icon="money"
       :title="t('admin.withdrawals.empty_title')"
       :description="t('admin.withdrawals.empty_body')"
     />
@@ -246,8 +246,9 @@ const statusOptions = [
           <pre class="mt-2 p-2 rounded bg-bg text-[11px] overflow-x-auto">{{ JSON.stringify(w.bank_details, null, 2) }}</pre>
         </details>
 
-        <p v-if="w.admin_notes" class="text-xs text-ink-secondary">
-          📝 {{ w.admin_notes }}
+        <p v-if="w.admin_notes" class="flex items-start gap-1 text-xs text-ink-secondary">
+          <Icon name="pencil" class="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          <span>{{ w.admin_notes }}</span>
         </p>
         <p v-if="w.transaction_ref" class="text-xs text-ink-tertiary font-mono">
           ref: {{ w.transaction_ref }}
@@ -265,7 +266,8 @@ const statusOptions = [
               {{ t("admin.withdrawals.actions.reject") }}
             </UiButton>
             <UiButton size="sm" :disabled="busy.has(w.id)" @click="openModal(w, 'approve')">
-              ✓ {{ t("admin.withdrawals.actions.approve") }}
+              <Icon name="check" class="h-4 w-4" />
+              {{ t("admin.withdrawals.actions.approve") }}
             </UiButton>
           </template>
           <template v-else-if="w.status === 'approved'">
@@ -283,12 +285,14 @@ const statusOptions = [
               :disabled="busy.has(w.id)"
               @click="markProcessing(w)"
             >
-              → {{ t("admin.withdrawals.actions.mark_processing") }}
+              <Icon name="arrow-right" class="h-4 w-4" />
+              {{ t("admin.withdrawals.actions.mark_processing") }}
             </UiButton>
           </template>
           <template v-else-if="w.status === 'processing'">
             <UiButton size="sm" @click="openModal(w, 'complete')">
-              ✓ {{ t("admin.withdrawals.actions.complete") }}
+              <Icon name="check" class="h-4 w-4" />
+              {{ t("admin.withdrawals.actions.complete") }}
             </UiButton>
           </template>
         </footer>

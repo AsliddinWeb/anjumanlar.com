@@ -86,7 +86,7 @@ async function downloadBook(bookId: string) {
 
     <UiEmptyState
       v-else-if="(library?.items.length ?? 0) === 0"
-      icon="📚"
+      icon="library"
       :title="t('library.empty_title')"
       :description="t('library.empty_body')"
     >

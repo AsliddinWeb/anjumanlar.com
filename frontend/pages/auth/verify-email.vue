@@ -37,10 +37,10 @@ onMounted(async () => {
   }
 });
 
-const badge = computed(() => {
-  if (state.value === "success") return "✅";
-  if (state.value === "error") return "⚠";
-  return "⏳";
+const icon = computed(() => {
+  if (state.value === "success") return "check-circle-solid" as const;
+  if (state.value === "error") return "warning-solid" as const;
+  return "arrow-path" as const;
 });
 const subtitle = computed(() => {
   if (state.value === "success") return t("auth.verify.success");
@@ -51,7 +51,7 @@ const subtitle = computed(() => {
 
 <template>
   <AuthCard
-    :badge="badge"
+    :icon="icon"
     :title="t('auth.verify.title')"
     :subtitle="subtitle"
   >

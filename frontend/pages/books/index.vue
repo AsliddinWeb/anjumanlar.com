@@ -227,7 +227,7 @@ const currentPage = computed(() => queryParams.value.page);
         <!-- Empty -->
         <UiEmptyState
           v-else-if="(books?.items.length ?? 0) === 0"
-          icon="📭"
+          icon="inbox"
           :title="t('catalog.no_results')"
           :description="t('catalog.no_results_body')"
         >

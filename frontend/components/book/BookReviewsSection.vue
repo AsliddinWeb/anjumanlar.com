@@ -87,8 +87,9 @@ const dateFmt = (iso: string) =>
         </NuxtLink>
       </div>
 
-      <div v-else-if="submitSuccess" class="text-sm text-success">
-        ✓ {{ t("book.review_form.success") }}
+      <div v-else-if="submitSuccess" class="flex items-center gap-1 text-sm text-success">
+        <Icon name="check-circle-solid" class="h-4 w-4" />
+        {{ t("book.review_form.success") }}
       </div>
 
       <div v-else>
@@ -154,7 +155,7 @@ const dateFmt = (iso: string) =>
 
     <UiEmptyState
       v-else-if="reviews.length === 0"
-      icon="💬"
+      icon="chat"
       :title="t('book.no_reviews')"
       :description="t('book.reviews_placeholder')"
     />

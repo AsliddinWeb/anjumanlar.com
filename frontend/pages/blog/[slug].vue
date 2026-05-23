@@ -105,8 +105,9 @@ const breadcrumbs = computed(() => [
     </div>
 
     <footer class="pt-4 border-t border-border">
-      <NuxtLink :to="localePath('/blog')" class="text-sm text-primary hover:underline">
-        ← {{ t("blog.back_to_list") }}
+      <NuxtLink :to="localePath('/blog')" class="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+        <Icon name="arrow-left" class="h-4 w-4" />
+        {{ t("blog.back_to_list") }}
       </NuxtLink>
     </footer>
   </article>

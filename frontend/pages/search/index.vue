@@ -141,7 +141,7 @@ const total = computed(() => results.value?.total ?? 0);
     <!-- Empty query state -->
     <UiEmptyState
       v-if="!hasQuery"
-      icon="🔎"
+      icon="search"
       :title="t('search.empty_query_title')"
       :description="t('search.empty_query_body')"
     />
@@ -236,7 +236,7 @@ const total = computed(() => results.value?.total ?? 0);
 
         <UiEmptyState
           v-else-if="(results?.items.length ?? 0) === 0"
-          icon="📭"
+          icon="inbox"
           :title="t('search.no_results')"
           :description="t('search.no_results_body')"
         />

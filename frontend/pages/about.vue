@@ -48,29 +48,35 @@ const { data: stats } = await useAsyncData("about:stats", async () => {
     <section class="border-b border-border bg-bg-secondary">
       <div class="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8">
         <div class="space-y-3">
-          <div class="text-3xl" aria-hidden="true">✍️</div>
+          <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Icon name="pencil" class="h-6 w-6" />
+          </div>
           <h3 class="font-serif text-xl text-ink">{{ t("about.for_authors_title") }}</h3>
           <p class="text-sm text-ink-secondary leading-relaxed">
             {{ t("about.for_authors_body") }}
           </p>
           <NuxtLink
             :to="localePath('/authors/me')"
-            class="inline-block text-sm text-primary hover:underline"
+            class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
           >
-            {{ t("home.hero.cta_become_author") }} →
+            {{ t("home.hero.cta_become_author") }}
+            <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
         <div class="space-y-3">
-          <div class="text-3xl" aria-hidden="true">📖</div>
+          <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Icon name="book" class="h-6 w-6" />
+          </div>
           <h3 class="font-serif text-xl text-ink">{{ t("about.for_readers_title") }}</h3>
           <p class="text-sm text-ink-secondary leading-relaxed">
             {{ t("about.for_readers_body") }}
           </p>
           <NuxtLink
             :to="localePath('/books')"
-            class="inline-block text-sm text-primary hover:underline"
+            class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
           >
-            {{ t("home.hero.cta_browse") }} →
+            {{ t("home.hero.cta_browse") }}
+            <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
       </div>

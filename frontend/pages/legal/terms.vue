@@ -30,7 +30,7 @@ const lastUpdated = new Intl.DateTimeFormat(locale.value, {
     </header>
 
     <UiEmptyState
-      icon="📄"
+      icon="document"
       :title="t('legal.draft_title')"
       :description="t('legal.draft_body')"
     />

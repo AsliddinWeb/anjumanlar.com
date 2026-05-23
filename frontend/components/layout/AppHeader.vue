@@ -97,12 +97,10 @@ async function onLogout() {
             :aria-label="t('search.title')"
             class="w-full pl-8 pr-3 py-1.5 rounded border border-border bg-bg-card text-sm text-ink placeholder:text-ink-tertiary focus:outline-none focus:border-primary"
           >
-          <span
-            class="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-tertiary text-sm pointer-events-none"
-            aria-hidden="true"
-          >
-            🔎
-          </span>
+          <Icon
+            name="search"
+            class="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-tertiary pointer-events-none"
+          />
         </div>
       </form>
 
@@ -113,7 +111,7 @@ async function onLogout() {
         class="relative inline-flex items-center justify-center h-9 w-9 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
         :aria-label="t('cart.title')"
       >
-        <span aria-hidden="true">🛒</span>
+        <Icon name="cart" class="h-5 w-5" />
         <span
           v-if="cart.count > 0"
           class="absolute -top-1 -right-1 min-w-[18px] h-[18px] inline-flex items-center justify-center px-1 rounded-full bg-primary text-ink-inverse text-[10px] font-semibold"
@@ -139,7 +137,7 @@ async function onLogout() {
           <span class="hidden sm:inline truncate max-w-[140px]">
             {{ user.full_name }}
           </span>
-          <span aria-hidden="true">▾</span>
+          <Icon name="chevron-down" class="h-4 w-4" />
         </button>
 
         <ul
@@ -159,9 +157,10 @@ async function onLogout() {
           <li v-if="isAdmin">
             <NuxtLink
               :to="localePath('/admin')"
-              class="block px-3 py-1.5 text-primary hover:bg-bg-secondary"
+              class="flex items-center gap-2 px-3 py-1.5 text-primary hover:bg-bg-secondary"
             >
-              ⚙ {{ t("admin.title") }}
+              <Icon name="settings" class="h-4 w-4" />
+              {{ t("admin.title") }}
             </NuxtLink>
           </li>
           <li>
@@ -200,8 +199,7 @@ async function onLogout() {
         :aria-expanded="mobileMenuOpen"
         @click="mobileMenuOpen = !mobileMenuOpen"
       >
-        <span v-if="!mobileMenuOpen" aria-hidden="true">☰</span>
-        <span v-else aria-hidden="true">✕</span>
+        <Icon :name="mobileMenuOpen ? 'close' : 'menu'" class="h-5 w-5" />
       </button>
     </div>
 
@@ -224,7 +222,7 @@ async function onLogout() {
             :aria-label="t('common.cancel')"
             @click="mobileMenuOpen = false"
           >
-            ✕
+            <Icon name="close" class="h-5 w-5" />
           </button>
         </header>
 
@@ -237,12 +235,10 @@ async function onLogout() {
               :aria-label="t('search.title')"
               class="w-full pl-8 pr-3 py-2 rounded border border-border bg-bg-card text-sm text-ink placeholder:text-ink-tertiary focus:outline-none focus:border-primary"
             >
-            <span
-              class="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-tertiary text-sm pointer-events-none"
-              aria-hidden="true"
-            >
-              🔎
-            </span>
+            <Icon
+              name="search"
+              class="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-tertiary pointer-events-none"
+            />
           </div>
         </form>
 
@@ -270,9 +266,10 @@ async function onLogout() {
             <NuxtLink
               v-if="isAdmin"
               :to="localePath('/admin')"
-              class="block w-full text-center px-3 py-2 rounded border border-primary text-primary hover:bg-primary/10"
+              class="flex items-center justify-center gap-2 w-full text-center px-3 py-2 rounded border border-primary text-primary hover:bg-primary/10"
             >
-              ⚙ {{ t("admin.title") }}
+              <Icon name="settings" class="h-4 w-4" />
+              {{ t("admin.title") }}
             </NuxtLink>
             <button
               type="button"

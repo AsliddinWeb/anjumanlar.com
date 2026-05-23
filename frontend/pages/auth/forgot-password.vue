@@ -57,21 +57,22 @@ async function onSubmit() {
 <template>
   <AuthCard
     v-if="success"
-    badge="📧"
+    icon="envelope"
     :title="t('auth.forgot.title')"
     :subtitle="t('auth.forgot.success')"
   >
     <NuxtLink
       :to="localePath('/auth/login')"
-      class="block w-full text-center px-4 py-2.5 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
+      class="flex items-center justify-center gap-2 w-full text-center px-4 py-2.5 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
     >
-      ← {{ t("auth.forgot.back_to_login") }}
+      <Icon name="arrow-left" class="h-4 w-4" />
+      {{ t("auth.forgot.back_to_login") }}
     </NuxtLink>
   </AuthCard>
 
   <AuthCard
     v-else
-    badge="🔑"
+    icon="key"
     :title="t('auth.forgot.title')"
     :subtitle="t('auth.forgot.subtitle')"
   >
@@ -104,9 +105,10 @@ async function onSubmit() {
     <template #footer>
       <NuxtLink
         :to="localePath('/auth/login')"
-        class="text-primary hover:underline font-medium"
+        class="inline-flex items-center gap-1 text-primary hover:underline font-medium"
       >
-        ← {{ t("auth.forgot.back_to_login") }}
+        <Icon name="arrow-left" class="h-4 w-4" />
+        {{ t("auth.forgot.back_to_login") }}
       </NuxtLink>
     </template>
   </AuthCard>

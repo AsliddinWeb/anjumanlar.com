@@ -111,7 +111,7 @@ async function payOrder(order: OrderPublic) {
 
     <UiEmptyState
       v-else-if="(orders?.items.length ?? 0) === 0"
-      icon="📋"
+      icon="clipboard-check"
       :title="t('orders.empty_title')"
       :description="t('orders.empty_body')"
     >
