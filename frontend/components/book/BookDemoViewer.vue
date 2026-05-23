@@ -30,6 +30,8 @@ watch(open, (isOpen) => {
 onBeforeUnmount(() => {
   if (import.meta.client) document.body.style.overflow = "";
 });
+
+useEscape(() => close(), { enabled: open });
 </script>
 
 <template>

@@ -96,6 +96,8 @@ function closeModal() {
   resetForm();
 }
 
+useEscape(() => closeModal(), { enabled: modalOpen });
+
 async function submit() {
   if (submitting.value) return;
   if (!form.slug.trim()) {

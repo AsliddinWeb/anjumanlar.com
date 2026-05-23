@@ -73,6 +73,10 @@ function closeReject() {
   rejectError.value = null;
 }
 
+useEscape(() => closeReject(), {
+  enabled: computed(() => rejectTarget.value !== null),
+});
+
 async function submitReject() {
   if (!rejectTarget.value || rejectSubmitting.value) return;
   const reason = rejectReason.value.trim();

@@ -94,3 +94,31 @@ body {
     background-color 0.2s ease,
     color 0.2s ease;
 }
+
+/* Keyboard-only focus ring on every interactive element. Default outline
+   is suppressed by Tailwind's preflight; this restores a high-contrast
+   ring whenever focus arrives via Tab / arrow keys, but not from mouse
+   clicks (so the UI doesn't feel cluttered). */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip-to-content link — hidden until focused. Keyboard users hit Tab
+   from URL bar and immediately get a way to jump past the header nav. */
+.skip-to-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: var(--color-ink-inverse, #faf7f2);
+  font-size: 0.875rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+}
+.skip-to-content:focus {
+  transform: translateY(0);
+}

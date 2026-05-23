@@ -139,6 +139,8 @@ function closeModal() {
   resetForm();
 }
 
+useEscape(() => closeModal(), { enabled: modalOpen });
+
 function _collect(prefix: "title" | "excerpt" | "body"): Record<string, string> {
   const out: Record<string, string> = {};
   for (const k of ["uz", "ru", "en"] as const) {

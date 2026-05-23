@@ -24,6 +24,10 @@ onBeforeUnmount(() => {
   if (import.meta.client) document.body.style.overflow = "";
 });
 
+useEscape(() => {
+  drawerOpen.value = false;
+});
+
 async function onLogout() {
   await logout();
   await navigateTo(localePath("/"));

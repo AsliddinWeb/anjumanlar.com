@@ -107,6 +107,10 @@ function closeModal() {
   modalError.value = null;
 }
 
+useEscape(() => closeModal(), {
+  enabled: computed(() => modalTarget.value !== null),
+});
+
 async function submitModal() {
   if (!modalTarget.value || !modalAction.value || modalSubmitting.value) return;
   const action = modalAction.value;

@@ -42,6 +42,11 @@ watch(mobileMenuOpen, (open) => {
   }
 });
 
+useEscape(() => {
+  mobileMenuOpen.value = false;
+  userMenuOpen.value = false;
+});
+
 onBeforeUnmount(() => {
   if (import.meta.client) document.body.style.overflow = "";
 });
