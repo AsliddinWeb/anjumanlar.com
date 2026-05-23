@@ -16,6 +16,9 @@ import logging
 from typing import Any
 from uuid import UUID
 
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.session import AsyncSessionLocal
 from app.models import AuditAction, AuditLog
 
@@ -44,3 +47,37 @@ async def log_event(
             await session.commit()
     except Exception:
         logger.exception("audit_log write failed: action=%s user_id=%s", action.value, user_id)
+
+
+async def list_audit(
+    db: AsyncSession,
+    *,
+    page: int,
+    page_size: int,
+    user_id: UUID | None = None,
+    action: AuditAction | None = None,
+) -> tuple[list[AuditLog], int]:
+    """Admin-only audit feed. Newest first.
+
+    Filters compose AND so you can drill down by user *and* action; both
+    are optional. Result ordering is ``created_at DESC`` (the index on
+    ``created_at`` keeps this cheap)."""
+    base = select(AuditLog)
+    if user_id is not None:
+        base = base.where(AuditLog.user_id == user_id)
+    if action is not None:
+        base = base.where(AuditLog.action == action)
+
+    total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    rows = (
+        (
+            await db.execute(
+                base.order_by(AuditLog.created_at.desc())
+                .offset((page - 1) * page_size)
+                .limit(page_size)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return list(rows), total

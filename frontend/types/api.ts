@@ -146,6 +146,20 @@ export interface BookList {
   page_size: number;
 }
 
+export type BookStatus =
+  | "draft"
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "archived";
+
+export interface BookOwnerView extends BookPublic {
+  status: BookStatus;
+  rejection_reason: string | null;
+  file_url: string | null;
+  keywords: string[];
+}
+
 // ---------- Review ----------
 
 export interface ReviewAuthorRef {
@@ -167,6 +181,55 @@ export interface ReviewPublic {
 
 export interface ReviewList {
   items: ReviewPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export type ReviewStatus = "pending" | "approved" | "rejected";
+
+export interface ReviewAdminView extends ReviewPublic {
+  status: ReviewStatus;
+}
+
+// ---------- Admin user list ----------
+
+export interface UserList {
+  items: UserPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+// ---------- Audit log ----------
+
+export type AuditAction =
+  | "register"
+  | "email_verified"
+  | "resend_verification"
+  | "login_success"
+  | "login_failed"
+  | "logout"
+  | "logout_all"
+  | "password_changed"
+  | "password_reset_requested"
+  | "password_reset_completed"
+  | "profile_updated"
+  | "avatar_uploaded"
+  | "account_deleted";
+
+export interface AuditLogPublic {
+  id: string;
+  user_id: string | null;
+  action: AuditAction;
+  ip_address: string | null;
+  user_agent: string | null;
+  meta: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface AuditLogList {
+  items: AuditLogPublic[];
   total: number;
   page: number;
   page_size: number;

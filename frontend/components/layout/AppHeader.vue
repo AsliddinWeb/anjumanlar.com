@@ -2,7 +2,9 @@
 const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
-const { user, isAuthenticated, logout } = useAuth();
+const { user, isAuthenticated, hasRole, logout } = useAuth();
+
+const isAdmin = computed(() => hasRole("admin"));
 const cart = useCartStore();
 
 const nav = computed(() => [
@@ -149,6 +151,14 @@ async function onLogout() {
               {{ t("nav.account") }}
             </NuxtLink>
           </li>
+          <li v-if="isAdmin">
+            <NuxtLink
+              :to="localePath('/admin')"
+              class="block px-3 py-1.5 text-primary hover:bg-bg-secondary"
+            >
+              ⚙ {{ t("admin.title") }}
+            </NuxtLink>
+          </li>
           <li>
             <button
               type="button"
@@ -251,6 +261,13 @@ async function onLogout() {
               class="block w-full text-center px-3 py-2 rounded border border-border text-ink-secondary hover:border-primary hover:text-primary"
             >
               {{ t("nav.account") }}
+            </NuxtLink>
+            <NuxtLink
+              v-if="isAdmin"
+              :to="localePath('/admin')"
+              class="block w-full text-center px-3 py-2 rounded border border-primary text-primary hover:bg-primary/10"
+            >
+              ⚙ {{ t("admin.title") }}
             </NuxtLink>
             <button
               type="button"

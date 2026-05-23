@@ -72,6 +72,21 @@ class UserPublic(BaseModel):
     created_at: datetime
 
 
+class UserList(BaseModel):
+    items: list[UserPublic]
+    total: int
+    page: int
+    page_size: int
+
+
+class AdminUserRoleUpdate(BaseModel):
+    role: UserRole
+
+
+class AdminUserStatusUpdate(BaseModel):
+    status: UserStatus
+
+
 class EmailVerifyRequest(BaseModel):
     token: str = Field(..., min_length=20, max_length=128)
 

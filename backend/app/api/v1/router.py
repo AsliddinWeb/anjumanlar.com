@@ -5,6 +5,9 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.endpoints import (
+    admin_audit,
+    admin_stats,
+    admin_users,
     auth,
     authors,
     books,
@@ -49,3 +52,6 @@ api_router.include_router(payments.router)
 api_router.include_router(libraries.router)
 api_router.include_router(withdrawals.author_router)
 api_router.include_router(withdrawals.admin_router)
+api_router.include_router(admin_users.router)
+api_router.include_router(admin_stats.router)
+api_router.include_router(admin_audit.router)
