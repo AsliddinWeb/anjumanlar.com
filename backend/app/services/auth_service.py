@@ -203,11 +203,11 @@ async def login(
     """
     user = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
     if user is None or user.status == UserStatus.deleted:
-        raise UnauthorizedError("Invalid email or password")
+        raise UnauthorizedError("Invalid email or password", details={"code": "invalid_credentials"})
     if not verify_password(password, user.password_hash):
-        raise UnauthorizedError("Invalid email or password")
+        raise UnauthorizedError("Invalid email or password", details={"code": "invalid_credentials"})
     if user.status == UserStatus.blocked:
-        raise ForbiddenError("Account blocked")
+        raise ForbiddenError("Account blocked", details={"code": "account_blocked"})
 
     access, refresh_plain, refresh_row = await _issue_token_pair(
         db, user, user_agent=user_agent, ip_address=ip_address

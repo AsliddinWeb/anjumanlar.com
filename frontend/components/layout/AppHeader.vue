@@ -105,12 +105,14 @@ async function onLogout() {
 
 <template>
   <header class="sticky top-0 z-30 bg-bg/90 backdrop-blur border-b border-border">
-    <div class="px-4 lg:px-6 h-14 flex items-center gap-3 md:gap-5">
+    <div class="max-w-7xl mx-auto px-4 lg:px-6 h-14 flex items-center gap-3 md:gap-5">
       <NuxtLink :to="localePath('/')" class="font-serif font-bold text-lg text-primary shrink-0">
         {{ t("site.title") }}
       </NuxtLink>
 
-      <nav class="hidden md:flex items-center gap-5 text-sm">
+      <div class="flex-1" />
+
+      <nav class="hidden md:flex items-center gap-6 text-sm">
         <NuxtLink
           v-for="item in nav"
           :key="item.to"
