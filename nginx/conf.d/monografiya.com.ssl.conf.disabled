@@ -1,0 +1,183 @@
+# Monografiya — production reverse proxy WITH TLS.
+#
+# Activate this file ONLY after the first Let's Encrypt cert has been
+# issued (see DEPLOY.md §8). Until the cert exists on disk, nginx will
+# refuse to start because the `ssl_certificate` paths below won't
+# resolve.
+#
+# The certbot service inside docker-compose runs `certbot renew --quiet`
+# every 12h. Renewal uses HTTP-01, served by the port-80 blocks below
+# (they keep /.well-known/acme-challenge/ public while redirecting
+# everything else to HTTPS).
+
+upstream monografiya_backend {
+    server backend:8000;
+    keepalive 32;
+}
+
+upstream monografiya_frontend {
+    server frontend:3000;
+    keepalive 32;
+}
+
+upstream monografiya_minio {
+    server minio:9000;
+    keepalive 16;
+}
+
+# ---------- monografiya.com + www: port 80 = ACME + redirect ----------
+server {
+    listen 80;
+    listen [::]:80;
+    server_name monografiya.com www.monografiya.com;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+        default_type "text/plain";
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# ---------- monografiya.com + www: port 443 = real app ----------
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name monografiya.com www.monografiya.com;
+
+    ssl_certificate     /etc/letsencrypt/live/monografiya.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/monografiya.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    client_max_body_size 110m;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types
+        application/javascript
+        application/json
+        application/xml
+        application/atom+xml
+        application/rss+xml
+        text/css
+        text/javascript
+        text/plain
+        text/xml
+        image/svg+xml
+        font/woff
+        font/woff2;
+
+    # ---- API ----
+    location /api/ {
+        proxy_pass         http://monografiya_backend;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   Connection        "";
+        proxy_read_timeout 120s;
+    }
+
+    # ---- Health checks ----
+    location = /health {
+        proxy_pass         http://monografiya_backend/health;
+        access_log         off;
+    }
+
+    # ---- SEO entry points (FastAPI, no /api/v1 prefix) ----
+    location = /sitemap.xml {
+        proxy_pass         http://monografiya_backend/sitemap.xml;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+
+    location = /robots.txt {
+        proxy_pass         http://monografiya_backend/robots.txt;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+
+    # ---- Long-cached Nuxt build assets ----
+    location /_nuxt/ {
+        proxy_pass         http://monografiya_frontend;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_cache_valid  200 30d;
+        expires            30d;
+        add_header         Cache-Control "public, immutable";
+    }
+
+    # ---- Everything else → Nuxt ----
+    location / {
+        proxy_pass         http://monografiya_frontend;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   Upgrade           $http_upgrade;
+        proxy_set_header   Connection        "upgrade";
+        proxy_read_timeout 120s;
+    }
+}
+
+# ---------- files.monografiya.com: port 80 = ACME + redirect ----------
+server {
+    listen 80;
+    listen [::]:80;
+    server_name files.monografiya.com;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+        default_type "text/plain";
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# ---------- files.monografiya.com: port 443 = MinIO public ----------
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name files.monografiya.com;
+
+    # Same cert: certbot issues a single cert covering all three SANs.
+    ssl_certificate     /etc/letsencrypt/live/monografiya.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/monografiya.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    # MinIO streams large files; let it choose its own body size.
+    client_max_body_size 0;
+
+    location / {
+        proxy_pass              http://monografiya_minio;
+        proxy_http_version      1.1;
+        proxy_set_header        Host              $host;
+        proxy_set_header        X-Real-IP         $remote_addr;
+        proxy_set_header        X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header        X-Forwarded-Proto $scheme;
+        proxy_set_header        Connection        "";
+        proxy_buffering         off;
+        proxy_request_buffering off;
+        proxy_read_timeout      600s;
+        proxy_send_timeout      600s;
+    }
+}
