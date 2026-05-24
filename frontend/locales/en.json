@@ -506,7 +506,8 @@
     },
     "greeting_morning": "Good morning",
     "greeting_afternoon": "Good afternoon",
-    "greeting_evening": "Good evening"
+    "greeting_evening": "Good evening",
+    "welcome_short": "Welcome"
   },
   "balance": {
     "title": "Earnings",

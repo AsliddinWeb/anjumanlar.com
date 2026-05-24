@@ -43,6 +43,10 @@ async function onLogout() {
 </script>
 
 <template>
+  <ClientOnly>
+    <template #fallback>
+      <div class="h-9 w-24 rounded-full bg-bg-secondary animate-pulse" />
+    </template>
   <div v-if="user" ref="root" class="relative">
     <button
       type="button"
@@ -120,4 +124,5 @@ async function onLogout() {
       </div>
     </Transition>
   </div>
+  </ClientOnly>
 </template>

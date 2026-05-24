@@ -506,7 +506,8 @@
     },
     "greeting_morning": "Xayrli tong",
     "greeting_afternoon": "Xayrli kun",
-    "greeting_evening": "Xayrli kech"
+    "greeting_evening": "Xayrli kech",
+    "welcome_short": "Salom"
   },
   "balance": {
     "title": "Daromad",

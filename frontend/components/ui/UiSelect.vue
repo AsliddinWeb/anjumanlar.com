@@ -5,6 +5,8 @@ withDefaults(
     options: { value: string; label: string }[];
     label?: string;
     placeholder?: string;
+    /** `sm` = auto-width inline select sized to match h-9 toolbar inputs.
+     *  `md` (default) = block-level form select that fills the parent. */
     size?: "sm" | "md";
   }>(),
   { size: "md" },
@@ -20,9 +22,9 @@ defineEmits<{ "update:modelValue": [value: string] }>();
     </span>
     <select
       :value="modelValue ?? ''"
-      class="rounded border border-border bg-bg-card text-ink focus:outline-none focus:border-primary transition-colors"
+      class="rounded-md border border-border bg-bg-card text-ink focus:outline-none focus:border-primary transition-colors cursor-pointer"
       :class="[
-        size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-2 w-full',
+        size === 'sm' ? 'h-9 px-3 pr-8 text-sm' : 'px-3 py-2 w-full',
       ]"
       @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
     >

@@ -506,7 +506,8 @@
     },
     "greeting_morning": "Доброе утро",
     "greeting_afternoon": "Добрый день",
-    "greeting_evening": "Добрый вечер"
+    "greeting_evening": "Добрый вечер",
+    "welcome_short": "Здравствуйте"
   },
   "balance": {
     "title": "Доход",

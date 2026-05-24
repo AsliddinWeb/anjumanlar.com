@@ -86,7 +86,10 @@ const generatedAt = computed(() => {
     <header class="space-y-2">
       <p class="text-sm text-ink-tertiary">{{ greeting }}</p>
       <h1 class="font-serif text-3xl md:text-4xl text-ink leading-tight">
-        {{ t("admin.welcome", { name: user?.full_name ?? "" }) }}
+        <ClientOnly>
+          <template #fallback>{{ t("admin.welcome_short") }}</template>
+          {{ t("admin.welcome", { name: user?.full_name ?? "" }) }}
+        </ClientOnly>
       </h1>
       <p class="text-sm text-ink-secondary">
         {{ t("admin.welcome_subtitle") }}
