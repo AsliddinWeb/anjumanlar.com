@@ -25,13 +25,16 @@ export function useLocaleText() {
 
 /**
  * Format an integer price in UZS with thousands separators, e.g. ``50 000 so'm``.
- * Negative amounts (refunds etc.) get a leading minus.
+ *
+ * Hand-rolled rather than `Intl.NumberFormat("uz-UZ")` because the Node
+ * runtime that does SSR ships different ICU locale data from the
+ * browser — Node emits a narrow no-break space, the browser emits an
+ * ASCII comma, and the mismatch trips Vue's hydration check on every
+ * price tag. A regex group is deterministic across both environments.
  */
 export function formatPrice(price: number, currency = "UZS"): string {
-  const abs = Math.abs(price);
-  const formatted = new Intl.NumberFormat("uz-UZ", {
-    maximumFractionDigits: 0,
-  }).format(abs);
+  const abs = Math.floor(Math.abs(price));
+  const formatted = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   const sign = price < 0 ? "-" : "";
   if (currency === "UZS") return `${sign}${formatted} so'm`;
   return `${sign}${formatted} ${currency}`;

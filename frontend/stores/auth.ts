@@ -8,7 +8,31 @@ import type { LoginResponse, UserPublic, UserRole } from "~/types/api";
  * /auth/login + /auth/refresh; we never touch it from JS. On app boot we
  * call ``bootstrap()`` which tries one refresh — if the cookie is valid we
  * end up authenticated without the user having to re-enter credentials.
+ *
+ * The httpOnly refresh cookie is invisible to JS, so we mirror its
+ * presence via a non-sensitive flag in localStorage and only attempt
+ * /auth/refresh when the flag is set — otherwise every visitor would
+ * hit a 401 on first paint and the browser would log a red error.
  */
+
+const SESSION_FLAG_KEY = "monografiya:auth:session";
+
+function setSessionFlag() {
+  if (import.meta.client) {
+    try { window.localStorage.setItem(SESSION_FLAG_KEY, "1"); } catch { /* quota */ }
+  }
+}
+function clearSessionFlag() {
+  if (import.meta.client) {
+    try { window.localStorage.removeItem(SESSION_FLAG_KEY); } catch { /* quota */ }
+  }
+}
+function hasSessionFlag(): boolean {
+  if (!import.meta.client) return false;
+  try { return window.localStorage.getItem(SESSION_FLAG_KEY) === "1"; }
+  catch { return false; }
+}
+
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<UserPublic | null>(null);
   const accessToken = ref<string | null>(null);
@@ -34,11 +58,13 @@ export const useAuthStore = defineStore("auth", () => {
   function _setSession(payload: LoginResponse) {
     accessToken.value = payload.access_token;
     user.value = payload.user;
+    setSessionFlag();
   }
 
   function clear() {
     accessToken.value = null;
     user.value = null;
+    clearSessionFlag();
   }
 
   async function login(email: string, password: string) {
@@ -89,6 +115,7 @@ export const useAuthStore = defineStore("auth", () => {
         { method: "POST" },
       );
       accessToken.value = body.access_token;
+      setSessionFlag();
       return true;
     } catch {
       clear();
@@ -101,8 +128,11 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = await api<UserPublic>("/auth/me");
   }
 
-  /** Run once on app boot: try a silent refresh, then load /me. */
+  /** Run once on app boot: try a silent refresh, then load /me. Skipped
+   *  entirely when the session flag is absent — saves an inevitable 401
+   *  for every anonymous visitor. */
   async function bootstrap() {
+    if (!hasSessionFlag()) return;
     const refreshed = await refresh();
     if (refreshed) {
       try {
