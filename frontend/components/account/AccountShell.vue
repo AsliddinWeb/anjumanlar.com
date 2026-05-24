@@ -61,6 +61,24 @@ async function onLogout() {
 </script>
 
 <template>
+  <ClientOnly>
+    <template #fallback>
+      <div class="bg-bg">
+        <div class="max-w-6xl mx-auto px-4 py-6 md:py-8">
+          <div class="grid md:grid-cols-[260px_1fr] gap-6 md:gap-8">
+            <div class="hidden md:block space-y-3">
+              <UiSkeleton height="4rem" block rounded="rounded-md" />
+              <UiSkeleton height="18rem" block rounded="rounded-md" />
+            </div>
+            <div class="space-y-3">
+              <UiSkeleton height="2.5rem" width="60%" block rounded="rounded-md" />
+              <UiSkeleton height="20rem" block rounded="rounded-md" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
   <div v-if="user" class="bg-bg">
     <div class="max-w-6xl mx-auto px-4 py-6 md:py-8">
       <!-- Mobile trigger -->
@@ -218,4 +236,5 @@ async function onLogout() {
       </Transition>
     </Teleport>
   </div>
+  </ClientOnly>
 </template>

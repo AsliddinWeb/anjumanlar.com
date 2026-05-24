@@ -32,12 +32,22 @@ function writeStore(key: string, value: string | null) {
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<UserPublic | null>(null);
-  const accessToken = ref<string | null>(null);
-  const refreshToken = ref<string | null>(null);
-
-  const isAuthenticated = computed(
-    () => !!accessToken.value && !!user.value,
+  // Seed both tokens from localStorage synchronously so middleware that
+  // runs before the async bootstrap finishes still sees the right auth
+  // state — otherwise every page refresh on a guarded route would
+  // redirect to /login before /auth/me has had a chance to resolve.
+  const accessToken = ref<string | null>(
+    import.meta.client ? readStore(ACCESS_KEY) : null,
   );
+  const refreshToken = ref<string | null>(
+    import.meta.client ? readStore(REFRESH_KEY) : null,
+  );
+
+  // Trust the access token alone: ``user`` is populated asynchronously
+  // by ``fetchMe``; if the stored token turns out to be invalid the next
+  // API call will 401 and we clear the session. Locking auth gating
+  // behind ``user`` would gate every routing decision on a network call.
+  const isAuthenticated = computed(() => !!accessToken.value);
   const isVerified = computed(() => !!user.value?.email_verified);
 
   function hasRole(role: UserRole): boolean {

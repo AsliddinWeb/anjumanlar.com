@@ -191,18 +191,26 @@ async function onLogout() {
         :aria-label="t('cart.title')"
       >
         <Icon name="cart" class="h-4 w-4" />
-        <span
-          v-if="cart.count > 0"
-          class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] inline-flex items-center justify-center px-1 rounded-full bg-primary text-ink-inverse text-[10px] font-semibold tabular-nums"
-        >
-          {{ cart.count }}
-        </span>
+        <ClientOnly>
+          <span
+            v-if="cart.count > 0"
+            class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] inline-flex items-center justify-center px-1 rounded-full bg-primary text-ink-inverse text-[10px] font-semibold tabular-nums"
+          >
+            {{ cart.count }}
+          </span>
+        </ClientOnly>
       </NuxtLink>
 
       <LanguageSwitcher class="hidden md:block" />
       <ThemeToggle class="hidden md:inline-flex" />
 
-      <!-- Authenticated: avatar dropdown -->
+      <!-- Auth UI depends on localStorage which isn't readable during SSR;
+           wrapping in ClientOnly avoids hydration mismatch between the
+           anonymous-state SSR and the (typically authed) client state. -->
+      <ClientOnly>
+        <template #fallback>
+          <div class="hidden md:block h-9 w-20 rounded-md bg-bg-secondary animate-pulse" />
+        </template>
       <div v-if="isAuthenticated && user" ref="userRoot" class="relative hidden md:block">
         <button
           type="button"
@@ -336,6 +344,7 @@ async function onLogout() {
           </div>
         </Transition>
       </div>
+      </ClientOnly>
 
       <!-- Mobile hamburger -->
       <button

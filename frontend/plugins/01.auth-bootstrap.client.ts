@@ -1,10 +1,16 @@
 /**
- * Once on first client hydration, try to restore the session from the
- * refresh cookie. SSR can't see httpOnly cookies, so we keep this strictly
- * client-side — the very first render is unauthenticated, then this plugin
- * fires and the UI updates if the cookie was valid.
+ * Restore the user's session from localStorage on first client tick.
+ *
+ * Fire-and-forget — we deliberately don't ``await`` ``bootstrap()``
+ * because doing so would block the entire app's first paint behind two
+ * HTTP round-trips (``/auth/me`` and possibly ``/auth/refresh``). The
+ * UI starts rendering immediately in the anonymous state; auth-aware
+ * components reactively flip to the authed state once the request
+ * resolves. Auth middleware only runs on the client and consults the
+ * already-populated localStorage tokens synchronously to know whether
+ * to redirect, so it doesn't need the network round-trip either.
  */
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin(() => {
   const auth = useAuthStore();
-  await auth.bootstrap();
+  void auth.bootstrap();
 });
