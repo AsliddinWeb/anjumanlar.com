@@ -2,40 +2,38 @@ import { defineStore } from "pinia";
 import type { LoginResponse, UserPublic, UserRole } from "~/types/api";
 
 /**
- * Auth store — owns the access token (in memory) and the current user.
+ * Auth store — owns the access token and the current user.
  *
- * The refresh token lives in an httpOnly cookie that the backend sets on
- * /auth/login + /auth/refresh; we never touch it from JS. On app boot we
- * call ``bootstrap()`` which tries one refresh — if the cookie is valid we
- * end up authenticated without the user having to re-enter credentials.
- *
- * The httpOnly refresh cookie is invisible to JS, so we mirror its
- * presence via a non-sensitive flag in localStorage and only attempt
- * /auth/refresh when the flag is set — otherwise every visitor would
- * hit a 401 on first paint and the browser would log a red error.
+ * Tokens are mirrored to localStorage so the session survives a hard
+ * browser refresh. The backend also sets an httpOnly refresh cookie on
+ * /auth/login, but in cross-origin dev (frontend on :8308, API on :8307)
+ * the cookie isn't reliably preserved across reloads — we therefore
+ * keep both pieces and send the refresh_token in the request body if
+ * the cookie ever fails to come back. Backend's /auth/refresh resolver
+ * accepts either source.
  */
 
-const SESSION_FLAG_KEY = "monografiya:auth:session";
+const ACCESS_KEY = "monografiya:auth:access";
+const REFRESH_KEY = "monografiya:auth:refresh";
 
-function setSessionFlag() {
-  if (import.meta.client) {
-    try { window.localStorage.setItem(SESSION_FLAG_KEY, "1"); } catch { /* quota */ }
-  }
+function readStore(key: string): string | null {
+  if (!import.meta.client) return null;
+  try { return window.localStorage.getItem(key); }
+  catch { return null; }
 }
-function clearSessionFlag() {
-  if (import.meta.client) {
-    try { window.localStorage.removeItem(SESSION_FLAG_KEY); } catch { /* quota */ }
+function writeStore(key: string, value: string | null) {
+  if (!import.meta.client) return;
+  try {
+    if (value === null) window.localStorage.removeItem(key);
+    else window.localStorage.setItem(key, value);
   }
-}
-function hasSessionFlag(): boolean {
-  if (!import.meta.client) return false;
-  try { return window.localStorage.getItem(SESSION_FLAG_KEY) === "1"; }
-  catch { return false; }
+  catch { /* quota or private mode */ }
 }
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<UserPublic | null>(null);
   const accessToken = ref<string | null>(null);
+  const refreshToken = ref<string | null>(null);
 
   const isAuthenticated = computed(
     () => !!accessToken.value && !!user.value,
@@ -44,8 +42,6 @@ export const useAuthStore = defineStore("auth", () => {
 
   function hasRole(role: UserRole): boolean {
     if (!user.value) return false;
-    // admin inherits author rights; superadmin inherits both — match the
-    // backend's require_admin / require_author aliases.
     const hierarchy: Record<UserRole, UserRole[]> = {
       reader: ["reader"],
       author: ["reader", "author"],
@@ -57,14 +53,18 @@ export const useAuthStore = defineStore("auth", () => {
 
   function _setSession(payload: LoginResponse) {
     accessToken.value = payload.access_token;
+    refreshToken.value = payload.refresh_token;
     user.value = payload.user;
-    setSessionFlag();
+    writeStore(ACCESS_KEY, payload.access_token);
+    writeStore(REFRESH_KEY, payload.refresh_token);
   }
 
   function clear() {
     accessToken.value = null;
+    refreshToken.value = null;
     user.value = null;
-    clearSessionFlag();
+    writeStore(ACCESS_KEY, null);
+    writeStore(REFRESH_KEY, null);
   }
 
   async function login(email: string, password: string) {
@@ -92,7 +92,10 @@ export const useAuthStore = defineStore("auth", () => {
   async function logout() {
     const api = useApi();
     try {
-      await api("/auth/logout", { method: "POST" });
+      await api("/auth/logout", {
+        method: "POST",
+        body: refreshToken.value ? { refresh_token: refreshToken.value } : {},
+      });
     } finally {
       clear();
     }
@@ -110,18 +113,24 @@ export const useAuthStore = defineStore("auth", () => {
   async function refresh(): Promise<boolean> {
     const api = useApi();
     try {
-      const body = await api<{ access_token: string; expires_in: number } | null>(
+      const stored = refreshToken.value ?? readStore(REFRESH_KEY);
+      const body = await api<{ access_token: string; refresh_token: string; expires_in: number } | null>(
         "/auth/refresh",
-        { method: "POST" },
+        {
+          method: "POST",
+          // Send the stored refresh_token in the body so we don't depend
+          // on the httpOnly cookie surviving cross-origin reloads.
+          body: stored ? { refresh_token: stored } : undefined,
+        },
       );
-      // Backend returns 204 (null body) when no cookie was sent — treat
-      // as "not authenticated" rather than an error.
       if (!body || !body.access_token) {
         clear();
         return false;
       }
       accessToken.value = body.access_token;
-      setSessionFlag();
+      refreshToken.value = body.refresh_token;
+      writeStore(ACCESS_KEY, body.access_token);
+      writeStore(REFRESH_KEY, body.refresh_token);
       return true;
     } catch {
       clear();
@@ -134,11 +143,25 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = await api<UserPublic>("/auth/me");
   }
 
-  /** Run once on app boot: try a silent refresh, then load /me. Skipped
-   *  entirely when the session flag is absent — saves an inevitable 401
-   *  for every anonymous visitor. */
+  /** Run once on app boot: restore tokens from localStorage, validate with
+   *  /me, fall back to /refresh if the access token has expired. */
   async function bootstrap() {
-    if (!hasSessionFlag()) return;
+    if (!import.meta.client) return;
+    const storedAccess = readStore(ACCESS_KEY);
+    const storedRefresh = readStore(REFRESH_KEY);
+    if (!storedAccess && !storedRefresh) return;
+
+    accessToken.value = storedAccess;
+    refreshToken.value = storedRefresh;
+
+    if (storedAccess) {
+      try {
+        await fetchMe();
+        return;
+      } catch {
+        // Access token expired or invalid — try a refresh below.
+      }
+    }
     const refreshed = await refresh();
     if (refreshed) {
       try {
@@ -152,6 +175,7 @@ export const useAuthStore = defineStore("auth", () => {
   return {
     user,
     accessToken,
+    refreshToken,
     isAuthenticated,
     isVerified,
     hasRole,
