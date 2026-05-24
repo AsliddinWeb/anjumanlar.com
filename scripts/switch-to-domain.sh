@@ -39,6 +39,12 @@ sed -i "s|^FRONTEND_URL=.*|FRONTEND_URL=https://$DOMAIN|" .env
 sed -i "s|^CORS_ORIGINS=.*|CORS_ORIGINS=https://$DOMAIN,https://www.$DOMAIN|" .env
 sed -i "s|^MINIO_PUBLIC_ENDPOINT=.*|MINIO_PUBLIC_ENDPOINT=https://files.$DOMAIN|" .env
 
+# Revert BIND vars back to 127.0.0.1 (nginx fronts everything now)
+for var in POSTGRES_BIND REDIS_BIND MINIO_API_BIND MINIO_CONSOLE_BIND \
+           MEILISEARCH_BIND BACKEND_BIND FRONTEND_BIND; do
+    sed -i "/^$var=/d" .env
+done
+
 # --- remove IP override -----------------------------------------------------
 if [[ -f docker-compose.override.ip.yml ]]; then
     mv docker-compose.override.ip.yml docker-compose.override.ip.yml.bak

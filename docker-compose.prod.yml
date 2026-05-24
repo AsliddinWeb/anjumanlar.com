@@ -41,7 +41,7 @@ services:
       TZ: ${TZ:-Asia/Tashkent}
       PGTZ: ${TZ:-Asia/Tashkent}
     ports:
-      - "127.0.0.1:${POSTGRES_PORT:-8300}:5432"
+      - "${POSTGRES_BIND:-127.0.0.1}:${POSTGRES_PORT:-8300}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
@@ -59,7 +59,7 @@ services:
     restart: always
     command: redis-server --appendonly yes --save 60 1
     ports:
-      - "127.0.0.1:${REDIS_PORT:-8301}:6379"
+      - "${REDIS_BIND:-127.0.0.1}:${REDIS_PORT:-8301}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -80,8 +80,8 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BROWSER_REDIRECT_URL: ${MINIO_PUBLIC_ENDPOINT}
     ports:
-      - "127.0.0.1:${MINIO_API_PORT:-8302}:9000"
-      - "127.0.0.1:${MINIO_CONSOLE_PORT:-8303}:9001"
+      - "${MINIO_API_BIND:-127.0.0.1}:${MINIO_API_PORT:-8302}:9000"
+      - "${MINIO_CONSOLE_BIND:-127.0.0.1}:${MINIO_CONSOLE_PORT:-8303}:9001"
     volumes:
       - minio_data:/data
     healthcheck:
@@ -122,7 +122,7 @@ services:
       MEILI_ENV: production
       MEILI_NO_ANALYTICS: "true"
     ports:
-      - "127.0.0.1:${MEILISEARCH_PORT:-8304}:7700"
+      - "${MEILISEARCH_BIND:-127.0.0.1}:${MEILISEARCH_PORT:-8304}:7700"
     volumes:
       - meilisearch_data:/meili_data
     healthcheck:
@@ -145,7 +145,7 @@ services:
       ENVIRONMENT: production
       PYTHONUNBUFFERED: "1"
     ports:
-      - "127.0.0.1:${BACKEND_PORT:-8307}:8000"
+      - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-8307}:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -187,7 +187,7 @@ services:
       NUXT_PUBLIC_DEFAULT_LOCALE: ${NUXT_PUBLIC_DEFAULT_LOCALE:-uz}
       NUXT_TELEMETRY_DISABLED: "1"
     ports:
-      - "127.0.0.1:${FRONTEND_PORT:-8308}:3000"
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-8308}:3000"
     depends_on:
       backend:
         condition: service_started
