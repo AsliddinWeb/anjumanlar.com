@@ -110,10 +110,16 @@ export const useAuthStore = defineStore("auth", () => {
   async function refresh(): Promise<boolean> {
     const api = useApi();
     try {
-      const body = await api<{ access_token: string; expires_in: number }>(
+      const body = await api<{ access_token: string; expires_in: number } | null>(
         "/auth/refresh",
         { method: "POST" },
       );
+      // Backend returns 204 (null body) when no cookie was sent — treat
+      // as "not authenticated" rather than an error.
+      if (!body || !body.access_token) {
+        clear();
+        return false;
+      }
       accessToken.value = body.access_token;
       setSessionFlag();
       return true;

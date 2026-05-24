@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, Request, Response, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -189,8 +190,12 @@ async def login(
 
 @router.post(
     "/refresh",
-    response_model=TokenPair,
     summary="Rotate refresh token — old one becomes immediately invalid",
+    responses={
+        200: {"model": TokenPair},
+        204: {"description": "No refresh token supplied — caller is anonymous"},
+        401: {"description": "Refresh token is invalid or expired"},
+    },
 )
 async def refresh(
     request: Request,
@@ -198,21 +203,35 @@ async def refresh(
     body: RefreshRequest | None = None,
     refresh_cookie: Annotated[str | None, Cookie(alias=REFRESH_COOKIE_NAME)] = None,
     db: AsyncSession = Depends(get_db),
-) -> TokenPair:
+) -> Response:
+    # No cookie / no body OR cookie pointing at an invalid/expired/revoked
+    # token → respond 204 instead of 401 so the browser console stays
+    # clean during silent bootstrap probes. From the caller's perspective
+    # both cases mean the same thing: "you're not signed in" — there's
+    # nothing actionable in distinguishing them at the network layer.
+    if not (body and body.refresh_token) and not refresh_cookie:
+        _clear_refresh_cookie(response)
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     plain = _resolve_refresh(body, refresh_cookie)
-    _, access, new_refresh_plain, _ = await auth_service.refresh_tokens(
-        db,
-        plain,
-        user_agent=request.headers.get("user-agent"),
-        ip_address=_client_ip(request),
-    )
+    try:
+        _, access, new_refresh_plain, _ = await auth_service.refresh_tokens(
+            db,
+            plain,
+            user_agent=request.headers.get("user-agent"),
+            ip_address=_client_ip(request),
+        )
+    except UnauthorizedError:
+        # Stale cookie — clear it and tell the client they're anonymous.
+        _clear_refresh_cookie(response)
+        return Response(status_code=status.HTTP_204_NO_CONTENT, headers=dict(response.headers))
     await db.commit()
     _set_refresh_cookie(response, new_refresh_plain)
-    return TokenPair(
+    payload = TokenPair(
         access_token=access,
         refresh_token=new_refresh_plain,
         expires_in=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
+    return JSONResponse(content=payload.model_dump(), headers=dict(response.headers))
 
 
 @router.post(

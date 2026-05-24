@@ -19,11 +19,21 @@ const PAGE_SIZE = 10;
 const currentPage = computed(() => Math.max(1, Number(route.query.page) || 1));
 const statusFilter = computed(() => (route.query.status as string) || "");
 
+// Treat `author_profile_missing` 404 as a known state, not an error.
+const noProfile = ref(false);
 const { data: dataRaw, pending, refresh, error: listError } = await useAsyncData(
   "account:withdrawals:list",
   () =>
     api<WithdrawalList>("/authors/me/withdrawals", {
       query: { page: currentPage.value, page_size: PAGE_SIZE },
+    }).catch((err: unknown) => {
+      const code = (err as { data?: { error?: { details?: { code?: string } } } })
+        ?.data?.error?.details?.code;
+      if (code === "author_profile_missing") {
+        noProfile.value = true;
+        return null;
+      }
+      throw err;
     }),
   { watch: [currentPage] },
 );
@@ -123,7 +133,7 @@ const statusOptions = computed(() => [
     </header>
 
     <!-- Filter toolbar -->
-    <div v-if="total > 0" class="flex flex-wrap items-center gap-2 mb-4">
+    <div v-if="!noProfile && total > 0" class="flex flex-wrap items-center gap-2 mb-4">
       <div class="relative">
         <Icon
           name="settings"
@@ -160,8 +170,21 @@ const statusOptions = computed(() => [
       </span>
     </div>
 
+    <!-- No author profile -->
+    <UiEmptyState
+      v-if="noProfile"
+      icon="pencil"
+      :title="t('balance.no_author_profile_title')"
+      :description="t('balance.no_author_profile_body')"
+    >
+      <UiButton :to="localePath('/authors/me')">
+        <Icon name="pencil" class="h-4 w-4" />
+        {{ t("balance.become_author") }}
+      </UiButton>
+    </UiEmptyState>
+
     <!-- Loading -->
-    <div v-if="pending && !list" class="space-y-3">
+    <div v-else-if="pending && !list" class="space-y-3">
       <UiSkeleton v-for="i in 3" :key="i" height="5rem" block rounded="rounded-md" />
     </div>
 
