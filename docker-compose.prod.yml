@@ -223,7 +223,7 @@ services:
       PYTHONUNBUFFERED: "1"
     command:
       ["celery", "-A", "app.tasks.celery_app:celery_app", "beat",
-       "--loglevel=info"]
+       "--loglevel=info", "--schedule=/tmp/celerybeat-schedule"]
     depends_on:
       backend:
         condition: service_started
