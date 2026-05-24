@@ -128,7 +128,7 @@ function toggleExpand(id: string) {
 const columns: Column<AuditLogPublic>[] = [
   { key: "action", label: t("admin.audit.col_action"), width: "w-56" },
   { key: "user", label: t("admin.audit.col_user") },
-  { key: "ip", label: t("admin.audit.col_ip"), width: "w-32" },
+  { key: "ip", label: t("admin.audit.col_ip"), width: "w-32", mobileHidden: true },
   { key: "when", label: t("admin.audit.col_when"), width: "w-44" },
 ];
 </script>

@@ -31,7 +31,7 @@ watch(
 
 <template>
   <div class="rounded-md border border-border bg-bg-card p-3 mb-4 flex flex-wrap items-center gap-2">
-    <div v-if="search !== undefined" class="relative flex-1 min-w-[200px]">
+    <div v-if="search !== undefined" class="relative w-full sm:w-auto sm:flex-1 sm:min-w-[200px]">
       <Icon
         name="search"
         class="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-tertiary pointer-events-none"

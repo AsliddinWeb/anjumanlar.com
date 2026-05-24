@@ -152,7 +152,7 @@ const statusOptions = [
 
 const columns: Column<BlogPostAdminView>[] = [
   { key: "title", label: t("admin.blog.table.title_col") },
-  { key: "slug", label: t("admin.blog.table.slug") },
+  { key: "slug", label: t("admin.blog.table.slug"), mobileHidden: true },
   { key: "status", label: t("admin.blog.table.status"), align: "center", width: "w-28" },
   { key: "published_at", label: t("admin.blog.table.published_at"), width: "w-32" },
 ];

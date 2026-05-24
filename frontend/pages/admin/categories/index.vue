@@ -104,11 +104,11 @@ async function confirmDelete() {
 }
 
 const columns: Column<CategoryPublic>[] = [
-  { key: "icon", label: t("admin.categories.table.icon"), width: "w-12" },
   { key: "name", label: t("admin.categories.table.name") },
+  { key: "icon", label: t("admin.categories.table.icon"), width: "w-12", mobileHidden: true },
   { key: "slug", label: t("admin.categories.table.slug") },
   { key: "parent", label: t("admin.categories.table.parent") },
-  { key: "sort", label: t("admin.categories.table.sort"), align: "right", width: "w-16" },
+  { key: "sort", label: t("admin.categories.table.sort"), align: "right", width: "w-16", mobileHidden: true },
   { key: "books", label: t("admin.categories.table.books"), align: "right", width: "w-20" },
   { key: "active", label: t("admin.categories.table.active"), align: "center", width: "w-24" },
 ];
