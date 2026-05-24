@@ -6,7 +6,7 @@ first deploy::
 
     docker compose -f docker-compose.prod.yml exec backend \
         python -m app.scripts.create_admin \
-        --email you@anjumanlar.com \
+        --email you@monografiya.com \
         --password 'StrongPass!2026' \
         --name 'Site Admin'
 

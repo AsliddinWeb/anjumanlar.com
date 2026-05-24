@@ -161,7 +161,7 @@ async def soft_delete(db: AsyncSession, user: User) -> None:
 
     user.status = UserStatus.deleted
     user.deleted_at = now
-    user.email = f"deleted+{user_id}@anjumanlar.invalid"
+    user.email = f"deleted+{user_id}@monografiya.invalid"
     user.password_hash = ""  # disables password login for this row
 
     await logout_all(db, user_id)

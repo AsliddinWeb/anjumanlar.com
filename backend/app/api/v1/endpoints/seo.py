@@ -3,7 +3,7 @@
 These live under the v1 prefix because the rest of the API does and
 because nginx already proxies /api/v1 to FastAPI. Nginx rewrites the
 top-level ``/sitemap.xml`` + ``/robots.txt`` paths to these handlers
-in production (see ``nginx/conf.d/anjumanlar.com.conf``).
+in production (see ``nginx/conf.d/monografiya.com.conf``).
 
 The sitemap is generated lazily on each request and includes:
 

@@ -5,7 +5,7 @@ repository.
 
 ## What this project is
 
-`anjumanlar.com` — a marketplace where authors upload monographs (PDF/EPUB
+`monografiya.com` — a marketplace where authors upload monographs (PDF/EPUB
 scientific books) and readers buy them. Payments go through Payme.uz; the UI
 ships in three languages (uz/ru/en) with light/dark mode.
 

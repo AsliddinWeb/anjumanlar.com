@@ -1,4 +1,4 @@
-# Production Checklist — Anjumanlar.com
+# Production Checklist — Monografiya
 
 Production'ga deploy qilishdan oldin barcha punktlarni tekshiring.
 
@@ -9,7 +9,7 @@ Production'ga deploy qilishdan oldin barcha punktlarni tekshiring.
 - [ ] Minimum 4 GB RAM, 2 vCPU
 - [ ] 50+ GB SSD disk
 - [ ] Statik IP manzil
-- [ ] Domain DNS sozlangan (`anjumanlar.com` → server IP)
+- [ ] Domain DNS sozlangan (`monografiya.com` → server IP)
 
 ### Server xavfsizligi
 - [ ] SSH root login o'chirilgan (`PermitRootLogin no`)
@@ -43,8 +43,8 @@ sudo systemctl enable fail2ban
 - [ ] `MINIO_ROOT_PASSWORD` kuchli parol
 - [ ] `MEILI_MASTER_KEY` o'rnatilgan
 - [ ] `PAYME_MERCHANT_ID` va `PAYME_SECRET_KEY` production qiymatlar
-- [ ] `CORS_ORIGINS` faqat `https://anjumanlar.com` (wildcard yo'q)
-- [ ] `ALLOWED_HOSTS=anjumanlar.com,www.anjumanlar.com`
+- [ ] `CORS_ORIGINS` faqat `https://monografiya.com` (wildcard yo'q)
+- [ ] `ALLOWED_HOSTS=monografiya.com,www.monografiya.com`
 - [ ] SMTP credentials production email server
 
 ```bash
@@ -61,7 +61,7 @@ openssl rand -hex 32
 
 - [ ] Let's Encrypt sertifikat o'rnatilgan
 - [ ] HTTP → HTTPS redirect ishlaydi
-- [ ] `www.anjumanlar.com` → `anjumanlar.com` redirect
+- [ ] `www.monografiya.com` → `monografiya.com` redirect
 - [ ] HSTS header yoqilgan
 - [ ] SSL Labs test natija: A yoki A+ (https://www.ssllabs.com/ssltest/)
 - [ ] Certbot auto-renew sozlangan
@@ -79,7 +79,7 @@ openssl rand -hex 32
 
 ```bash
 # Backup cron
-0 3 * * * /opt/anjumanlar/scripts/backup.sh
+0 3 * * * /opt/monografiya/scripts/backup.sh
 ```
 
 ## 5. Backend (FastAPI)
@@ -126,7 +126,7 @@ app = FastAPI(
 ## 8. Payment (Payme)
 
 - [ ] Payme production credentials olingan
-- [ ] Webhook URL Payme kabinetida ro'yxatdan o'tgan: `https://anjumanlar.com/api/v1/payments/payme/webhook`
+- [ ] Webhook URL Payme kabinetida ro'yxatdan o'tgan: `https://monografiya.com/api/v1/payments/payme/webhook`
 - [ ] Webhook IP whitelist (Payme IP'lari)
 - [ ] Test to'lov muvaffaqiyatli amalga oshirilgan
 - [ ] Refund / cancel flow test qilingan
@@ -172,7 +172,7 @@ app = FastAPI(
 - [ ] Application config (`.env`, `docker-compose.yml`)
 
 ### Backup strategiyasi
-- [ ] Local backup: `/var/backups/anjumanlar/` (7 kun)
+- [ ] Local backup: `/var/backups/monografiya/` (7 kun)
 - [ ] Remote backup: boshqa server yoki S3 (30 kun)
 - [ ] Backup'larni test qilish (qaytarib tiklash) — oyiga bir marta
 
@@ -180,19 +180,19 @@ app = FastAPI(
 ```bash
 #!/bin/bash
 DATE=$(date +%Y-%m-%d)
-BACKUP_DIR="/var/backups/anjumanlar"
+BACKUP_DIR="/var/backups/monografiya"
 
 # Database
-docker exec anjumanlar_db pg_dump -U anjumanlar anjumanlar | gzip > $BACKUP_DIR/db_$DATE.sql.gz
+docker exec monografiya_db pg_dump -U monografiya monografiya | gzip > $BACKUP_DIR/db_$DATE.sql.gz
 
 # MinIO
-mc mirror /var/lib/docker/volumes/anjumanlar_minio_data $BACKUP_DIR/minio_$DATE/
+mc mirror /var/lib/docker/volumes/monografiya_minio_data $BACKUP_DIR/minio_$DATE/
 
 # Old backuplarni o'chirish (7 kundan eski)
 find $BACKUP_DIR -name "db_*.sql.gz" -mtime +7 -delete
 
 # Remote'ga yuborish (rclone yoki rsync)
-rclone copy $BACKUP_DIR remote:anjumanlar-backups/
+rclone copy $BACKUP_DIR remote:monografiya-backups/
 ```
 
 ## 13. Legal va Compliance
@@ -208,7 +208,7 @@ rclone copy $BACKUP_DIR remote:anjumanlar-backups/
 
 Production'ga ko'tarilgandan keyin tekshirish:
 
-- [ ] Bosh sahifa yuklanadi: https://anjumanlar.com
+- [ ] Bosh sahifa yuklanadi: https://monografiya.com
 - [ ] Ro'yxatdan o'tish ishlaydi
 - [ ] Login ishlaydi
 - [ ] Kitob ko'rish ishlaydi

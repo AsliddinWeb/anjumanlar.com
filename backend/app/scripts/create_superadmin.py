@@ -3,7 +3,7 @@
 Usage (run inside the backend container):
 
     docker compose exec backend python -m app.scripts.create_superadmin \\
-        --email founder@anjumanlar.com \\
+        --email founder@monografiya.com \\
         --password "Hunter22!" \\
         --full-name "Founder"
 

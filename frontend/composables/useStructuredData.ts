@@ -100,7 +100,7 @@ export function buildOrganizationSchema(opts: { siteUrl: string; siteName: strin
     "url": opts.siteUrl,
     "logo": `${opts.siteUrl}/favicon.ico`,
     "sameAs": [
-      "https://t.me/anjumanlar",
+      "https://t.me/monografiya",
     ],
   };
 }

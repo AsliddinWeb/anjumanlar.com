@@ -64,13 +64,13 @@ http {
 }
 ```
 
-## docker/nginx/conf.d/anjumanlar.conf
+## docker/nginx/conf.d/monografiya.conf
 
 ```nginx
 # HTTP → HTTPS redirect
 server {
     listen 80;
-    server_name anjumanlar.com www.anjumanlar.com;
+    server_name monografiya.com www.monografiya.com;
 
     # Certbot ACME challenge
     location /.well-known/acme-challenge/ {
@@ -85,23 +85,23 @@ server {
 # www → non-www
 server {
     listen 443 ssl http2;
-    server_name www.anjumanlar.com;
+    server_name www.monografiya.com;
 
-    ssl_certificate /etc/nginx/ssl/live/anjumanlar.com/fullchain.pem;
-    ssl_certificate_key /etc/nginx/ssl/live/anjumanlar.com/privkey.pem;
+    ssl_certificate /etc/nginx/ssl/live/monografiya.com/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/monografiya.com/privkey.pem;
 
-    return 301 https://anjumanlar.com$request_uri;
+    return 301 https://monografiya.com$request_uri;
 }
 
 # Asosiy HTTPS server
 server {
     listen 443 ssl http2;
-    server_name anjumanlar.com;
+    server_name monografiya.com;
 
     # SSL
-    ssl_certificate /etc/nginx/ssl/live/anjumanlar.com/fullchain.pem;
-    ssl_certificate_key /etc/nginx/ssl/live/anjumanlar.com/privkey.pem;
-    ssl_trusted_certificate /etc/nginx/ssl/live/anjumanlar.com/chain.pem;
+    ssl_certificate /etc/nginx/ssl/live/monografiya.com/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/monografiya.com/privkey.pem;
+    ssl_trusted_certificate /etc/nginx/ssl/live/monografiya.com/chain.pem;
 
     # HSTS
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
@@ -114,7 +114,7 @@ server {
     add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
     
     # CSP — frontend ehtiyojiga qarab sozlanadi
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.paycom.uz; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.anjumanlar.com; frame-src https://checkout.paycom.uz;" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.paycom.uz; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.monografiya.com; frame-src https://checkout.paycom.uz;" always;
 
     # Backend API
     location /api/ {
@@ -194,18 +194,18 @@ server {
 
 Saytingiz IP manzilingizga `A` recordi orqali ulangan bo'lishi kerak:
 ```
-anjumanlar.com.        A    YOUR_SERVER_IP
-www.anjumanlar.com.    A    YOUR_SERVER_IP
+monografiya.com.        A    YOUR_SERVER_IP
+www.monografiya.com.    A    YOUR_SERVER_IP
 ```
 
 ### 2. Vaqtinchalik nginx ishga tushirish (faqat HTTP)
 
-`docker/nginx/conf.d/anjumanlar.conf`'ni vaqtincha o'zgartiring:
+`docker/nginx/conf.d/monografiya.conf`'ni vaqtincha o'zgartiring:
 
 ```nginx
 server {
     listen 80;
-    server_name anjumanlar.com www.anjumanlar.com;
+    server_name monografiya.com www.monografiya.com;
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -227,11 +227,11 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d nginx
 docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm certbot \
     certonly --webroot \
     --webroot-path=/var/www/certbot \
-    --email admin@anjumanlar.com \
+    --email admin@monografiya.com \
     --agree-tos \
     --no-eff-email \
-    -d anjumanlar.com \
-    -d www.anjumanlar.com
+    -d monografiya.com \
+    -d www.monografiya.com
 ```
 
 ### 4. To'liq config'ga qaytib nginx restart
@@ -265,7 +265,7 @@ Sertifikat yangilangandan keyin nginx reload qiladigan cron qo'shing (host'da):
 
 ```bash
 # Sertifikatni tekshirish
-curl -vI https://anjumanlar.com 2>&1 | grep -E '(SSL|TLS|HTTP)'
+curl -vI https://monografiya.com 2>&1 | grep -E '(SSL|TLS|HTTP)'
 
 # Online test
 # https://www.ssllabs.com/ssltest/
@@ -283,7 +283,7 @@ A+ baho olish uchun yuqorida ko'rsatilgan SSL sozlamalar yetarli.
    ufw enable
    ```
 
-2. **DNS to'g'rilangani** — `dig anjumanlar.com` natijasi to'g'ri IP'ni ko'rsatishi kerak
+2. **DNS to'g'rilangani** — `dig monografiya.com` natijasi to'g'ri IP'ni ko'rsatishi kerak
 
 3. **Rate limit yengilroq qiling, agar kerak bo'lsa** — yuqoridagi qiymatlar boshlang'ich
 

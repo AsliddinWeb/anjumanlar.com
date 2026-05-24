@@ -225,7 +225,7 @@ const { t } = useI18n()
         <!-- Logo -->
         <NuxtLink :to="localePath('/')" class="flex items-center gap-2">
           <LayoutAppLogo />
-          <span class="font-display text-xl font-bold">Anjumanlar</span>
+          <span class="font-display text-xl font-bold">Monografiya</span>
         </NuxtLink>
 
         <!-- Nav -->

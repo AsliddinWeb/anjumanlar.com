@@ -26,13 +26,13 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: anjumanlar
-          POSTGRES_PASSWORD: anjumanlar
-          POSTGRES_DB: anjumanlar
+          POSTGRES_USER: monografiya
+          POSTGRES_PASSWORD: monografiya
+          POSTGRES_DB: monografiya
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U anjumanlar"
+          --health-cmd="pg_isready -U monografiya"
           --health-interval=5s
           --health-timeout=3s
           --health-retries=10
@@ -48,8 +48,8 @@ jobs:
           --health-retries=10
 
     env:
-      DATABASE_URL: postgresql+asyncpg://anjumanlar:anjumanlar@localhost:5432/anjumanlar
-      DATABASE_URL_SYNC: postgresql://anjumanlar:anjumanlar@localhost:5432/anjumanlar
+      DATABASE_URL: postgresql+asyncpg://monografiya:monografiya@localhost:5432/monografiya
+      DATABASE_URL_SYNC: postgresql://monografiya:monografiya@localhost:5432/monografiya
       REDIS_URL: redis://localhost:6379/0
       CELERY_BROKER_URL: redis://localhost:6379/1
       JWT_SECRET_KEY: ci-test-secret-not-used-in-prod
@@ -81,9 +81,9 @@ jobs:
         # the dev stack; CI's postgres service skips that script so we apply
         # it by hand before migrations run.
         env:
-          PGPASSWORD: anjumanlar
+          PGPASSWORD: monografiya
         run: |
-          psql -h localhost -U anjumanlar -d anjumanlar -f ../docker/postgres/init.sql
+          psql -h localhost -U monografiya -d monografiya -f ../docker/postgres/init.sql
 
       - name: Alembic upgrade head
         run: alembic upgrade head
@@ -119,6 +119,6 @@ jobs:
           context: ./backend
           push: false
           load: true
-          tags: anjumanlar-backend:ci
+          tags: monografiya-backend:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max

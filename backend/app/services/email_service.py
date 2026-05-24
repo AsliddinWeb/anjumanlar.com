@@ -29,9 +29,9 @@ SUPPORTED_LOCALES = ("uz", "ru", "en")
 
 SUBJECTS: dict[str, dict[str, str]] = {
     "welcome": {
-        "uz": "Anjumanlar.com'ga xush kelibsiz",
-        "ru": "Добро пожаловать в Anjumanlar.com",
-        "en": "Welcome to Anjumanlar.com",
+        "uz": "Monografiya'ga xush kelibsiz",
+        "ru": "Добро пожаловать в Monografiya",
+        "en": "Welcome to Monografiya",
     },
     "verify_email": {
         "uz": "Email manzilingizni tasdiqlang",

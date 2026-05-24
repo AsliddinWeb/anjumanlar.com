@@ -65,10 +65,10 @@ const legalLinks = computed(() => [
           </li>
           <li>
             <a
-              href="mailto:info@anjumanlar.com"
+              href="mailto:info@monografiya.com"
               class="text-ink-secondary hover:text-primary"
             >
-              info@anjumanlar.com
+              info@monografiya.com
             </a>
           </li>
         </ul>
@@ -93,7 +93,7 @@ const legalLinks = computed(() => [
           <h4 class="text-sm font-medium text-ink mb-3">{{ t("footer.follow") }}</h4>
           <div class="flex items-center gap-3 text-sm">
             <a
-              href="https://t.me/anjumanlar"
+              href="https://t.me/monografiya"
               target="_blank"
               rel="noopener noreferrer"
               class="text-ink-secondary hover:text-primary"
@@ -102,7 +102,7 @@ const legalLinks = computed(() => [
               Telegram
             </a>
             <a
-              href="https://instagram.com/anjumanlar"
+              href="https://instagram.com/monografiya"
               target="_blank"
               rel="noopener noreferrer"
               class="text-ink-secondary hover:text-primary"

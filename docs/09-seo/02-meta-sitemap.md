@@ -33,7 +33,7 @@ export const useSeo = (options: SeoOptions) => {
     ogImage: image,
     ogUrl: url,
     ogType: options.type || 'website',
-    ogSiteName: 'Anjumanlar.com',
+    ogSiteName: 'Monografiya',
     ogLocale: locale.value === 'uz' ? 'uz_UZ' : locale.value === 'ru' ? 'ru_RU' : 'en_US',
     twitterCard: 'summary_large_image',
     twitterTitle: options.title,
@@ -69,7 +69,7 @@ export const useSeo = (options: SeoOptions) => {
 const { data: book } = await useFetch(`/api/v1/books/${slug}`)
 
 useSeo({
-  title: `${book.value.title} — ${book.value.author_name} | Anjumanlar.com`,
+  title: `${book.value.title} — ${book.value.author_name} | Monografiya`,
   description: book.value.description.slice(0, 155),
   image: book.value.cover_url,
   type: 'book',
@@ -154,26 +154,26 @@ Schema.org markup Google'ga sayt mazmunini tushunishga yordam beradi va rich sni
 ```typescript
 useSchemaOrg([
   defineOrganization({
-    name: 'Anjumanlar.com',
-    url: 'https://anjumanlar.com',
-    logo: 'https://anjumanlar.com/logo.png',
+    name: 'Monografiya',
+    url: 'https://monografiya.com',
+    logo: 'https://monografiya.com/logo.png',
     sameAs: [
-      'https://t.me/anjumanlar',
-      'https://www.facebook.com/anjumanlar',
-      'https://www.instagram.com/anjumanlar',
+      'https://t.me/monografiya',
+      'https://www.facebook.com/monografiya',
+      'https://www.instagram.com/monografiya',
     ],
     contactPoint: {
       contactType: 'customer support',
-      email: 'support@anjumanlar.com',
+      email: 'support@monografiya.com',
       areaServed: 'UZ',
       availableLanguage: ['uz', 'ru', 'en'],
     },
   }),
   defineWebSite({
-    name: 'Anjumanlar.com',
-    url: 'https://anjumanlar.com',
+    name: 'Monografiya',
+    url: 'https://monografiya.com',
     potentialAction: defineSearchAction({
-      target: 'https://anjumanlar.com/search?q={search_term_string}',
+      target: 'https://monografiya.com/search?q={search_term_string}',
     }),
   }),
 ])
@@ -190,7 +190,7 @@ useSchemaOrg([
   "author": {
     "@type": "Person",
     "name": "Aziz Aliyev",
-    "url": "https://anjumanlar.com/uz/authors/aziz-aliyev"
+    "url": "https://monografiya.com/uz/authors/aziz-aliyev"
   },
   "isbn": "978-9943-00-000-0",
   "bookFormat": "https://schema.org/EBook",
@@ -198,9 +198,9 @@ useSchemaOrg([
   "datePublished": "2024-03-15",
   "publisher": {
     "@type": "Organization",
-    "name": "Anjumanlar.com"
+    "name": "Monografiya"
   },
-  "image": "https://anjumanlar.com/covers/yashash-falsafasi.jpg",
+  "image": "https://monografiya.com/covers/yashash-falsafasi.jpg",
   "description": "Inson hayoti va uning ma'nosi haqida monografiya.",
   "aggregateRating": {
     "@type": "AggregateRating",
@@ -213,10 +213,10 @@ useSchemaOrg([
     "price": "45000",
     "priceCurrency": "UZS",
     "availability": "https://schema.org/InStock",
-    "url": "https://anjumanlar.com/uz/books/yashash-falsafasi",
+    "url": "https://monografiya.com/uz/books/yashash-falsafasi",
     "seller": {
       "@type": "Organization",
-      "name": "Anjumanlar.com"
+      "name": "Monografiya"
     }
   }
 }
@@ -231,8 +231,8 @@ useSchemaOrg([
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Aziz Aliyev",
-  "url": "https://anjumanlar.com/uz/authors/aziz-aliyev",
-  "image": "https://anjumanlar.com/avatars/aziz-aliyev.jpg",
+  "url": "https://monografiya.com/uz/authors/aziz-aliyev",
+  "image": "https://monografiya.com/avatars/aziz-aliyev.jpg",
   "jobTitle": "Filosof, professor",
   "affiliation": {
     "@type": "Organization",
@@ -258,19 +258,19 @@ useSchemaOrg([
       "@type": "ListItem",
       "position": 1,
       "name": "Bosh sahifa",
-      "item": "https://anjumanlar.com/uz"
+      "item": "https://monografiya.com/uz"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Katalog",
-      "item": "https://anjumanlar.com/uz/catalog"
+      "item": "https://monografiya.com/uz/catalog"
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": "Falsafa",
-      "item": "https://anjumanlar.com/uz/categories/falsafa"
+      "item": "https://monografiya.com/uz/categories/falsafa"
     },
     {
       "@type": "ListItem",
@@ -290,24 +290,24 @@ useSchemaOrg([
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Monografiya qanday yoziladi?",
-  "image": "https://anjumanlar.com/blog/monografiya.jpg",
+  "image": "https://monografiya.com/blog/monografiya.jpg",
   "datePublished": "2026-05-10T10:00:00+05:00",
   "dateModified": "2026-05-12T15:30:00+05:00",
   "author": {
     "@type": "Person",
-    "name": "Anjumanlar tahririyat"
+    "name": "Monografiya tahririyat"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Anjumanlar.com",
+    "name": "Monografiya",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://anjumanlar.com/logo.png"
+      "url": "https://monografiya.com/logo.png"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://anjumanlar.com/uz/blog/monografiya-qanday-yoziladi"
+    "@id": "https://monografiya.com/uz/blog/monografiya-qanday-yoziladi"
   }
 }
 </script>
@@ -323,7 +323,7 @@ useSchemaOrg([
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Anjumanlar.com'da qanday qilib kitob sotish mumkin?",
+      "name": "Monografiya'da qanday qilib kitob sotish mumkin?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Muallif sifatida ro'yxatdan o'tib, kabinetingizda kitob yuklang."
@@ -363,7 +363,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/sitemap'],
 
   site: {
-    url: 'https://anjumanlar.com',
+    url: 'https://monografiya.com',
   },
 
   sitemap: {
@@ -492,13 +492,13 @@ Agar URL'lar 50,000'dan ko'p bo'lsa, sitemap'larni bo'lib indekslash kerak:
 <!-- sitemap_index.xml -->
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://anjumanlar.com/sitemap-books.xml</loc>
+    <loc>https://monografiya.com/sitemap-books.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://anjumanlar.com/sitemap-authors.xml</loc>
+    <loc>https://monografiya.com/sitemap-authors.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://anjumanlar.com/sitemap-blog.xml</loc>
+    <loc>https://monografiya.com/sitemap-blog.xml</loc>
   </sitemap>
 </sitemapindex>
 ```
@@ -531,7 +531,7 @@ User-agent: Googlebot
 Allow: /
 
 # Sitemap
-Sitemap: https://anjumanlar.com/sitemap.xml
+Sitemap: https://monografiya.com/sitemap.xml
 ```
 
 ## Sitemap'ni qidiruv tizimlariga yuborish
@@ -557,7 +557,7 @@ import requests
 @celery_app.task
 def ping_search_engines():
     """Sitemap yangilanganida search engine'larga xabar berish"""
-    sitemap_url = "https://anjumanlar.com/sitemap.xml"
+    sitemap_url = "https://monografiya.com/sitemap.xml"
 
     requests.get(f"https://www.google.com/ping?sitemap={sitemap_url}")
     requests.get(f"https://webmaster.yandex.com/ping?sitemap={sitemap_url}")

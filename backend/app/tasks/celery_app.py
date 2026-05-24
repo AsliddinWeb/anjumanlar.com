@@ -14,7 +14,7 @@ from celery.schedules import crontab
 from app.config import settings
 
 celery_app = Celery(
-    "anjumanlar",
+    "monografiya",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
     include=[

@@ -1,5 +1,5 @@
 # ============================================================
-# Anjumanlar.com — production docker-compose
+# Monografiya — production docker-compose
 #
 # Differences vs. docker-compose.yml (dev):
 #  - No volume-mounted source — code is baked into the image.
@@ -13,10 +13,10 @@
 #    against this nginx (see scripts/certbot.sh).
 # ============================================================
 
-name: anjumanlar
+name: monografiya
 
 networks:
-  anjumanlar:
+  monografiya:
     driver: bridge
 
 volumes:
@@ -32,7 +32,7 @@ services:
   # ---------- PostgreSQL 16 ----------
   postgres:
     image: postgres:16-alpine
-    container_name: anjumanlar-postgres
+    container_name: monografiya-postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -50,12 +50,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Redis 7 ----------
   redis:
     image: redis:7-alpine
-    container_name: anjumanlar-redis
+    container_name: monografiya-redis
     restart: always
     command: redis-server --appendonly yes --save 60 1
     ports:
@@ -67,12 +67,12 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- MinIO ----------
   minio:
     image: minio/minio:latest
-    container_name: anjumanlar-minio
+    container_name: monografiya-minio
     restart: always
     command: server /data --console-address ":9001"
     environment:
@@ -89,11 +89,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   minio-init:
     image: minio/mc:latest
-    container_name: anjumanlar-minio-init
+    container_name: monografiya-minio-init
     depends_on:
       minio:
         condition: service_healthy
@@ -109,13 +109,13 @@ services:
     volumes:
       - ./docker/minio/setup.sh:/setup.sh:ro
     entrypoint: ["/bin/sh", "/setup.sh"]
-    networks: [anjumanlar]
+    networks: [monografiya]
     restart: "no"
 
   # ---------- Meilisearch ----------
   meilisearch:
     image: getmeili/meilisearch:v1.6
-    container_name: anjumanlar-meilisearch
+    container_name: monografiya-meilisearch
     restart: always
     environment:
       MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
@@ -130,15 +130,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Backend (FastAPI) ----------
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
-    image: anjumanlar-backend:prod
-    container_name: anjumanlar-backend
+    image: monografiya-backend:prod
+    container_name: monografiya-backend
     restart: always
     env_file: [.env]
     environment:
@@ -161,7 +161,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Frontend (Nuxt 3, prebuilt) ----------
   frontend:
@@ -171,10 +171,10 @@ services:
       args:
         NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
         NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL}
-        NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Anjumanlar.com}
+        NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Monografiya}
         NUXT_PUBLIC_DEFAULT_LOCALE: ${NUXT_PUBLIC_DEFAULT_LOCALE:-uz}
-    image: anjumanlar-frontend:prod
-    container_name: anjumanlar-frontend
+    image: monografiya-frontend:prod
+    container_name: monografiya-frontend
     restart: always
     environment:
       NODE_ENV: production
@@ -183,7 +183,7 @@ services:
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
       NUXT_API_BASE_INTERNAL: ${NUXT_API_BASE_INTERNAL}
       NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL}
-      NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Anjumanlar.com}
+      NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Monografiya}
       NUXT_PUBLIC_DEFAULT_LOCALE: ${NUXT_PUBLIC_DEFAULT_LOCALE:-uz}
       NUXT_TELEMETRY_DISABLED: "1"
     ports:
@@ -191,12 +191,12 @@ services:
     depends_on:
       backend:
         condition: service_started
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Celery worker ----------
   celery_worker:
-    image: anjumanlar-backend:prod
-    container_name: anjumanlar-celery-worker
+    image: monografiya-backend:prod
+    container_name: monografiya-celery-worker
     restart: always
     env_file: [.env]
     environment:
@@ -210,12 +210,12 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Celery beat ----------
   celery_beat:
-    image: anjumanlar-backend:prod
-    container_name: anjumanlar-celery-beat
+    image: monografiya-backend:prod
+    container_name: monografiya-celery-beat
     restart: always
     env_file: [.env]
     environment:
@@ -229,12 +229,12 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Nginx (TLS terminator + reverse proxy) ----------
   nginx:
     image: nginx:1.27-alpine
-    container_name: anjumanlar-nginx
+    container_name: monografiya-nginx
     restart: always
     ports:
       - "${NGINX_HTTP_PORT:-80}:80"
@@ -250,16 +250,16 @@ services:
         condition: service_started
       frontend:
         condition: service_started
-    networks: [anjumanlar]
+    networks: [monografiya]
 
   # ---------- Certbot (one-shot; run manually to issue/renew certs) ----------
   certbot:
     image: certbot/certbot:latest
-    container_name: anjumanlar-certbot
+    container_name: monografiya-certbot
     volumes:
       - certbot_certs:/etc/letsencrypt
       - certbot_www:/var/www/certbot
     # Manual: ``docker compose -f docker-compose.prod.yml run --rm certbot ...``
     entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done"]
     restart: always
-    networks: [anjumanlar]
+    networks: [monografiya]

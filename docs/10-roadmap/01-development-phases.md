@@ -1,6 +1,6 @@
 # Yo'l xaritasi — Rivojlanish bosqichlari
 
-Anjumanlar.com'ni 0'dan ishchi saytga olib chiqish bo'yicha 8-10 haftalik MVP rejasi.
+Monografiya'ni 0'dan ishchi saytga olib chiqish bo'yicha 8-10 haftalik MVP rejasi.
 
 ## Umumiy qarash
 
@@ -27,7 +27,7 @@ Loyihaning skeletini yaratish: server, DB, asosiy infratuzilma.
 ### Bajariladigan ishlar
 
 **Loyihaga tayyorgarlik:**
-- [ ] Domain sotib olish: anjumanlar.com
+- [ ] Domain sotib olish: monografiya.com
 - [ ] VPS sozlash (DigitalOcean / Hetzner — $20/oy)
 - [ ] GitHub repository yaratish (private)
 - [ ] Project management (Trello yoki Notion)
@@ -380,8 +380,8 @@ Saytni jonli serverda ishga tushirish.
 ### Sprint 7 natijasi
 
 ```
-🚀 Anjumanlar.com jonli!
-✓ https://anjumanlar.com — ishlaydi
+🚀 Monografiya jonli!
+✓ https://monografiya.com — ishlaydi
 ✓ Birinchi mualliflar va o'quvchilar ro'yxatdan o'tdi
 ✓ Birinchi to'lov muvaffaqiyatli amalga oshdi
 ```

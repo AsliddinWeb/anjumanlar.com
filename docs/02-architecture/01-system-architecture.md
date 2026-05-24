@@ -1,6 +1,6 @@
 # 01. Tizim Arxitekturasi (System Architecture)
 
-> Anjumanlar.com — mikroservislarga juda yaqin **monolitik + servisli** arxitekturada quriladi. Bu kichik komandalar uchun optimaldir.
+> Monografiya — mikroservislarga juda yaqin **monolitik + servisli** arxitekturada quriladi. Bu kichik komandalar uchun optimaldir.
 
 ---
 

@@ -1,6 +1,6 @@
 # 03. Saytdagi Barcha Sahifalar Ro'yxati
 
-> Saytning to'liq sahifalar strukturasi. URL'lar `/uz/` prefiks bilan keladi (i18n). Misol uchun bosh sahifa: `anjumanlar.com/uz/`.
+> Saytning to'liq sahifalar strukturasi. URL'lar `/uz/` prefiks bilan keladi (i18n). Misol uchun bosh sahifa: `monografiya.com/uz/`.
 
 ---
 
@@ -147,7 +147,7 @@ Admin sahifalariga qo'shimcha:
 ## 🗺 Sahifa iyerarxiyasi (Sitemap)
 
 ```
-anjumanlar.com/
+monografiya.com/
 ├── / (bosh sahifa)
 ├── /books
 │   ├── /books/[slug]

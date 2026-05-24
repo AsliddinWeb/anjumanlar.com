@@ -18,8 +18,8 @@
 
 ```bash
 # Asosiy papka
-mkdir -p anjumanlar/backend
-cd anjumanlar/backend
+mkdir -p monografiya/backend
+cd monografiya/backend
 
 # Virtual environment
 python3.12 -m venv venv
@@ -36,9 +36,9 @@ source venv/bin/activate    # Linux/Mac
 
 ```toml
 [project]
-name = "anjumanlar-backend"
+name = "monografiya-backend"
 version = "0.1.0"
-description = "Anjumanlar.com — monografiya marketplace backend"
+description = "Monografiya — monografiya marketplace backend"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.110.0",
@@ -114,7 +114,7 @@ class Settings(BaseSettings):
     )
 
     # Asosiy
-    APP_NAME: str = "Anjumanlar"
+    APP_NAME: str = "Monografiya"
     APP_ENV: Literal["development", "staging", "production"] = "development"
     DEBUG: bool = True
     API_V1_PREFIX: str = "/api/v1"
@@ -124,7 +124,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://anjumanlar.com",
+        "https://monografiya.com",
     ]
 
     # Database
@@ -147,7 +147,7 @@ class Settings(BaseSettings):
     MINIO_ENDPOINT: str = "minio:9000"
     MINIO_ACCESS_KEY: str
     MINIO_SECRET_KEY: str
-    MINIO_BUCKET: str = "anjumanlar"
+    MINIO_BUCKET: str = "monografiya"
     MINIO_SECURE: bool = False  # production'da True
 
     # Meilisearch
@@ -165,11 +165,11 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 587
     SMTP_USER: str
     SMTP_PASSWORD: str
-    SMTP_FROM_EMAIL: str = "noreply@anjumanlar.com"
-    SMTP_FROM_NAME: str = "Anjumanlar.com"
+    SMTP_FROM_EMAIL: str = "noreply@monografiya.com"
+    SMTP_FROM_NAME: str = "Monografiya"
 
     # Frontend URL (emaillar uchun)
-    FRONTEND_URL: str = "https://anjumanlar.com"
+    FRONTEND_URL: str = "https://monografiya.com"
 
     # Komissiya
     DEFAULT_COMMISSION_PERCENT: float = 15.0
@@ -477,7 +477,7 @@ DEBUG=true
 SECRET_KEY=change-this-to-random-secret-key
 
 # Database
-DATABASE_URL=postgresql+asyncpg://anjumanlar:password@postgres:5432/anjumanlar
+DATABASE_URL=postgresql+asyncpg://monografiya:password@postgres:5432/monografiya
 
 # JWT
 JWT_SECRET_KEY=another-random-secret-for-jwt
@@ -493,7 +493,7 @@ CELERY_RESULT_BACKEND=redis://redis:6379/2
 MINIO_ENDPOINT=minio:9000
 MINIO_ACCESS_KEY=minioadmin
 MINIO_SECRET_KEY=minioadmin
-MINIO_BUCKET=anjumanlar
+MINIO_BUCKET=monografiya
 
 # Meilisearch
 MEILISEARCH_URL=http://meilisearch:7700
@@ -509,7 +509,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
-SMTP_FROM_EMAIL=noreply@anjumanlar.com
+SMTP_FROM_EMAIL=noreply@monografiya.com
 
 # Frontend
 FRONTEND_URL=http://localhost:3000

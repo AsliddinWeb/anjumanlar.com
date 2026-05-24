@@ -13,7 +13,7 @@ from app.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.limiter import limiter, rate_limit_exceeded_handler
 
-logger = logging.getLogger("anjumanlar")
+logger = logging.getLogger("monografiya")
 logging.basicConfig(
     level=logging.INFO if settings.is_production else logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -59,14 +59,14 @@ _init_sentry()
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    logger.info("Starting anjumanlar backend (env=%s)", settings.ENVIRONMENT)
+    logger.info("Starting monografiya backend (env=%s)", settings.ENVIRONMENT)
     yield
-    logger.info("Shutting down anjumanlar backend")
+    logger.info("Shutting down monografiya backend")
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Anjumanlar.com API",
+        title="Monografiya API",
         version=__version__,
         description="Monografiya sotuvi platformasi — REST API",
         docs_url="/docs",
@@ -116,7 +116,7 @@ def create_app() -> FastAPI:
     @app.get("/", tags=["meta"], include_in_schema=False)
     async def root() -> dict[str, str]:
         return {
-            "message": "Anjumanlar.com API",
+            "message": "Monografiya API",
             "docs": "/docs",
             "health": "/health",
         }

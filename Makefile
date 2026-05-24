@@ -2,7 +2,7 @@
 
 # Default target
 help:
-	@echo "Anjumanlar.com — development commands"
+	@echo "Monografiya — development commands"
 	@echo ""
 	@echo "  make env              Copy .env.example -> .env (only if .env missing)"
 	@echo "  make up               Start all dev services (detached)"
@@ -76,7 +76,7 @@ shell-backend:
 	docker compose exec backend /bin/bash
 
 shell-db:
-	docker compose exec postgres psql -U $${POSTGRES_USER:-anjumanlar} -d $${POSTGRES_DB:-anjumanlar}
+	docker compose exec postgres psql -U $${POSTGRES_USER:-monografiya} -d $${POSTGRES_DB:-monografiya}
 
 shell-redis:
 	docker compose exec redis redis-cli
@@ -115,7 +115,7 @@ prod-seed:
 	$(PROD) exec backend python -m app.scripts.seed_categories
 
 # Create the first superadmin. Usage:
-#   make prod-create-admin EMAIL=you@anjumanlar.com PASSWORD='Strong!2026' NAME='Site Admin'
+#   make prod-create-admin EMAIL=you@monografiya.com PASSWORD='Strong!2026' NAME='Site Admin'
 prod-create-admin:
 	$(PROD) exec backend python -m app.scripts.create_admin \
 	    --email "$(EMAIL)" --password "$(PASSWORD)" --name "$(NAME)"
@@ -130,7 +130,7 @@ prod-backup:
 	./scripts/backup.sh
 
 # Restore from a backup directory. Usage:
-#   make prod-restore BACKUP=/var/backups/anjumanlar/20260801-030000
+#   make prod-restore BACKUP=/var/backups/monografiya/20260801-030000
 # Add FORCE=1 to overwrite a populated database.
 prod-restore:
 	./scripts/restore.sh $(if $(FORCE),--force,) "$(BACKUP)"

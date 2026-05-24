@@ -1,5 +1,5 @@
 # ============================================================
-# Anjumanlar.com — development docker-compose
+# Monografiya — development docker-compose
 # All host ports start from 8300 (see README).
 # Backend, frontend and Celery services are added in
 # sub-phases 0.5 and 0.6 — this file currently brings up the
@@ -7,10 +7,10 @@
 # MailHog) so it can be verified independently.
 # ============================================================
 
-name: anjumanlar
+name: monografiya
 
 networks:
-  anjumanlar:
+  monografiya:
     driver: bridge
 
 volumes:
@@ -25,12 +25,12 @@ services:
   # ---------- PostgreSQL 16 ----------
   postgres:
     image: postgres:16-alpine
-    container_name: anjumanlar-postgres
+    container_name: monografiya-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-anjumanlar}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-anjumanlar}
-      POSTGRES_DB: ${POSTGRES_DB:-anjumanlar}
+      POSTGRES_USER: ${POSTGRES_USER:-monografiya}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-monografiya}
+      POSTGRES_DB: ${POSTGRES_DB:-monografiya}
       TZ: ${TZ:-Asia/Tashkent}
       PGTZ: ${TZ:-Asia/Tashkent}
     ports:
@@ -39,17 +39,17 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-anjumanlar} -d ${POSTGRES_DB:-anjumanlar}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-monografiya} -d ${POSTGRES_DB:-monografiya}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- Redis 7 ----------
   redis:
     image: redis:7-alpine
-    container_name: anjumanlar-redis
+    container_name: monografiya-redis
     restart: unless-stopped
     command: redis-server --appendonly yes --save 60 1
     ports:
@@ -62,12 +62,12 @@ services:
       timeout: 3s
       retries: 5
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- MinIO (S3-compatible) ----------
   minio:
     image: minio/minio:latest
-    container_name: anjumanlar-minio
+    container_name: monografiya-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
@@ -85,12 +85,12 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - anjumanlar
+      - monografiya
 
   # One-shot job: creates required buckets on first run.
   minio-init:
     image: minio/mc:latest
-    container_name: anjumanlar-minio-init
+    container_name: monografiya-minio-init
     depends_on:
       minio:
         condition: service_healthy
@@ -107,13 +107,13 @@ services:
       - ./docker/minio/setup.sh:/setup.sh:ro
     entrypoint: ["/bin/sh", "/setup.sh"]
     networks:
-      - anjumanlar
+      - monografiya
     restart: "no"
 
   # ---------- Meilisearch ----------
   meilisearch:
     image: getmeili/meilisearch:v1.6
-    container_name: anjumanlar-meilisearch
+    container_name: monografiya-meilisearch
     restart: unless-stopped
     environment:
       MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:-change-me-32-chars-minimum-secret-key}
@@ -129,26 +129,26 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- MailHog (dev SMTP catcher) ----------
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: anjumanlar-mailhog
+    container_name: monografiya-mailhog
     restart: unless-stopped
     ports:
       - "${MAILHOG_SMTP_PORT:-8305}:1025"
       - "${MAILHOG_UI_PORT:-8306}:8025"
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- Frontend (Nuxt 3) ----------
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: anjumanlar-frontend:dev
-    container_name: anjumanlar-frontend
+    image: monografiya-frontend:dev
+    container_name: monografiya-frontend
     restart: unless-stopped
     env_file:
       - .env
@@ -166,15 +166,15 @@ services:
       backend:
         condition: service_started
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- Backend (FastAPI) ----------
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: anjumanlar-backend:dev
-    container_name: anjumanlar-backend
+    image: monografiya-backend:dev
+    container_name: monografiya-backend
     restart: unless-stopped
     env_file:
       - .env
@@ -200,12 +200,12 @@ services:
       retries: 5
       start_period: 20s
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- Celery worker ----------
   celery_worker:
-    image: anjumanlar-backend:dev
-    container_name: anjumanlar-celery-worker
+    image: monografiya-backend:dev
+    container_name: monografiya-celery-worker
     restart: unless-stopped
     env_file:
       - .env
@@ -224,12 +224,12 @@ services:
       mailhog:
         condition: service_started
     networks:
-      - anjumanlar
+      - monografiya
 
   # ---------- Celery beat (scheduled tasks) ----------
   celery_beat:
-    image: anjumanlar-backend:dev
-    container_name: anjumanlar-celery-beat
+    image: monografiya-backend:dev
+    container_name: monografiya-celery-beat
     restart: unless-stopped
     env_file:
       - .env
@@ -244,4 +244,4 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - anjumanlar
+      - monografiya

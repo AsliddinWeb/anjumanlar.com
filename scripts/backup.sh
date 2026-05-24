@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Daily backup — runs from /opt/anjumanlar.com via cron.
+# Daily backup — runs from /opt/monografiya.com via cron.
 #
 # Dumps:
 #   1. PostgreSQL — pg_dump (custom format, gzipped), readable by pg_restore
 #   2. MinIO data volume — tar+gz of the docker volume
 #
-# Output: /var/backups/anjumanlar/YYYYMMDD-HHMMSS/
+# Output: /var/backups/monografiya/YYYYMMDD-HHMMSS/
 # Retention: BACKUP_RETENTION_DAYS (default 30) — older directories are pruned.
 #
 # Designed to be idempotent + cron-safe (no interactive prompts, safe stderr).
 set -euo pipefail
 
-PROJECT_DIR="${PROJECT_DIR:-/opt/anjumanlar.com}"
-BACKUP_DIR="${BACKUP_DIR:-/var/backups/anjumanlar}"
+PROJECT_DIR="${PROJECT_DIR:-/opt/monografiya.com}"
+BACKUP_DIR="${BACKUP_DIR:-/var/backups/monografiya}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 COMPOSE="docker compose -f docker-compose.prod.yml"
 
@@ -31,8 +31,8 @@ fi
 # Pull DB creds from .env without leaking the file's other secrets.
 DB_USER=$(grep -E '^POSTGRES_USER=' .env | cut -d= -f2-)
 DB_NAME=$(grep -E '^POSTGRES_DB=' .env | cut -d= -f2-)
-DB_USER="${DB_USER:-anjumanlar}"
-DB_NAME="${DB_NAME:-anjumanlar}"
+DB_USER="${DB_USER:-monografiya}"
+DB_NAME="${DB_NAME:-monografiya}"
 
 TS=$(date -u +%Y%m%d-%H%M%S)
 DEST="$BACKUP_DIR/$TS"
@@ -59,7 +59,7 @@ echo "==> postgres dump: ${dump_size} bytes"
 # credentials in this script.
 echo "==> snapshotting minio_data volume"
 docker run --rm \
-    -v anjumanlar_minio_data:/data:ro \
+    -v monografiya_minio_data:/data:ro \
     -v "$DEST":/backup \
     alpine:3.20 \
     sh -c "cd /data && tar czf /backup/minio_data.tar.gz ."

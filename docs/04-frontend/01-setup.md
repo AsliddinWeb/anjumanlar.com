@@ -24,7 +24,7 @@ npm install
 
 ```json
 {
-  "name": "anjumanlar-frontend",
+  "name": "monografiya-frontend",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -93,8 +93,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL || 'http://localhost:8000/api/v1',
-      siteUrl: process.env.SITE_URL || 'https://anjumanlar.com',
-      siteName: 'Anjumanlar',
+      siteUrl: process.env.SITE_URL || 'https://monografiya.com',
+      siteName: 'Monografiya',
     },
   },
 
@@ -121,7 +121,7 @@ export default defineNuxtConfig({
     preference: 'system',
     fallback: 'light',
     classSuffix: '',
-    storageKey: 'anjumanlar-color-mode',
+    storageKey: 'monografiya-color-mode',
   },
 
   // Tailwind
@@ -132,8 +132,8 @@ export default defineNuxtConfig({
 
   // SEO
   site: {
-    url: process.env.SITE_URL || 'https://anjumanlar.com',
-    name: 'Anjumanlar',
+    url: process.env.SITE_URL || 'https://monografiya.com',
+    name: 'Monografiya',
   },
 
   // App config

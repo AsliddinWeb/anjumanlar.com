@@ -26,15 +26,15 @@ Loyiha to'liq Docker Compose orqali ishlatiladi. Hech narsani lokal kompyuterga 
 ## docker-compose.yml (development)
 
 ```yaml
-name: anjumanlar
+name: monografiya
 
 services:
   db:
     image: postgres:16-alpine
-    container_name: anjumanlar-db
+    container_name: monografiya-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-anjumanlar}
+      POSTGRES_DB: ${POSTGRES_DB:-monografiya}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
@@ -50,7 +50,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: anjumanlar-redis
+    container_name: monografiya-redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis}
     volumes:
@@ -65,7 +65,7 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: anjumanlar-minio
+    container_name: monografiya-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
@@ -105,7 +105,7 @@ services:
 
   meilisearch:
     image: getmeili/meilisearch:v1.10
-    container_name: anjumanlar-meilisearch
+    container_name: monografiya-meilisearch
     restart: unless-stopped
     environment:
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-master_key_change_me}
@@ -119,7 +119,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: anjumanlar-backend
+    container_name: monografiya-backend
     restart: unless-stopped
     depends_on:
       db:
@@ -131,7 +131,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-anjumanlar}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-monografiya}
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis}@redis:6379/0
       CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redis}@redis:6379/1
       CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD:-redis}@redis:6379/2
@@ -149,7 +149,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: anjumanlar-celery-worker
+    container_name: monografiya-celery-worker
     restart: unless-stopped
     depends_on:
       - redis
@@ -157,7 +157,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-anjumanlar}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-monografiya}
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis}@redis:6379/0
       CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redis}@redis:6379/1
       MINIO_ENDPOINT: minio:9000
@@ -169,7 +169,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: anjumanlar-celery-beat
+    container_name: monografiya-celery-beat
     restart: unless-stopped
     depends_on:
       - redis
@@ -185,7 +185,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: anjumanlar-frontend
+    container_name: monografiya-frontend
     restart: unless-stopped
     depends_on:
       - backend
@@ -203,7 +203,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: anjumanlar-mailhog
+    container_name: monografiya-mailhog
     restart: unless-stopped
     ports:
       - "1025:1025"  # SMTP
@@ -219,7 +219,7 @@ volumes:
 ## docker-compose.prod.yml (production override)
 
 ```yaml
-name: anjumanlar
+name: monografiya
 
 services:
   db:
@@ -255,7 +255,7 @@ services:
   
   nginx:
     image: nginx:alpine
-    container_name: anjumanlar-nginx
+    container_name: monografiya-nginx
     restart: unless-stopped
     depends_on:
       - frontend
@@ -272,7 +272,7 @@ services:
   
   certbot:
     image: certbot/certbot:latest
-    container_name: anjumanlar-certbot
+    container_name: monografiya-certbot
     volumes:
       - ./docker/nginx/ssl:/etc/letsencrypt
       - ./docker/nginx/certbot/www:/var/www/certbot
@@ -345,7 +345,7 @@ docker compose restart backend
 
 # Container ichiga kirish
 docker compose exec backend bash
-docker compose exec db psql -U postgres -d anjumanlar
+docker compose exec db psql -U postgres -d monografiya
 
 # Loglar
 docker compose logs -f
@@ -370,13 +370,13 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f --tail=1
 
 ```bash
 # Database backup
-docker compose exec db pg_dump -U postgres anjumanlar | gzip > backup_$(date +%Y%m%d_%H%M%S).sql.gz
+docker compose exec db pg_dump -U postgres monografiya | gzip > backup_$(date +%Y%m%d_%H%M%S).sql.gz
 
 # MinIO backup
-docker run --rm -v anjumanlar_minio_data:/data -v $(pwd):/backup alpine tar czf /backup/minio_$(date +%Y%m%d).tar.gz /data
+docker run --rm -v monografiya_minio_data:/data -v $(pwd):/backup alpine tar czf /backup/minio_$(date +%Y%m%d).tar.gz /data
 
 # Restore
-gunzip -c backup_20250115.sql.gz | docker compose exec -T db psql -U postgres -d anjumanlar
+gunzip -c backup_20250115.sql.gz | docker compose exec -T db psql -U postgres -d monografiya
 ```
 
 ### Tozalash
@@ -422,7 +422,7 @@ Har servisning sog'lig'ini tekshirish:
 docker compose ps
 
 # Yoki
-docker inspect anjumanlar-backend --format='{{json .State.Health}}'
+docker inspect monografiya-backend --format='{{json .State.Health}}'
 ```
 
 **Keyingi qadam:** `07-deployment/02-nginx-ssl.md`

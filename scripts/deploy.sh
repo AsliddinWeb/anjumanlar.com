@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Production deploy script — run on the server from /opt/anjumanlar.com.
+# Production deploy script — run on the server from /opt/monografiya.com.
 #
 # What it does:
 #   1. git pull (fast-forward only)

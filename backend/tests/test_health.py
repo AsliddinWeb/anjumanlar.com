@@ -7,7 +7,7 @@ async def test_health(client) -> None:
     assert resp.status_code == 200
     body = resp.json()
     assert body["status"] == "ok"
-    assert body["service"] == "anjumanlar"
+    assert body["service"] == "monografiya"
 
 
 @pytest.mark.asyncio

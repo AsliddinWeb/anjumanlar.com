@@ -6,10 +6,10 @@
 
 ## 📂 Saqlash strukturasi (MinIO buckets)
 
-### Bucket: `anjumanlar`
+### Bucket: `monografiya`
 
 ```
-anjumanlar/
+monografiya/
 ├── books/                          # Asl PDF/EPUB (XUSUSIY)
 │   └── {book_id}/
 │       ├── original.pdf
@@ -329,7 +329,7 @@ def create_watermark_pdf(text: str, page_width: float, page_height: float) -> by
     # Pastki o'ng burchakda
     c.setFillColor(Color(0.3, 0.3, 0.3, alpha=0.5))
     c.setFont("Helvetica", 8)
-    c.drawRightString(page_width - 20, 20, f"© Anjumanlar.com | {text}")
+    c.drawRightString(page_width - 20, 20, f"© Monografiya | {text}")
     
     c.save()
     return buffer.getvalue()

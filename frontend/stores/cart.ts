@@ -15,7 +15,7 @@ import type { BookPublic } from "~/types/api";
  * arrives on the client tick.
  */
 
-const STORAGE_KEY = "anjumanlar:cart:v1";
+const STORAGE_KEY = "monografiya:cart:v1";
 
 interface SerializedCart {
   items: BookPublic[];

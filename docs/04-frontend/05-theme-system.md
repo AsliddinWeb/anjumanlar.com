@@ -11,7 +11,7 @@ colorMode: {
   preference: 'system',        // foydalanuvchi tanlovi yo'q bo'lsa
   fallback: 'light',           // system aniqlanmasa
   classSuffix: '',             // 'dark-mode' emas, faqat 'dark'
-  storageKey: 'anjumanlar-color-mode',
+  storageKey: 'monografiya-color-mode',
 }
 ```
 
@@ -193,10 +193,10 @@ Logo va illyustratsiyalar uchun dark mode versiyasi:
   <ClientOnly>
     <img
       :src="colorMode.value === 'dark' ? '/logo-dark.svg' : '/logo-light.svg'"
-      alt="Anjumanlar"
+      alt="Monografiya"
     />
     <template #fallback>
-      <img src="/logo-light.svg" alt="Anjumanlar" />
+      <img src="/logo-light.svg" alt="Monografiya" />
     </template>
   </ClientOnly>
 </template>
@@ -205,8 +205,8 @@ Logo va illyustratsiyalar uchun dark mode versiyasi:
 Yoki CSS orqali:
 
 ```html
-<img src="/logo-light.svg" class="block dark:hidden" alt="Anjumanlar" />
-<img src="/logo-dark.svg" class="hidden dark:block" alt="Anjumanlar" />
+<img src="/logo-light.svg" class="block dark:hidden" alt="Monografiya" />
+<img src="/logo-dark.svg" class="hidden dark:block" alt="Monografiya" />
 ```
 
 ## Foydalanuvchi profilida saqlash

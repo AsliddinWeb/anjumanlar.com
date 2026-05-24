@@ -11,21 +11,46 @@ from __future__ import annotations
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ConflictError, NotFoundError
-from app.models import Category
+from app.models import Book, BookStatus, Category
+from app.models.book_category import book_categories
 from app.schemas.category import CategoryCreate, CategoryUpdate
 
 
 async def list_all(db: AsyncSession, active_only: bool = True) -> list[Category]:
-    stmt = select(Category)
+    """Return all categories with ``book_count`` overwritten by a live count
+    of approved books linked via ``book_categories``.
+
+    The denormalised counter on the row is never written to in the current
+    codebase, so it stays at 0 — we compute the truth on read instead. A
+    single LEFT JOIN keeps this O(N) without per-row queries.
+    """
+    book_count = (
+        select(func.count(Book.id))
+        .select_from(book_categories.join(Book, Book.id == book_categories.c.book_id))
+        .where(
+            book_categories.c.category_id == Category.id,
+            Book.status == BookStatus.approved,
+        )
+        .correlate(Category)
+        .scalar_subquery()
+    )
+
+    stmt = select(Category, book_count.label("live_book_count"))
     if active_only:
         stmt = stmt.where(Category.is_active.is_(True))
     stmt = stmt.order_by(Category.sort_order, Category.slug)
-    return list((await db.execute(stmt)).scalars().all())
+
+    rows = (await db.execute(stmt)).all()
+    categories: list[Category] = []
+    for category, live_count in rows:
+        category.book_count = int(live_count or 0)
+        categories.append(category)
+    return categories
 
 
 async def list_tree(db: AsyncSession, active_only: bool = True) -> list[dict[str, Any]]:
@@ -62,7 +87,21 @@ async def get_by_slug(db: AsyncSession, slug: str) -> Category:
     row = (await db.execute(select(Category).where(Category.slug == slug))).scalar_one_or_none()
     if row is None:
         raise NotFoundError("Category not found", details={"code": "category_not_found"})
+    # Overwrite the stale denormalised column with a live count, same as `list_all`.
+    row.book_count = await _live_book_count(db, row.id)
     return row
+
+
+async def _live_book_count(db: AsyncSession, category_id: UUID) -> int:
+    stmt = (
+        select(func.count(Book.id))
+        .select_from(book_categories.join(Book, Book.id == book_categories.c.book_id))
+        .where(
+            book_categories.c.category_id == category_id,
+            Book.status == BookStatus.approved,
+        )
+    )
+    return int((await db.execute(stmt)).scalar() or 0)
 
 
 async def get_by_id(db: AsyncSession, category_id: UUID) -> Category:

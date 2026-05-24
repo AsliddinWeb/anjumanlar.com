@@ -1,6 +1,6 @@
-# Anjumanlar Backend (FastAPI)
+# Monografiya Backend (FastAPI)
 
-REST API for anjumanlar.com — Python 3.12, FastAPI, SQLAlchemy 2.0 async, Alembic, Celery.
+REST API for monografiya.com — Python 3.12, FastAPI, SQLAlchemy 2.0 async, Alembic, Celery.
 
 ## Local development
 

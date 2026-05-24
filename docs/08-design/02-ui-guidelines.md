@@ -1,4 +1,4 @@
-# UI Guidelines — Anjumanlar.com
+# UI Guidelines — Monografiya
 
 Komponentlarni qanday joylashtirish, qachon qaysi pattern ishlatish va saytning umumiy his-tuyg'usini saqlash bo'yicha qoidalar.
 
@@ -81,7 +81,7 @@ Scroll qilganda header'ni yashirish (mobile UX):
 │  • Bog'lanish    • O'quvchilar     • Yordam      │
 │                                                  │
 ├──────────────────────────────────────────────────┤
-│  © 2026 Anjumanlar.com  •  Foydalanish • Maxfiy │
+│  © 2026 Monografiya  •  Foydalanish • Maxfiy │
 └──────────────────────────────────────────────────┘
 ```
 

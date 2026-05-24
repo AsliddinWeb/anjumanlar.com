@@ -1,4 +1,4 @@
-# Anjumanlar.com
+# Monografiya
 
 > Mualliflar uchun monografiyalarni yuklash va sotish platformasi. 3 tilli
 > (uz/ru/en), kunduzgi/tungi rejim, Payme.uz to'lov, admin panel, SEO va
@@ -43,14 +43,14 @@ Bir necha mahalliy loyihalarni parallel ishlatish uchun barcha portlar
 | MailHog UI | **8306** | <http://localhost:8306> |
 | Backend (FastAPI) | **8307** | <http://localhost:8307/docs> |
 | Frontend (Nuxt) | **8308** | <http://localhost:8308> |
-| Nginx (production) | **80/443** | <https://anjumanlar.com> |
+| Nginx (production) | **80/443** | <https://monografiya.com> |
 
 ## Quick start (dev)
 
 ```bash
 # 1. Clone
-git clone https://github.com/AsliddinWeb/anjumanlar.com.git anjumanlar
-cd anjumanlar
+git clone https://github.com/AsliddinWeb/monografiya.com.git monografiya
+cd monografiya
 
 # 2. Environment
 make env                  # copies .env.example -> .env
@@ -126,10 +126,10 @@ Boshqa buyruqlar: `make help`.
 ## Folder structure
 
 ```
-anjumanlar/
+monografiya/
 ├── backend/        FastAPI app + Alembic + Celery + tests
 ├── frontend/       Nuxt 3 + Tailwind + Pinia + i18n
-├── nginx/          Reverse proxy config (anjumanlar.com.conf)
+├── nginx/          Reverse proxy config (monografiya.com.conf)
 ├── docker/         postgres init, certbot, minio setup
 ├── docs/           Project documentation (31 md files)
 ├── scripts/        deploy.sh, backup.sh, restore.sh
@@ -164,20 +164,20 @@ To'liq yo'riqnoma: [DEPLOY.md](./DEPLOY.md). Qisqacha:
 
 ```bash
 # Server'da
-cd /opt && sudo git clone https://github.com/AsliddinWeb/anjumanlar.com.git
-cd anjumanlar.com
+cd /opt && sudo git clone https://github.com/AsliddinWeb/monografiya.com.git
+cd monografiya.com
 cp .env.prod.example .env  # to'ldiring: secret keys, SMTP, Sentry, Payme
 make prod-build
 make prod-up
 make prod-migrate
 make prod-seed                  # 10 ta kategoriya
-make prod-create-admin EMAIL=you@anjumanlar.com PASSWORD='Strong!' NAME='Admin'
+make prod-create-admin EMAIL=you@monografiya.com PASSWORD='Strong!' NAME='Admin'
 
 # SSL (certbot Docker bilan)
 docker compose -f docker-compose.prod.yml run --rm certbot certonly \
     --webroot --webroot-path=/var/www/certbot \
-    --email you@anjumanlar.com --agree-tos --no-eff-email \
-    -d anjumanlar.com -d www.anjumanlar.com -d files.anjumanlar.com
+    --email you@monografiya.com --agree-tos --no-eff-email \
+    -d monografiya.com -d www.monografiya.com -d files.monografiya.com
 ```
 
 Launch oldidan: [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).

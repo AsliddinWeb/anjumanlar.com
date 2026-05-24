@@ -46,7 +46,7 @@ def test_render_email_each_template_each_locale(template: str, locale: str):
     assert subject == SUBJECTS[template][locale]
     assert "<html" in html.lower()
     # All bodies inherit from _layout.html so they should reference the brand.
-    assert "Anjumanlar" in html
+    assert "Monografiya" in html
 
 
 def test_render_email_falls_back_to_default_locale_when_unknown():

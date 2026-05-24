@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for working on Anjumanlar.com. This file covers everything you need to
+Thanks for working on Monografiya. This file covers everything you need to
 get a clean change merged.
 
 ## Prerequisites
@@ -18,8 +18,8 @@ both. If you want IDE autocomplete on the host, run `pnpm install` inside
 ## First-time setup
 
 ```bash
-git clone <repo-url> anjumanlar
-cd anjumanlar
+git clone <repo-url> monografiya
+cd monografiya
 make env        # copies .env.example -> .env
 # Edit .env: replace every "change-me-…" value with a real one.
 make up         # builds + starts every service

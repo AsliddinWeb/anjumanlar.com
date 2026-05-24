@@ -7,7 +7,7 @@
 ## 📁 Asosiy struktura
 
 ```
-anjumanlar/
+monografiya/
 │
 ├── .github/                       # GitHub Actions (CI/CD)
 │   └── workflows/
@@ -444,7 +444,7 @@ backup:
 ### `.env.example` (umumiy)
 ```bash
 # Backend
-DATABASE_URL=postgresql://user:pass@postgres:5432/anjumanlar
+DATABASE_URL=postgresql://user:pass@postgres:5432/monografiya
 REDIS_URL=redis://redis:6379/0
 JWT_SECRET_KEY=your-secret-here
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
@@ -454,7 +454,7 @@ JWT_REFRESH_TOKEN_EXPIRE_DAYS=7
 MINIO_ENDPOINT=minio:9000
 MINIO_ACCESS_KEY=your-key
 MINIO_SECRET_KEY=your-secret
-MINIO_BUCKET=anjumanlar
+MINIO_BUCKET=monografiya
 
 # Meilisearch
 MEILISEARCH_URL=http://meilisearch:7700
@@ -468,12 +468,12 @@ PAYME_ENDPOINT=https://checkout.paycom.uz/api
 # Email (SMTP)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=noreply@anjumanlar.com
+SMTP_USER=noreply@monografiya.com
 SMTP_PASSWORD=your-password
 
 # Frontend
 NUXT_PUBLIC_API_BASE=http://localhost:8000/api/v1
-NUXT_PUBLIC_SITE_URL=https://anjumanlar.com
+NUXT_PUBLIC_SITE_URL=https://monografiya.com
 ```
 
 ---

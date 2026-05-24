@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "Anjumanlar.com",
-    "tagline": "Monografiya sotuvi platformasi"
+    "title": "Monografiya.com",
+    "tagline": "Monografiya.com sotuvi platformasi"
   },
   "nav": {
     "home": "Bosh sahifa",
@@ -36,7 +36,23 @@
     "checkout": "To'lov",
     "checkout_login_required": "Sotib olish uchun avval tizimga kiring",
     "clear": "Savatni tozalash",
-    "error_generic": "Buyurtma yaratishda xatolik yuz berdi"
+    "error_generic": "Buyurtma yaratishda xatolik yuz berdi",
+    "summary_title": "Buyurtma jamlamasi",
+    "items_in_cart": "Kitoblar soni",
+    "free_items": "Bepul",
+    "discount": "Chegirma",
+    "checkout_free": "Tasdiqlash",
+    "continue_shopping": "Kitob qo'shish",
+    "empty_cta_browse": "Katalogdan tanlash",
+    "empty_cta_wishlist": "Sevimlilar",
+    "recommended_title": "Sizga qiziq bo'lishi mumkin",
+    "recommended_subtitle": "Eng ko'p sotilgan kitoblar",
+    "see_all": "Hammasini ko'rish",
+    "trust": {
+      "instant": "Sotib olish bilan darrov o'qiy boshlaysiz",
+      "secure": "Xavfsiz to'lov: Payme, Click, UzCard",
+      "forever": "Umrbod kirish — kitoblar shaxsiy kutubxonangizda"
+    }
   },
   "checkout": {
     "redirecting": "Payme to'lov sahifasiga yo'naltirilmoqda…",
@@ -518,23 +534,46 @@
   },
   "home": {
     "hero": {
-      "title": "Anjumanlar.com — raqamli monografiya kutubxonasi",
-      "subtitle": "Mualliflar uchun yuklash, o'quvchilar uchun sotib olish.",
-      "cta_browse": "Kitoblarni ko'rish",
+      "tagline": "O'zbek olimlari va talabalari uchun",
+      "title": "O'zbek ilmining yangi sahifasi",
+      "subtitle": "Monografiyalar, darsliklar va akademik nashrlar bir joyda. Ilmiy hayotning raqamli markazi.",
+      "cta_browse": "Katalogga o'tish",
       "cta_become_author": "Muallif bo'lish"
     },
-    "featured": "Tavsiya etilgan kitoblar",
-    "featured_subtitle": "Tahririyat tanloviga muvofiq mashhur monografiyalar",
-    "categories": "Kategoriyalar",
-    "categories_subtitle": "Tematik sohalar bo'yicha qidiring",
+    "stats": {
+      "books": "Kitoblar",
+      "categories": "Mavzular",
+      "langs": "Tillar"
+    },
+    "featured": "Tahririyat tanlovi",
+    "featured_subtitle": "Bu hafta o'qishga arziydigan kitoblar",
+    "categories": "Mavzular",
+    "categories_subtitle": "Sohani tanlang, kitobni toping",
     "categories_books": "{n} ta kitob",
-    "recent_books": "Yangi kitoblar",
-    "recent_subtitle": "So'nggi nashr etilganlar",
+    "recent_books": "So'nggi nashrlar",
+    "recent_subtitle": "Endigina chiqqan kitoblar",
     "see_all": "Hammasini ko'rish",
+    "error": {
+      "title": "Ma'lumotni yuklab bo'lmadi",
+      "body": "Server bilan aloqada muammo. Bir necha soniyadan keyin qayta urinib ko'ring yoki sahifani yangilang."
+    },
+    "empty": {
+      "title": "Kutubxona bo'sh",
+      "body": "Birinchi monografiyani siz yuklang — biz to'lov, kataloglash va o'quvchilarni o'z zimmamizga olamiz."
+    },
     "become_author_cta": {
-      "title": "Siz ham muallifmisiz?",
-      "body": "Monografiyalaringizni Anjumanlar.com'da nashr eting. Biz to'lov, statistika va auditoriyani ta'minlaymiz.",
-      "button": "Muallif bo'lish"
+      "tag": "Mualliflar uchun",
+      "title": "Kitobingiz — minglab o'quvchilarga",
+      "body": "Faylni yuklang, narxni belgilang. Modarasiyadan keyin sotuvga chiqadi.",
+      "button": "Muallif sifatida ro'yxatdan o'tish",
+      "perks": {
+        "earn_title": "Daromadning 80%",
+        "earn_body": "Har bir sotuvdan tushadigan haqning katta qismi — sizniki. Hisob-kitob shaffof.",
+        "reach_title": "Tayyor auditoriya",
+        "reach_body": "Universitet kutubxonalari, talabalar, mutaxassislar — barchasi bir platformada.",
+        "insights_title": "Real-time tahlil",
+        "insights_body": "Kim nima sotib oladi, qaysi kitob o'qiladi — to'liq statistika oching."
+      }
     }
   },
   "password": {
@@ -619,22 +658,72 @@
     "logout_all": "Hamma qurilmalardan chiqish"
   },
   "about": {
-    "title": "Anjumanlar.com haqida",
-    "subtitle": "Akademik monografiyalar uchun raqamli bozor",
-    "mission_title": "Bizning maqsadimiz",
-    "mission_body": "Anjumanlar.com — O'zbekistonda akademik monografiyalarni nashr etish va sotish uchun yagona platforma. Bizning maqsadimiz — ilm-fan natijalarini keng o'quvchilar auditoriyasiga yetkazish, mualliflarga shaffof daromad imkoniyatini taqdim etish.",
-    "for_authors_title": "Mualliflar uchun",
-    "for_authors_body": "Monografiyalaringizni yuklang, narxni o'zingiz belgilang. Biz Payme.uz orqali to'lov, MinIO orqali xavfsiz saqlash, statistika va auditoriya bilan ta'minlaymiz. Har sotuvdan 70% muallifga, 30% platformaga.",
-    "for_readers_title": "O'quvchilar uchun",
-    "for_readers_body": "Tibbiyot, iqtisod, tarix, falsafa va boshqa sohalardagi 1000+ monografiyaga kirish. Demo varaqlarni ko'rib chiqib, faqat yoqgan kitobni sotib oling. Sharhlar va reytinglar yordamida tanlash oson.",
-    "stats_title": "Raqamlarda",
+    "hero": {
+      "tag": "Biz haqimizda",
+      "title": "O'zbek ilmining raqamli uyi",
+      "subtitle": "Monografiya.com — O'zbekistondagi olimlar, professorlar va talabalar uchun yagona akademik nashriyot platformasi. Bilim — to'siqlarsiz."
+    },
+    "mission_tag": "Bizning vazifa",
+    "mission_quote": "Har bir o'zbek olimining ovozi shu yerda eshitilsin",
+    "mission_body": "Ko'p yillar davomida monografiyalar javonlarda chang yutib yotardi, talabalar foto-nusxalarga umid bog'lardi. Biz buni o'zgartirmoqchimiz — har bir akademik nashr bir klik bilan dunyo bo'ylab tarqaladigan platforma quryapmiz.",
+    "values_tag": "Prinsiplar",
+    "values_title": "Nimaga e'tibor beramiz",
+    "values_subtitle": "Har bir qarorimiz to'rtta tamoyilga asoslanadi.",
+    "values": {
+      "transparency": {
+        "title": "Shaffoflik",
+        "body": "Har bir sotuv, har bir to'lov — muallifga ochiq ko'rinadi. Yashirin to'lovlar yo'q."
+      },
+      "access": {
+        "title": "Qulay narx",
+        "body": "Akademik kitob — talaba uchun ham. Mualliflar o'zlari narx belgilaydi, biz arzonroq qilishga undaymiz."
+      },
+      "fair": {
+        "title": "Adolatli ulush",
+        "body": "Har bir sotuvdan 80% — muallifga. Boshqa platformalardan ikki barobar ko'p."
+      },
+      "scholarship": {
+        "title": "Akademik nufuz",
+        "body": "Modarasiya jiddiy. Bizda — haqiqiy ilmiy nashrlar, plagiat va saxta sertifikatlar emas."
+      }
+    },
+    "how_tag": "Qanday ishlaydi",
+    "how_title": "Uch qadamda nashr",
+    "how": {
+      "upload": {
+        "title": "Faylni yuklang",
+        "body": "PDF yoki EPUB. Sarlavha, annotatsiya va narxni o'zingiz kiritasiz."
+      },
+      "moderate": {
+        "title": "Biz tekshiramiz",
+        "body": "24–48 soat ichida ekspert ko'rib chiqadi. Mualliflik huquqi va sifat — birinchi o'rinda."
+      },
+      "sell": {
+        "title": "Sotuvga chiqadi",
+        "body": "Tasdiqlangach, kitob katalogga joylanadi. Har sotuvdan daromad to'g'ridan-to'g'ri hisobingizga."
+      }
+    },
+    "for_authors_title": "Mualliflarga",
+    "for_authors_body": "O'z monografiyangizni nashriyotsiz, bürokratiyasiz, kechikishlarsiz e'lon qiling. Bir vaqtning o'zida butun O'zbekiston o'qiy oladi.",
+    "for_authors_point1": "Daromadning 80 foizi — sizniki",
+    "for_authors_point2": "Payme.uz orqali avtomatik to'lov, 1 ish kunida pul yechib olish",
+    "for_authors_point3": "Real-time statistika: kim sotib oldi, qaysi davlatdan, qaysi sahifa o'qildi",
+    "for_authors_cta": "Muallif sifatida ro'yxatdan o'tish",
+    "for_readers_title": "O'quvchilarga",
+    "for_readers_body": "Universitet kutubxonasi yopiq bo'lsa ham, kerakli kitob har doim shu yerda. Sotib oldingizmi — umrbod kirish.",
+    "for_readers_point1": "Sotib olishdan oldin demo varaqlarni bepul ko'rib chiqing",
+    "for_readers_point2": "Onlayn o'qish yoki yuklab olish — barchasi sizga",
+    "for_readers_point3": "Mualliflar bilan bog'lanish, sharhlar yozish va ratinglar",
+    "for_readers_cta": "Katalogga o'tish",
     "stat_books": "Kitoblar",
     "stat_authors": "Mualliflar",
-    "stat_categories": "Kategoriyalar",
-    "stat_readers": "O'quvchilar",
-    "contact_title": "Bog'lanish",
-    "contact_email": "Pochta",
-    "contact_telegram": "Telegram"
+    "stat_categories": "Mavzular",
+    "contact_tag": "Aloqa",
+    "contact_title": "Savol bor? Yozing",
+    "contact_subtitle": "Muallif, kitobxon yoki hamkormisiz — biz har birini eshitamiz.",
+    "contact_email_label": "Pochta",
+    "contact_telegram_label": "Telegram",
+    "contact_response": "Odatda 1–2 ish kunida javob beramiz."
   },
   "blog": {
     "title": "Blog",
@@ -679,18 +768,34 @@
     "empty_query_title": "Qidiruvni boshlang",
     "empty_query_body": "Yuqoridagi maydonga kitob nomi, muallif yoki kalit so'zni kiriting.",
     "no_results": "Natijalar topilmadi",
-    "no_results_body": "Boshqa kalit so'z bilan urinib ko'ring yoki filterlarni o'zgartiring."
+    "no_results_body": "Boshqa kalit so'z bilan urinib ko'ring yoki filterlarni o'zgartiring.",
+    "subtitle": "Monografiyalar, darsliklar va akademik nashrlar orasidan toping",
+    "recent": "So'nggi qidiruvlar",
+    "clear_recent": "Tozalash",
+    "popular_topics": "Mashhur mavzular",
+    "error_title": "Qidirib bo'lmadi",
+    "error_body": "Server bilan aloqada muammo. Bir necha soniyadan keyin qayta urinib ko'ring."
   },
   "category": {
     "not_found": "Kategoriya topilmadi",
     "subcategories": "Sub-kategoriyalar",
     "books_in_category": "Kategoriyadagi kitoblar",
     "no_books": "Bu kategoriyada hozircha kitob yo'q",
-    "books_count": "{n} ta kitob"
+    "books_count": "{n} ta kitob",
+    "top_level": "Asosiy mavzu",
+    "subcategory_of": "{parent} ichida",
+    "subcategories_count": "{n} ta kichik mavzu",
+    "subcategories_subtitle": "Aniq sohani tanlang",
+    "no_books_body": "Bu mavzuda hozircha kitoblar nashr etilmagan.",
+    "error_title": "Mavzu kitoblari yuklanmadi",
+    "error_body": "Server bilan aloqada muammo. Bir necha soniyadan keyin qayta urinib ko'ring.",
+    "back_to_catalog": "Katalogga qaytish",
+    "other_in_parent": "Yana shu sohada",
+    "other_topics": "Boshqa mavzular"
   },
   "authors": {
     "title": "Mualliflar",
-    "subtitle": "Anjumanlar.com'da chiqargan mualliflar",
+    "subtitle": "Monografiya.com'da chiqargan mualliflar",
     "results": "{n} ta muallif",
     "search_placeholder": "Ism yoki muassasa bo'yicha izlash",
     "no_authors": "Mualliflar topilmadi",
@@ -723,7 +828,8 @@
       "free_only": "Faqat bepul",
       "featured_only": "Faqat tavsiya etilgan",
       "apply": "Qo'llash",
-      "clear": "Tozalash"
+      "clear": "Tozalash",
+      "language_mixed": "Aralash"
     },
     "sort": {
       "label": "Saralash",
@@ -734,7 +840,11 @@
       "rating": "Yuqori reyting",
       "sales": "Eng ko'p sotilgan",
       "views": "Eng ko'p ko'rilgan"
-    }
+    },
+    "search_placeholder": "Kitob, muallif yoki kalit so'z...",
+    "active_filters": "Faol filtrlar",
+    "error_title": "Katalog yuklanmadi",
+    "error_body": "Server bilan aloqada muammo. Bir necha soniyadan keyin qayta urinib ko'ring."
   },
   "book": {
     "free": "Bepul",
@@ -778,7 +888,8 @@
     "author_view_profile": "Muallif profilini ko'rish",
     "cta": {
       "read": "O'qish",
-      "coming_soon": "To'lov tizimi keyingi bosqichda ulanadi"
+      "coming_soon": "To'lov tizimi keyingi bosqichda ulanadi",
+      "get_free": "Bepul olish"
     },
     "demo_title": "Demo varaqlar",
     "demo_subtitle": "Sotib olishdan oldin bir nechta sahifani ko'rib chiqing",
@@ -788,6 +899,15 @@
       "description": "Tavsif",
       "author": "Muallif",
       "reviews": "Sharhlar"
+    },
+    "details": "Tafsilotlar",
+    "more_in_category": "Shu mavzudagi yana",
+    "similar_subtitle": "Yana {category} mavzusidagi kitoblar",
+    "see_all_in_category": "Mavzudagi barchasi",
+    "perks": {
+      "instant": "Sotib olish bilan darrov o'qishingiz mumkin",
+      "forever": "Umrbod kirish — kitob shaxsiy kutubxonangizda qoladi",
+      "secure": "Xavfsiz to'lov: Payme, Click, UzCard"
     }
   },
   "common": {

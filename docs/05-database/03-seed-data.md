@@ -34,7 +34,7 @@ async def seed_settings(db: AsyncSession):
         ("min_withdrawal_amount", 100000, "Minimal pul yechish (UZS)"),
         ("max_book_size_mb", 100, "Maksimal kitob hajmi (MB)"),
         ("payme_merchant_id", "", "Payme merchant ID"),
-        ("site_name", {"uz": "Anjumanlar", "ru": "Anjumanlar", "en": "Anjumanlar"}, "Sayt nomi"),
+        ("site_name", {"uz": "Monografiya", "ru": "Monografiya", "en": "Monografiya"}, "Sayt nomi"),
     ]
     for key, value, desc in defaults:
         existing = await db.scalar(select(Setting).where(Setting.key == key))
@@ -48,7 +48,7 @@ async def seed_users(db: AsyncSession) -> dict[str, User]:
     """Demo foydalanuvchilar."""
     users_data = [
         {
-            "email": "superadmin@anjumanlar.com",
+            "email": "superadmin@monografiya.com",
             "password": "SuperAdmin123!",
             "full_name": "Super Admin",
             "role": UserRole.superadmin,
@@ -56,7 +56,7 @@ async def seed_users(db: AsyncSession) -> dict[str, User]:
             "email_verified": True,
         },
         {
-            "email": "admin@anjumanlar.com",
+            "email": "admin@monografiya.com",
             "password": "Admin123!",
             "full_name": "Admin User",
             "role": UserRole.admin,
@@ -64,7 +64,7 @@ async def seed_users(db: AsyncSession) -> dict[str, User]:
             "email_verified": True,
         },
         {
-            "email": "author1@anjumanlar.com",
+            "email": "author1@monografiya.com",
             "password": "Author123!",
             "full_name": "Akmal Karimov",
             "role": UserRole.author,
@@ -72,7 +72,7 @@ async def seed_users(db: AsyncSession) -> dict[str, User]:
             "email_verified": True,
         },
         {
-            "email": "author2@anjumanlar.com",
+            "email": "author2@monografiya.com",
             "password": "Author123!",
             "full_name": "Dilnoza Rahimova",
             "role": UserRole.author,
@@ -80,7 +80,7 @@ async def seed_users(db: AsyncSession) -> dict[str, User]:
             "email_verified": True,
         },
         {
-            "email": "reader@anjumanlar.com",
+            "email": "reader@monografiya.com",
             "password": "Reader123!",
             "full_name": "Test O'quvchi",
             "role": UserRole.reader,
@@ -111,7 +111,7 @@ async def seed_author_profiles(db: AsyncSession, users: dict[str, User]):
     """Author profillari."""
     profiles_data = [
         {
-            "email": "author1@anjumanlar.com",
+            "email": "author1@monografiya.com",
             "slug": "akmal-karimov",
             "display_name": "Akmal Karimov",
             "academic_title": "Tarix fanlari doktori",
@@ -124,7 +124,7 @@ async def seed_author_profiles(db: AsyncSession, users: dict[str, User]):
             "verified": True,
         },
         {
-            "email": "author2@anjumanlar.com",
+            "email": "author2@monografiya.com",
             "slug": "dilnoza-rahimova",
             "display_name": "Dilnoza Rahimova",
             "academic_title": "Filologiya fanlari nomzodi",
@@ -246,7 +246,7 @@ async def seed_books(db: AsyncSession, users: dict[str, User]):
     books_data = [
         {
             "author_id": author1.id,
-            "uploaded_by": users["author1@anjumanlar.com"].id,
+            "uploaded_by": users["author1@monografiya.com"].id,
             "slug": "ozbekiston-tarixi-metodologiyasi",
             "title": {
                 "uz": "O'zbekiston tarixi metodologiyasi",
@@ -266,7 +266,7 @@ async def seed_books(db: AsyncSession, users: dict[str, User]):
         },
         {
             "author_id": author1.id,
-            "uploaded_by": users["author1@anjumanlar.com"].id,
+            "uploaded_by": users["author1@monografiya.com"].id,
             "slug": "buyuk-ipak-yoli",
             "title": {
                 "uz": "Buyuk ipak yo'li",
@@ -285,7 +285,7 @@ async def seed_books(db: AsyncSession, users: dict[str, User]):
         },
         {
             "author_id": author2.id,
-            "uploaded_by": users["author2@anjumanlar.com"].id,
+            "uploaded_by": users["author2@monografiya.com"].id,
             "slug": "ozbek-tili-stilistikasi",
             "title": {
                 "uz": "O'zbek tili stilistikasi",
@@ -304,7 +304,7 @@ async def seed_books(db: AsyncSession, users: dict[str, User]):
         },
         {
             "author_id": author2.id,
-            "uploaded_by": users["author2@anjumanlar.com"].id,
+            "uploaded_by": users["author2@monografiya.com"].id,
             "slug": "alisher-navoiy-ijodi",
             "title": {
                 "uz": "Alisher Navoiy ijodi tahlili",
@@ -364,11 +364,11 @@ async def main():
     
     print("\n✅ Seed muvaffaqiyatli yakunlandi!")
     print("\n--- Demo akkauntlar ---")
-    print("SuperAdmin: superadmin@anjumanlar.com / SuperAdmin123!")
-    print("Admin:      admin@anjumanlar.com / Admin123!")
-    print("Author 1:   author1@anjumanlar.com / Author123!")
-    print("Author 2:   author2@anjumanlar.com / Author123!")
-    print("Reader:     reader@anjumanlar.com / Reader123!")
+    print("SuperAdmin: superadmin@monografiya.com / SuperAdmin123!")
+    print("Admin:      admin@monografiya.com / Admin123!")
+    print("Author 1:   author1@monografiya.com / Author123!")
+    print("Author 2:   author2@monografiya.com / Author123!")
+    print("Reader:     reader@monografiya.com / Reader123!")
 
 
 if __name__ == "__main__":

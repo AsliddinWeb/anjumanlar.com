@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Anjumanlar.com",
+    "title": "Monografiya.com",
     "tagline": "A marketplace for academic monographs"
   },
   "nav": {
@@ -36,7 +36,23 @@
     "checkout": "Checkout",
     "checkout_login_required": "Sign in to complete checkout",
     "clear": "Clear cart",
-    "error_generic": "Could not create order"
+    "error_generic": "Could not create order",
+    "summary_title": "Order summary",
+    "items_in_cart": "Items in cart",
+    "free_items": "Free items",
+    "discount": "Discount",
+    "checkout_free": "Confirm",
+    "continue_shopping": "Add more books",
+    "empty_cta_browse": "Browse catalogue",
+    "empty_cta_wishlist": "Wishlist",
+    "recommended_title": "You might like",
+    "recommended_subtitle": "Most-sold books",
+    "see_all": "See all",
+    "trust": {
+      "instant": "Read instantly after purchase",
+      "secure": "Secure payment: Payme, Click, UzCard",
+      "forever": "Lifetime access — books stay in your library"
+    }
   },
   "checkout": {
     "redirecting": "Redirecting to Payme…",
@@ -518,23 +534,46 @@
   },
   "home": {
     "hero": {
-      "title": "Anjumanlar.com — a digital monograph library",
-      "subtitle": "Authors upload, readers buy.",
-      "cta_browse": "Browse books",
+      "tagline": "For Uzbek scholars and students",
+      "title": "A new chapter of Uzbek scholarship",
+      "subtitle": "Monographs, textbooks and academic publications in one place. The digital home of scholarly life.",
+      "cta_browse": "Browse catalogue",
       "cta_become_author": "Become an author"
     },
-    "featured": "Featured books",
-    "featured_subtitle": "Editor's pick of standout monographs",
-    "categories": "Categories",
-    "categories_subtitle": "Browse by topic area",
+    "stats": {
+      "books": "Books",
+      "categories": "Topics",
+      "langs": "Languages"
+    },
+    "featured": "Editor's pick",
+    "featured_subtitle": "This week's must-reads",
+    "categories": "Topics",
+    "categories_subtitle": "Pick a field, find a book",
     "categories_books": "{n} books",
-    "recent_books": "New arrivals",
-    "recent_subtitle": "Recently published",
+    "recent_books": "Recently published",
+    "recent_subtitle": "Just out",
     "see_all": "See all",
+    "error": {
+      "title": "Couldn't load the page",
+      "body": "We're having trouble reaching the server. Try again in a few seconds or refresh the page."
+    },
+    "empty": {
+      "title": "The library is empty",
+      "body": "Upload the first monograph — we'll handle payments, cataloguing and readers."
+    },
     "become_author_cta": {
-      "title": "Are you an author too?",
-      "body": "Publish your monographs on Anjumanlar.com. We handle payments, analytics, and audience.",
-      "button": "Become an author"
+      "tag": "For authors",
+      "title": "Your book — to thousands of readers",
+      "body": "Upload, set a price. Once moderated, it goes on sale.",
+      "button": "Sign up as an author",
+      "perks": {
+        "earn_title": "80% revenue share",
+        "earn_body": "Most of every sale goes to you. Transparent accounting.",
+        "reach_title": "Ready audience",
+        "reach_body": "University libraries, students, specialists — all in one platform.",
+        "insights_title": "Real-time analytics",
+        "insights_body": "Who buys, what gets read — full statistics for you."
+      }
     }
   },
   "password": {
@@ -619,22 +658,72 @@
     "logout_all": "Log out everywhere"
   },
   "about": {
-    "title": "About Anjumanlar.com",
-    "subtitle": "A digital marketplace for academic monographs",
-    "mission_title": "Our mission",
-    "mission_body": "Anjumanlar.com is a unified platform for publishing and selling academic monographs in Uzbekistan. Our mission is to bring research output to a wider audience and give authors a transparent way to earn from their work.",
+    "hero": {
+      "tag": "About us",
+      "title": "The digital home of Uzbek scholarship",
+      "subtitle": "Monografiya.com is Uzbekistan's unified academic publishing platform — for scholars, professors and students. Knowledge without barriers."
+    },
+    "mission_tag": "Our mission",
+    "mission_quote": "So every Uzbek scholar's voice can be heard",
+    "mission_body": "For years monographs gathered dust on shelves and students relied on photocopies. We're changing that — building a platform where every academic publication is one click from a global audience.",
+    "values_tag": "Principles",
+    "values_title": "What we stand for",
+    "values_subtitle": "Every decision we make rests on four pillars.",
+    "values": {
+      "transparency": {
+        "title": "Transparency",
+        "body": "Every sale, every payout — visible to the author. No hidden fees."
+      },
+      "access": {
+        "title": "Affordable price",
+        "body": "Academic books should reach students too. Authors set prices; we encourage lower ones."
+      },
+      "fair": {
+        "title": "Fair share",
+        "body": "80% of every sale to the author — twice what other platforms offer."
+      },
+      "scholarship": {
+        "title": "Academic rigor",
+        "body": "Serious moderation. Real scholarly publications, no plagiarism, no fake credentials."
+      }
+    },
+    "how_tag": "How it works",
+    "how_title": "Publish in three steps",
+    "how": {
+      "upload": {
+        "title": "Upload your file",
+        "body": "PDF or EPUB. You set the title, abstract and price."
+      },
+      "moderate": {
+        "title": "We review",
+        "body": "An expert checks within 24–48 hours. Copyright and quality first."
+      },
+      "sell": {
+        "title": "Goes on sale",
+        "body": "Once approved, your book hits the catalogue. Revenue lands in your account immediately."
+      }
+    },
     "for_authors_title": "For authors",
-    "for_authors_body": "Upload your monographs and set your own price. We handle payments via Payme.uz, secure storage on MinIO, analytics and audience reach. Authors receive 70% of every sale; the platform keeps 30%.",
+    "for_authors_body": "Publish your monograph without a publisher, bureaucracy or delays. All of Uzbekistan can read it at once.",
+    "for_authors_point1": "80% revenue share",
+    "for_authors_point2": "Automatic Payme.uz payout, withdraw within 1 business day",
+    "for_authors_point3": "Real-time analytics: who bought, from where, which pages they read",
+    "for_authors_cta": "Sign up as an author",
     "for_readers_title": "For readers",
-    "for_readers_body": "Access 1000+ monographs in medicine, economics, history, philosophy and more. Preview demo pages before you buy. Reviews and ratings make picking the right book easy.",
-    "stats_title": "By the numbers",
+    "for_readers_body": "Even when the university library is closed, the book you need is right here. Buy once — access forever.",
+    "for_readers_point1": "Free preview pages before you buy",
+    "for_readers_point2": "Read online or download — it's all yours",
+    "for_readers_point3": "Author contact, reviews and ratings",
+    "for_readers_cta": "Browse catalogue",
     "stat_books": "Books",
     "stat_authors": "Authors",
-    "stat_categories": "Categories",
-    "stat_readers": "Readers",
-    "contact_title": "Contact",
-    "contact_email": "Email",
-    "contact_telegram": "Telegram"
+    "stat_categories": "Topics",
+    "contact_tag": "Contact",
+    "contact_title": "Got a question? Write to us",
+    "contact_subtitle": "Author, reader or partner — we listen to everyone.",
+    "contact_email_label": "Email",
+    "contact_telegram_label": "Telegram",
+    "contact_response": "We usually reply within 1–2 business days."
   },
   "blog": {
     "title": "Blog",
@@ -679,18 +768,34 @@
     "empty_query_title": "Start your search",
     "empty_query_body": "Type a book title, author name or keyword above.",
     "no_results": "No results found",
-    "no_results_body": "Try a different keyword or adjust the filters."
+    "no_results_body": "Try a different keyword or adjust the filters.",
+    "subtitle": "Search across monographs, textbooks and scholarly works",
+    "recent": "Recent searches",
+    "clear_recent": "Clear",
+    "popular_topics": "Popular topics",
+    "error_title": "Search failed",
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds."
   },
   "category": {
     "not_found": "Category not found",
     "subcategories": "Subcategories",
     "books_in_category": "Books in this category",
     "no_books": "No books in this category yet",
-    "books_count": "{n} books"
+    "books_count": "{n} books",
+    "top_level": "Top-level topic",
+    "subcategory_of": "Inside {parent}",
+    "subcategories_count": "{n} subtopics",
+    "subcategories_subtitle": "Pick a specific direction",
+    "no_books_body": "No books have been published in this topic yet.",
+    "error_title": "Couldn't load books for this topic",
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds.",
+    "back_to_catalog": "Back to catalogue",
+    "other_in_parent": "More in this field",
+    "other_topics": "Other topics"
   },
   "authors": {
     "title": "Authors",
-    "subtitle": "Authors publishing on Anjumanlar.com",
+    "subtitle": "Authors publishing on Monografiya.com",
     "results": "{n} authors",
     "search_placeholder": "Search by name or institution",
     "no_authors": "No authors found",
@@ -723,7 +828,8 @@
       "free_only": "Free only",
       "featured_only": "Featured only",
       "apply": "Apply",
-      "clear": "Clear"
+      "clear": "Clear",
+      "language_mixed": "Mixed"
     },
     "sort": {
       "label": "Sort by",
@@ -734,7 +840,11 @@
       "rating": "Top rated",
       "sales": "Best sellers",
       "views": "Most viewed"
-    }
+    },
+    "search_placeholder": "Book, author or keyword...",
+    "active_filters": "Active filters",
+    "error_title": "Couldn't load the catalogue",
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds."
   },
   "book": {
     "free": "Free",
@@ -778,7 +888,8 @@
     "author_view_profile": "View author profile",
     "cta": {
       "read": "Read",
-      "coming_soon": "Payment integration arrives in the next phase"
+      "coming_soon": "Payment integration arrives in the next phase",
+      "get_free": "Get for free"
     },
     "demo_title": "Demo pages",
     "demo_subtitle": "Preview a few pages before purchase",
@@ -788,6 +899,15 @@
       "description": "Description",
       "author": "Author",
       "reviews": "Reviews"
+    },
+    "details": "Details",
+    "more_in_category": "More in this topic",
+    "similar_subtitle": "Other books in {category}",
+    "see_all_in_category": "See all in topic",
+    "perks": {
+      "instant": "Instant access after purchase",
+      "forever": "Lifetime access — the book stays in your library",
+      "secure": "Secure payment: Payme, Click, UzCard"
     }
   },
   "common": {

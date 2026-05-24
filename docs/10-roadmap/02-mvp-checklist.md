@@ -1,4 +1,4 @@
-# MVP Checklist — Anjumanlar.com
+# MVP Checklist — Monografiya
 
 MVP (Minimum Viable Product) — bu launch'ga kerakli minimum funksionallik. Bu checklist orqali ishlaringizni kuzatib boring.
 
@@ -14,7 +14,7 @@ MVP (Minimum Viable Product) — bu launch'ga kerakli minimum funksionallik. Bu 
 
 ## 1. Loyiha tayyorgarligi
 
-- [ ] Domain sotib olingan: `anjumanlar.com`
+- [ ] Domain sotib olingan: `monografiya.com`
 - [ ] DNS sozlangan
 - [ ] VPS server (4GB RAM, 2 CPU, 50GB SSD)
 - [ ] GitHub repository (private)

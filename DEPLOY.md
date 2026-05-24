@@ -1,8 +1,8 @@
-# Deploy yo'riqnomasi — anjumanlar.com
+# Deploy yo'riqnomasi — monografiya.com
 
-Server: `deploy@academicbook`, joylashuv: `/opt/anjumanlar.com`.
+Server: `deploy@academicbook`, joylashuv: `/opt/monografiya.com`.
 
-Domain: `anjumanlar.com` va `www.anjumanlar.com`.
+Domain: `monografiya.com` va `www.monografiya.com`.
 
 Docker barcha servislarni boshqaradi (nginx, postgres, redis, minio,
 meilisearch, backend, frontend, celery worker + beat). Faqat `80/443`
@@ -28,10 +28,10 @@ sudo usermod -aG docker deploy
 
 ```bash
 cd /opt
-sudo mkdir -p anjumanlar.com
-sudo chown deploy:deploy anjumanlar.com
-cd anjumanlar.com
-git clone https://github.com/AsliddinWeb/anjumanlar.com.git .
+sudo mkdir -p monografiya.com
+sudo chown deploy:deploy monografiya.com
+cd monografiya.com
+git clone https://github.com/AsliddinWeb/monografiya.com.git .
 ```
 
 ### 1.3 `.env` faylini tayyorlash
@@ -69,20 +69,20 @@ docker compose -f docker-compose.prod.yml exec backend python -m app.scripts.see
 3 ta DNS A yozuvi sozlangan bo'lishi kerak (hammasi server IP'siga):
 
 ```
-anjumanlar.com         A   <server-ip>
-www.anjumanlar.com     A   <server-ip>
-files.anjumanlar.com   A   <server-ip>
+monografiya.com         A   <server-ip>
+www.monografiya.com     A   <server-ip>
+files.monografiya.com   A   <server-ip>
 ```
 
-`files.anjumanlar.com` — MinIO presigned URL'lar uchun alohida subdomen
+`files.monografiya.com` — MinIO presigned URL'lar uchun alohida subdomen
 (kitob muqovalari, demo PDF'lar, watermarked nusxalar shu yerda).
 
 Tekshirish:
 
 ```bash
-dig +short anjumanlar.com
-dig +short www.anjumanlar.com
-dig +short files.anjumanlar.com
+dig +short monografiya.com
+dig +short www.monografiya.com
+dig +short files.monografiya.com
 ```
 
 Sertifikat olish (certbot Docker container ichida ishlaydi):
@@ -91,28 +91,28 @@ Sertifikat olish (certbot Docker container ichida ishlaydi):
 docker compose -f docker-compose.prod.yml run --rm certbot certonly \
     --webroot \
     --webroot-path=/var/www/certbot \
-    --email your-email@anjumanlar.com \
+    --email your-email@monografiya.com \
     --agree-tos \
     --no-eff-email \
-    -d anjumanlar.com \
-    -d www.anjumanlar.com \
-    -d files.anjumanlar.com
+    -d monografiya.com \
+    -d www.monografiya.com \
+    -d files.monografiya.com
 ```
 
 > **Eslatma:** certbot HTTP-01 challenge ishlatadi —
 > `/.well-known/acme-challenge/` yo'li nginx config'ida ochiq.
 
-Sertifikat olingach `nginx/conf.d/anjumanlar.com.conf` ga HTTPS bloki
+Sertifikat olingach `nginx/conf.d/monografiya.com.conf` ga HTTPS bloki
 qo'shing (oxiriga):
 
 ```nginx
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name anjumanlar.com www.anjumanlar.com;
+    server_name monografiya.com www.monografiya.com;
 
-    ssl_certificate     /etc/letsencrypt/live/anjumanlar.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/anjumanlar.com/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/monografiya.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/monografiya.com/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
 
@@ -138,7 +138,7 @@ Birinchi admin'ni quyidagi bootstrap script orqali yarating:
 ```bash
 docker compose -f docker-compose.prod.yml exec backend \
     python -m app.scripts.create_admin \
-    --email you@anjumanlar.com \
+    --email you@monografiya.com \
     --password 'StrongPass!2026' \
     --name 'Site Admin'
 ```
@@ -147,7 +147,7 @@ Yoki Makefile orqali:
 
 ```bash
 make prod-create-admin \
-    EMAIL=you@anjumanlar.com \
+    EMAIL=you@monografiya.com \
     PASSWORD='StrongPass!2026' \
     NAME='Site Admin'
 ```
@@ -157,7 +157,7 @@ saytda ro'yxatdan o'tgan bo'lsangiz), uni `superadmin` ga ko'taradi va
 `email_verified=true`, `status=active` qiladi. Parolni o'zgartirish
 uchun `--reset-password` flag qo'shing.
 
-Endi `https://anjumanlar.com/uz/auth/login` orqali kirib, header'dagi
+Endi `https://monografiya.com/uz/auth/login` orqali kirib, header'dagi
 user dropdown'dan **⚙ Admin panel** linki orqali `/uz/admin` ga
 o'tasiz.
 
@@ -168,11 +168,11 @@ o'tasiz.
 docker compose -f docker-compose.prod.yml ps
 
 # Backend ping:
-curl https://anjumanlar.com/api/v1/ping
+curl https://monografiya.com/api/v1/ping
 # {"pong":"ok"}
 
 # Frontend bosh sahifa:
-curl -I https://anjumanlar.com
+curl -I https://monografiya.com
 # HTTP/2 200
 ```
 
@@ -183,7 +183,7 @@ curl -I https://anjumanlar.com
 Yangi commit kelganda yoki kichik o'zgarish bo'lganda:
 
 ```bash
-cd /opt/anjumanlar.com
+cd /opt/monografiya.com
 ./scripts/deploy.sh
 ```
 
@@ -206,7 +206,7 @@ docker compose -f docker-compose.prod.yml logs -f nginx
 
 # Backend ichiga kirish (psql + shell):
 docker compose -f docker-compose.prod.yml exec backend bash
-docker compose -f docker-compose.prod.yml exec postgres psql -U anjumanlar
+docker compose -f docker-compose.prod.yml exec postgres psql -U monografiya
 
 # Faqat bitta servisni restart:
 docker compose -f docker-compose.prod.yml restart backend
@@ -239,7 +239,7 @@ docker compose -f docker-compose.prod.yml restart backend celery_worker celery_b
 Payme dashboard'da webhook URL'ni sozlang:
 
 ```
-https://anjumanlar.com/api/v1/payments/payme/webhook
+https://monografiya.com/api/v1/payments/payme/webhook
 ```
 
 Basic Auth username = `Paycom`, parol = `PAYME_SECRET_KEY` qiymatiga teng.
@@ -249,7 +249,7 @@ Basic Auth username = `Paycom`, parol = `PAYME_SECRET_KEY` qiymatiga teng.
 ## 5. Sentry (xato monitoringi)
 
 Backend va frontend uchun **ikkita alohida** Sentry projecti yarating
-(odatda "Anjumanlar Backend" + "Anjumanlar Frontend"). Har birining
+(odatda "Monografiya Backend" + "Monografiya Frontend"). Har birining
 DSN'ini `.env`'ga qo'ying:
 
 ```bash
@@ -288,12 +288,12 @@ saqlaydi. Backup default 30 kun saqlanadi (`BACKUP_RETENTION_DAYS`).
 ### Qo'lda ishga tushirish
 
 ```bash
-cd /opt/anjumanlar.com
+cd /opt/monografiya.com
 make prod-backup
 # Yoki to'g'ridan-to'g'ri: ./scripts/backup.sh
 ```
 
-Natijada `/var/backups/anjumanlar/YYYYMMDD-HHMMSS/` ichida ikkita fayl
+Natijada `/var/backups/monografiya/YYYYMMDD-HHMMSS/` ichida ikkita fayl
 paydo bo'ladi:
 
 - `postgres.dump.gz` — `pg_dump --format=custom` (pg_restore bilan ochiladi)
@@ -302,27 +302,27 @@ paydo bo'ladi:
 ### Kunlik cron
 
 ```bash
-sudo install -m 644 /dev/stdin /etc/cron.d/anjumanlar-backup <<'EOF'
+sudo install -m 644 /dev/stdin /etc/cron.d/monografiya-backup <<'EOF'
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # Har kuni 03:15 da
-15 3 * * * deploy /opt/anjumanlar.com/scripts/backup.sh >> /var/log/anjumanlar-backup.log 2>&1
+15 3 * * * deploy /opt/monografiya.com/scripts/backup.sh >> /var/log/monografiya-backup.log 2>&1
 EOF
 ```
 
-Backup loglarini `/var/log/anjumanlar-backup.log` faylida kuzatasiz.
+Backup loglarini `/var/log/monografiya-backup.log` faylida kuzatasiz.
 
 ### Restore
 
 ```bash
-make prod-restore BACKUP=/var/backups/anjumanlar/20260801-030000
+make prod-restore BACKUP=/var/backups/monografiya/20260801-030000
 ```
 
 `users` jadvali bo'sh emasligini bilsa, script ishni to'xtatadi. Buni
 o'tkazib yuborish uchun:
 
 ```bash
-make prod-restore BACKUP=/var/backups/anjumanlar/20260801-030000 FORCE=1
+make prod-restore BACKUP=/var/backups/monografiya/20260801-030000 FORCE=1
 ```
 
 Restore'dan keyin migration'larni qayta qo'llang (yangi commit'larda
@@ -339,7 +339,7 @@ Defolt `/var/backups`. O'zgartirish uchun cron qatorida `BACKUP_DIR`
 ni ko'rsating:
 
 ```cron
-15 3 * * * deploy BACKUP_DIR=/mnt/backup-disk /opt/anjumanlar.com/scripts/backup.sh
+15 3 * * * deploy BACKUP_DIR=/mnt/backup-disk /opt/monografiya.com/scripts/backup.sh
 ```
 
 Off-site saqlash uchun bu papkani `rsync`/`rclone` orqali keyin uzoq

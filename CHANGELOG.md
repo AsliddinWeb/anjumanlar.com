@@ -74,8 +74,8 @@ testlar. To'liq suite 250+ green.
   `--forwarded-allow-ips=*`.
 - `frontend/Dockerfile.prod` — multi-stage build, `.output/server` ni
   `node` user ostida xizmat qilish.
-- `nginx/conf.d/anjumanlar.com.conf` — HTTP-only bloklar (certbot SSL
-  qo'shadi), `files.anjumanlar.com` subdomain MinIO presigned URL uchun.
+- `nginx/conf.d/monografiya.com.conf` — HTTP-only bloklar (certbot SSL
+  qo'shadi), `files.monografiya.com` subdomain MinIO presigned URL uchun.
 - `.env.prod.example`, `scripts/deploy.sh`, `DEPLOY.md`, Makefile
   `prod-*` target'lari.
 

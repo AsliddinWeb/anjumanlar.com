@@ -11,8 +11,6 @@ useSiteSeo({
   description: t("home.hero.subtitle"),
 });
 
-// Organization schema lives only on the homepage so search engines
-// associate it with the brand's primary URL.
 const runtime = useRuntimeConfig();
 useStructuredData(
   buildOrganizationSchema({
@@ -21,144 +19,356 @@ useStructuredData(
   }),
 );
 
-const { data: featured } = await useAsyncData("home:featured", () =>
-  api<BookList>("/books", { params: { featured: true, page_size: 6 } }),
+// NOTE: $fetch reads URL params from `query:`, not `params:` — the old
+// code silently dropped the filters, so `featured` returned every book.
+const { data: featuredData, error: featuredErr } = await useAsyncData(
+  "home:featured",
+  () => api<BookList>("/books", { query: { featured: true, page_size: 8 } }),
 );
-const { data: recent } = await useAsyncData("home:recent", () =>
-  api<BookList>("/books", { params: { sort: "-published_at", page_size: 8 } }),
+const { data: recentData, error: recentErr } = await useAsyncData(
+  "home:recent",
+  () => api<BookList>("/books", { query: { sort: "-published_at", page_size: 8 } }),
 );
-const { data: categories } = await useAsyncData("home:categories", () =>
-  api<CategoryList>("/categories", { params: { active_only: true } }),
+const { data: catData, error: catErr } = await useAsyncData(
+  "home:categories",
+  () => api<CategoryList>("/categories", { query: { active_only: true } }),
 );
 
-/** Hide subcategories on the homepage grid — only top-level. */
-const topCategories = computed(
-  () => categories.value?.items.filter((c) => c.parent_id === null).slice(0, 8) ?? [],
+const featured = computed(() => (featuredData.value as BookList | null)?.items ?? []);
+const recent = computed(() => (recentData.value as BookList | null)?.items ?? []);
+const topCategories = computed(() =>
+  ((catData.value as CategoryList | null)?.items ?? [])
+    .filter((c) => c.parent_id === null)
+    .slice(0, 8),
+);
+
+// `featured` returns a filtered subset (small count), so the catalogue
+// total must come from the unfiltered `recent` query. Falling back to
+// featured's total used to show 2 even when 4 books existed.
+const totals = computed(() => ({
+  books: (recentData.value as BookList | null)?.total
+    ?? (featuredData.value as BookList | null)?.total
+    ?? 0,
+  categories: (catData.value as CategoryList | null)?.items.length ?? 0,
+}));
+
+// Hero stack uses up to 3 featured covers; falls back to recent so the
+// stack still renders on a brand-new install where nothing is featured.
+const heroBooks = computed(() => {
+  const pool = featured.value.length ? featured.value : recent.value;
+  return pool.slice(0, 3);
+});
+
+const hasAnyData = computed(() =>
+  featured.value.length > 0 || recent.value.length > 0 || topCategories.value.length > 0,
+);
+
+const hasError = computed(() =>
+  Boolean(featuredErr.value && recentErr.value && catErr.value),
 );
 </script>
 
 <template>
   <div class="bg-bg">
     <!-- HERO -->
-    <section class="border-b border-border">
-      <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <h1 class="font-serif text-3xl md:text-5xl text-ink leading-tight mb-4">
+    <section class="relative overflow-hidden border-b border-border">
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10"
+        style="background-image:
+          radial-gradient(ellipse 70% 60% at 20% 0%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 65%),
+          radial-gradient(ellipse 50% 50% at 90% 100%, color-mix(in oklab, var(--color-accent-burgundy, var(--color-primary)) 10%, transparent), transparent 65%);"
+      />
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10 opacity-[0.025]"
+        style="background-image:
+          linear-gradient(to right, currentColor 1px, transparent 1px),
+          linear-gradient(to bottom, currentColor 1px, transparent 1px);
+          background-size: 40px 40px; color: var(--color-ink);"
+      />
+
+      <div class="max-w-6xl mx-auto px-4 py-16 sm:py-20 md:py-28 lg:py-32 grid md:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
+        <div class="space-y-7">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card/80 backdrop-blur text-xs text-ink-secondary shadow-sm">
+            <span class="relative inline-flex h-2 w-2">
+              <span class="absolute inset-0 rounded-full bg-success opacity-75 animate-ping" />
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
+            </span>
+            {{ t("home.hero.tagline") }}
+          </span>
+
+          <h1 class="font-serif text-[2.5rem] leading-[1.05] sm:text-5xl md:text-[3.5rem] lg:text-[4rem] text-ink tracking-tight">
             {{ t("home.hero.title") }}
           </h1>
-          <p class="text-lg text-ink-secondary mb-8">
+
+          <p class="text-base sm:text-lg text-ink-secondary leading-relaxed max-w-[42ch]">
             {{ t("home.hero.subtitle") }}
           </p>
-          <div class="flex flex-wrap gap-3">
+
+          <div class="flex flex-wrap gap-3 pt-1">
             <UiButton :to="localePath('/books')" size="lg">
+              <Icon name="book" class="h-4 w-4" />
               {{ t("home.hero.cta_browse") }}
+              <Icon name="arrow-right" class="h-4 w-4" />
             </UiButton>
             <UiButton variant="ghost" size="lg" :to="localePath('/authors/me')">
+              <Icon name="pencil" class="h-4 w-4" />
               {{ t("home.hero.cta_become_author") }}
             </UiButton>
           </div>
+
+          <dl
+            v-if="totals.books > 0 || totals.categories > 0"
+            class="grid grid-cols-3 gap-6 pt-7 border-t border-border max-w-md"
+          >
+            <div>
+              <dt class="text-[11px] uppercase tracking-wider text-ink-tertiary">{{ t("home.stats.books") }}</dt>
+              <dd class="font-serif text-2xl text-ink mt-1 tabular-nums">{{ totals.books }}+</dd>
+            </div>
+            <div>
+              <dt class="text-[11px] uppercase tracking-wider text-ink-tertiary">{{ t("home.stats.categories") }}</dt>
+              <dd class="font-serif text-2xl text-ink mt-1 tabular-nums">{{ totals.categories }}+</dd>
+            </div>
+            <div>
+              <dt class="text-[11px] uppercase tracking-wider text-ink-tertiary">{{ t("home.stats.langs") }}</dt>
+              <dd class="font-serif text-2xl text-ink mt-1 tabular-nums">3+</dd>
+            </div>
+          </dl>
         </div>
-        <div class="hidden md:flex justify-end">
-          <!-- decorative stack of book covers from the featured set -->
-          <div class="relative h-72 w-56">
-            <template v-for="(book, i) in (featured?.items ?? []).slice(0, 3)" :key="book.id">
+
+        <div class="hidden md:flex justify-center lg:justify-end relative">
+          <div
+            aria-hidden="true"
+            class="absolute -inset-12 rounded-full opacity-60 blur-3xl"
+            style="background-image: radial-gradient(circle, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 70%);"
+          />
+
+          <div class="relative h-[22rem] w-[26rem] lg:w-[28rem]">
+            <template v-if="heroBooks.length">
               <div
-                class="absolute h-72 w-48 rounded shadow-book overflow-hidden border border-border bg-bg-card"
+                v-for="(book, i) in heroBooks"
+                :key="book.id"
+                class="absolute top-0 left-1/2 h-[22rem] w-48 lg:w-52 rounded-md shadow-2xl overflow-hidden border border-border bg-bg-card transition-all duration-500 hover:-translate-y-2 hover:rotate-0 hover:z-20"
                 :style="{
-                  transform: `translateX(${i * 16}px) rotate(${(i - 1) * 4}deg)`,
+                  transform: `translate(-50%, 0) translateX(${(i - 1) * 90}px) rotate(${(i - 1) * 6}deg)`,
                   zIndex: 10 - i,
                 }"
               >
-                <BookCover :src="book.cover_url" :alt="localised(book.title, book.slug)" eager />
+                <img
+                  v-if="book.cover_url"
+                  :src="book.cover_url"
+                  :alt="localised(book.title, book.slug)"
+                  loading="eager"
+                  class="h-full w-full object-cover"
+                >
+                <div
+                  v-else
+                  class="h-full w-full flex flex-col items-center justify-center gap-3 p-4 text-center"
+                  :class="[
+                    i === 0 ? 'bg-gradient-to-br from-primary/15 via-primary/5 to-bg-card text-primary'
+                      : i === 1 ? 'bg-gradient-to-br from-accent-burgundy/15 via-accent-burgundy/5 to-bg-card text-accent-burgundy'
+                      : 'bg-gradient-to-br from-accent-gold/15 via-accent-gold/5 to-bg-card text-accent-gold',
+                  ]"
+                >
+                  <Icon name="book" class="h-10 w-10 opacity-60" />
+                  <div class="font-serif text-sm text-ink/80 line-clamp-3 leading-snug">
+                    {{ localised(book.title, book.slug) }}
+                  </div>
+                </div>
               </div>
             </template>
+            <div
+              v-else
+              class="absolute inset-0 flex items-center justify-center rounded-md border border-dashed border-border bg-bg-card/60"
+            >
+              <Icon name="library" class="h-20 w-20 text-primary/30" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HARD FAILURE FALLBACK -->
+    <section v-if="hasError" class="border-b border-border">
+      <div class="max-w-3xl mx-auto px-4 py-16">
+        <div class="rounded-md border border-error/30 bg-error/5 p-6 flex items-start gap-4">
+          <Icon name="warning-solid" class="h-6 w-6 text-error shrink-0" />
+          <div>
+            <h2 class="font-serif text-lg text-ink mb-1">{{ t("home.error.title") }}</h2>
+            <p class="text-sm text-ink-secondary">{{ t("home.error.body") }}</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- FEATURED -->
-    <section v-if="featured?.items.length" class="border-b border-border">
-      <div class="max-w-6xl mx-auto px-4 py-12">
-        <div class="flex items-end justify-between mb-6">
+    <section v-if="featured.length" class="border-b border-border">
+      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+        <div class="flex items-end justify-between gap-3 mb-6">
           <div>
-            <h2 class="font-serif text-2xl text-ink">{{ t("home.featured") }}</h2>
-            <p class="text-sm text-ink-secondary">{{ t("home.featured_subtitle") }}</p>
+            <h2 class="font-serif text-2xl md:text-3xl text-ink leading-tight">
+              {{ t("home.featured") }}
+            </h2>
+            <p class="text-sm text-ink-secondary mt-1">{{ t("home.featured_subtitle") }}</p>
           </div>
           <NuxtLink
             :to="localePath('/books') + '?featured=true'"
-            class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+            class="hidden sm:inline-flex items-center gap-1 text-sm text-primary hover:underline shrink-0"
           >
             {{ t("home.see_all") }}
             <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <BookCard v-for="book in featured.items" :key="book.id" :book="book" />
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 md:gap-5">
+          <BookCard v-for="book in featured.slice(0, 4)" :key="book.id" :book="book" />
         </div>
+        <NuxtLink
+          :to="localePath('/books') + '?featured=true'"
+          class="sm:hidden inline-flex items-center gap-1 mt-4 text-sm text-primary hover:underline"
+        >
+          {{ t("home.see_all") }}
+          <Icon name="arrow-right" class="h-4 w-4" />
+        </NuxtLink>
       </div>
     </section>
 
     <!-- CATEGORIES -->
     <section v-if="topCategories.length" class="border-b border-border bg-bg-secondary">
-      <div class="max-w-6xl mx-auto px-4 py-12">
-        <div class="mb-6">
-          <h2 class="font-serif text-2xl text-ink">{{ t("home.categories") }}</h2>
-          <p class="text-sm text-ink-secondary">{{ t("home.categories_subtitle") }}</p>
+      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+        <div class="flex items-end justify-between gap-3 mb-6">
+          <div>
+            <h2 class="font-serif text-2xl md:text-3xl text-ink leading-tight">
+              {{ t("home.categories") }}
+            </h2>
+            <p class="text-sm text-ink-secondary mt-1">{{ t("home.categories_subtitle") }}</p>
+          </div>
+          <NuxtLink
+            :to="localePath('/books')"
+            class="hidden sm:inline-flex items-center gap-1 text-sm text-primary hover:underline shrink-0"
+          >
+            {{ t("home.see_all") }}
+            <Icon name="arrow-right" class="h-4 w-4" />
+          </NuxtLink>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <UiCard
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <NuxtLink
             v-for="cat in topCategories"
             :key="cat.id"
             :to="localePath(`/category/${cat.slug}`)"
-            hoverable
-            class="flex items-center gap-3"
+            class="group flex items-center gap-3 p-4 rounded-md border border-border bg-bg-card hover:border-primary hover:shadow-sm transition-all"
           >
-            <Icon :name="cat.icon" fallback="book" class="h-7 w-7 text-primary shrink-0" />
-            <div class="min-w-0">
-              <div class="font-medium text-ink truncate">
+            <span class="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-ink-inverse transition-colors">
+              <Icon :name="cat.icon" fallback="book" class="h-5 w-5" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="font-medium text-ink truncate group-hover:text-primary transition-colors">
                 {{ localised(cat.name, cat.slug) }}
               </div>
-              <div class="text-xs text-ink-tertiary">
+              <div class="text-xs text-ink-tertiary mt-0.5">
                 {{ t("home.categories_books", { n: cat.book_count }) }}
               </div>
             </div>
-          </UiCard>
+            <Icon name="arrow-right" class="h-4 w-4 text-ink-tertiary shrink-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+          </NuxtLink>
         </div>
       </div>
     </section>
 
     <!-- RECENT -->
-    <section v-if="recent?.items.length" class="border-b border-border">
-      <div class="max-w-6xl mx-auto px-4 py-12">
-        <div class="flex items-end justify-between mb-6">
+    <section v-if="recent.length" class="border-b border-border">
+      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+        <div class="flex items-end justify-between gap-3 mb-6">
           <div>
-            <h2 class="font-serif text-2xl text-ink">{{ t("home.recent_books") }}</h2>
-            <p class="text-sm text-ink-secondary">{{ t("home.recent_subtitle") }}</p>
+            <h2 class="font-serif text-2xl md:text-3xl text-ink leading-tight">
+              {{ t("home.recent_books") }}
+            </h2>
+            <p class="text-sm text-ink-secondary mt-1">{{ t("home.recent_subtitle") }}</p>
           </div>
-          <NuxtLink :to="localePath('/books')" class="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+          <NuxtLink
+            :to="localePath('/books')"
+            class="hidden sm:inline-flex items-center gap-1 text-sm text-primary hover:underline shrink-0"
+          >
             {{ t("home.see_all") }}
             <Icon name="arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
-          <BookCard v-for="book in recent.items.slice(0, 4)" :key="book.id" :book="book" />
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+          <BookCard v-for="book in recent.slice(0, 4)" :key="book.id" :book="book" />
         </div>
+        <NuxtLink
+          :to="localePath('/books')"
+          class="sm:hidden inline-flex items-center gap-1 mt-4 text-sm text-primary hover:underline"
+        >
+          {{ t("home.see_all") }}
+          <Icon name="arrow-right" class="h-4 w-4" />
+        </NuxtLink>
+      </div>
+    </section>
+
+    <!-- EMPTY STATE — show only if no data and no error -->
+    <section v-if="!hasAnyData && !hasError" class="border-b border-border">
+      <div class="max-w-3xl mx-auto px-4 py-16 text-center">
+        <UiEmptyState
+          icon="library"
+          :title="t('home.empty.title')"
+          :description="t('home.empty.body')"
+        >
+          <UiButton :to="localePath('/authors/me')">
+            <Icon name="pencil" class="h-4 w-4" />
+            {{ t("home.hero.cta_become_author") }}
+          </UiButton>
+        </UiEmptyState>
       </div>
     </section>
 
     <!-- BECOME AUTHOR CTA -->
-    <section class="bg-primary/5">
-      <div class="max-w-4xl mx-auto px-4 py-16 text-center">
-        <h2 class="font-serif text-2xl md:text-3xl text-ink mb-3">
-          {{ t("home.become_author_cta.title") }}
-        </h2>
-        <p class="text-ink-secondary mb-6 max-w-2xl mx-auto">
-          {{ t("home.become_author_cta.body") }}
-        </p>
-        <UiButton :to="localePath('/authors/me')" size="lg">
-          {{ t("home.become_author_cta.button") }}
-        </UiButton>
+    <section class="relative overflow-hidden bg-primary/5">
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10"
+        style="background-image:
+          radial-gradient(ellipse 50% 80% at 50% 50%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 70%);"
+      />
+      <div class="max-w-5xl mx-auto px-4 py-16 md:py-20">
+        <div class="text-center max-w-2xl mx-auto space-y-4 mb-10">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+            <Icon name="sparkles" class="h-3.5 w-3.5" />
+            {{ t("home.become_author_cta.tag") }}
+          </span>
+          <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight">
+            {{ t("home.become_author_cta.title") }}
+          </h2>
+          <p class="text-ink-secondary text-base">
+            {{ t("home.become_author_cta.body") }}
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-4 mb-10 text-center sm:text-left">
+          <div class="p-4 rounded-md bg-bg-card border border-border">
+            <Icon name="currency" class="h-6 w-6 text-success mb-2 mx-auto sm:mx-0" />
+            <div class="font-medium text-ink text-sm">{{ t("home.become_author_cta.perks.earn_title") }}</div>
+            <div class="text-xs text-ink-tertiary mt-0.5">{{ t("home.become_author_cta.perks.earn_body") }}</div>
+          </div>
+          <div class="p-4 rounded-md bg-bg-card border border-border">
+            <Icon name="users" class="h-6 w-6 text-primary mb-2 mx-auto sm:mx-0" />
+            <div class="font-medium text-ink text-sm">{{ t("home.become_author_cta.perks.reach_title") }}</div>
+            <div class="text-xs text-ink-tertiary mt-0.5">{{ t("home.become_author_cta.perks.reach_body") }}</div>
+          </div>
+          <div class="p-4 rounded-md bg-bg-card border border-border">
+            <Icon name="chart" class="h-6 w-6 text-info mb-2 mx-auto sm:mx-0" />
+            <div class="font-medium text-ink text-sm">{{ t("home.become_author_cta.perks.insights_title") }}</div>
+            <div class="text-xs text-ink-tertiary mt-0.5">{{ t("home.become_author_cta.perks.insights_body") }}</div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <UiButton :to="localePath('/authors/me')" size="lg">
+            <Icon name="pencil" class="h-4 w-4" />
+            {{ t("home.become_author_cta.button") }}
+          </UiButton>
+        </div>
       </div>
     </section>
   </div>

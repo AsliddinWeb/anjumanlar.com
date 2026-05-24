@@ -2,11 +2,11 @@
 
 ## 🎯 Loyihaning maqsadi
 
-**Anjumanlar.com** — bu mualliflar (ilm-fan vakillari, o'qituvchilar, tadqiqotchilar) o'zlarining **monografiya**larini, **risola**larini va **ilmiy kitoblar**ini yuklab, sotish yoki bepul tarqatish imkonini beradigan **raqamli kitob do'koni**.
+**Monografiya** — bu mualliflar (ilm-fan vakillari, o'qituvchilar, tadqiqotchilar) o'zlarining **monografiya**larini, **risola**larini va **ilmiy kitoblar**ini yuklab, sotish yoki bepul tarqatish imkonini beradigan **raqamli kitob do'koni**.
 
 ### Asosiy g'oya
 
-> Hozirgi paytda O'zbekistonda mualliflar o'z monografiyalarini sotish uchun maxsus platforma yo'q. Ko'pchilik PDF orqali Telegram'da tarqatadi, hech qanday himoya va to'lov tizimi yo'q. **Anjumanlar.com** ana shu bo'shliqni to'ldiradi.
+> Hozirgi paytda O'zbekistonda mualliflar o'z monografiyalarini sotish uchun maxsus platforma yo'q. Ko'pchilik PDF orqali Telegram'da tarqatadi, hech qanday himoya va to'lov tizimi yo'q. **Monografiya** ana shu bo'shliqni to'ldiradi.
 
 ---
 
@@ -88,7 +88,7 @@ Sayt **3 tilda** ishlaydi:
 - 🇷🇺 **Rus**
 - 🇬🇧 **Ingliz**
 
-URL strukturasi: `anjumanlar.com/uz/`, `anjumanlar.com/ru/`, `anjumanlar.com/en/`
+URL strukturasi: `monografiya.com/uz/`, `monografiya.com/ru/`, `monografiya.com/en/`
 
 Tarjimalar:
 - UI matnlari — i18n fayllarda

@@ -512,7 +512,7 @@ async def forgot_password(...):
 ```
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
-GOOGLE_REDIRECT_URI=https://anjumanlar.com/api/v1/auth/google/callback
+GOOGLE_REDIRECT_URI=https://monografiya.com/api/v1/auth/google/callback
 ```
 
 3. `authlib` o'rnating: `pip install authlib`

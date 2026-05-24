@@ -1,7 +1,7 @@
 [project]
-name = "anjumanlar-backend"
+name = "monografiya-backend"
 version = "0.1.0"
-description = "Anjumanlar.com — FastAPI backend"
+description = "Monografiya — FastAPI backend"
 requires-python = ">=3.12"
 readme = "README.md"
 

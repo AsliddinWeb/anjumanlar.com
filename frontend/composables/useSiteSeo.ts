@@ -26,7 +26,7 @@ export function useSiteSeo(input: SiteSeoInput) {
   const runtime = useRuntimeConfig();
 
   const siteUrl = (runtime.public.siteUrl as string) || "";
-  const siteName = (runtime.public.siteName as string) || "Anjumanlar.com";
+  const siteName = (runtime.public.siteName as string) || "Monografiya.com";
 
   const fullUrl = computed(() => {
     if (input.canonical) {

@@ -23,7 +23,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      titleTemplate: "%s · Anjumanlar.com",
+      titleTemplate: "%s · Monografiya.com",
       htmlAttrs: { lang: "uz" },
       meta: [
         { charset: "utf-8" },
@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: "http://localhost:8307/api/v1",
       siteUrl: "http://localhost:8308",
-      siteName: "Anjumanlar.com",
+      siteName: "Monografiya.com",
       defaultLocale: "uz",
       // Sentry — left blank in dev so the plugin no-ops. Production
       // wires it via NUXT_PUBLIC_SENTRY_DSN + NUXT_PUBLIC_SENTRY_ENV.
@@ -77,7 +77,7 @@ export default defineNuxtConfig({
     preference: "system",
     fallback: "light",
     classSuffix: "",
-    storageKey: "anjumanlar-color-mode",
+    storageKey: "monografiya-color-mode",
   },
 
   tailwindcss: {

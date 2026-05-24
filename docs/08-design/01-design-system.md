@@ -1,10 +1,10 @@
-# Design System — Anjumanlar.com
+# Design System — Monografiya
 
 Saytning vizual tili. "Zamonaviy raqamli kutubxona" estetikasi: iliq, ishonarli, akademik lekin zerikarli emas.
 
 ## Dizayn falsafasi
 
-**Asosiy g'oya:** Anjumanlar — bu raqamli kutubxona. Foydalanuvchi sahifaga kirganda kitob do'koniga kelgandek his qilishi kerak: tinch, tartibli, izlanishga undovchi.
+**Asosiy g'oya:** Monografiya — bu raqamli kutubxona. Foydalanuvchi sahifaga kirganda kitob do'koniga kelgandek his qilishi kerak: tinch, tartibli, izlanishga undovchi.
 
 **Tamoyillar:**
 - **Iliq, qog'oz-siyoh palitra** — sovuq Material/Apple dizaynidan farqli

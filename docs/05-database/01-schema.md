@@ -374,7 +374,7 @@ INSERT INTO settings (key, value, description) VALUES
     ('min_withdrawal_amount', '100000', 'Minimal pul yechish miqdori (UZS)'),
     ('max_book_size_mb', '100', 'Maksimal kitob fayl o''lchami (MB)'),
     ('payme_merchant_id', '""', 'Payme merchant identifikatori'),
-    ('site_meta', '{"title": {"uz": "Anjumanlar"}, "description": {}}', 'Sayt SEO meta');
+    ('site_meta', '{"title": {"uz": "Monografiya"}, "description": {}}', 'Sayt SEO meta');
 ```
 
 ### notifications

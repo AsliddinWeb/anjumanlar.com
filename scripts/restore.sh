@@ -2,7 +2,7 @@
 # Restore a backup directory created by scripts/backup.sh.
 #
 # Usage:
-#   ./scripts/restore.sh /var/backups/anjumanlar/20260801-030000
+#   ./scripts/restore.sh /var/backups/monografiya/20260801-030000
 #
 # Restores both the postgres dump and the minio data tarball. The script
 # will refuse to run if the target database already contains rows you
@@ -10,12 +10,12 @@
 #
 # WHAT THIS WIPES:
 #   - Every row in every table inside the configured POSTGRES_DB
-#   - Every object in the docker volume ``anjumanlar_minio_data``
+#   - Every object in the docker volume ``monografiya_minio_data``
 #
 # Use the dry-run flag (``--dry-run``) to see what would happen first.
 set -euo pipefail
 
-PROJECT_DIR="${PROJECT_DIR:-/opt/anjumanlar.com}"
+PROJECT_DIR="${PROJECT_DIR:-/opt/monografiya.com}"
 COMPOSE="docker compose -f docker-compose.prod.yml"
 
 FORCE=0
@@ -53,8 +53,8 @@ fi
 cd "$PROJECT_DIR"
 DB_USER=$(grep -E '^POSTGRES_USER=' .env | cut -d= -f2-)
 DB_NAME=$(grep -E '^POSTGRES_DB=' .env | cut -d= -f2-)
-DB_USER="${DB_USER:-anjumanlar}"
-DB_NAME="${DB_NAME:-anjumanlar}"
+DB_USER="${DB_USER:-monografiya}"
+DB_NAME="${DB_NAME:-monografiya}"
 
 # --- refuse to overwrite a populated DB unless --force --------------------
 if [[ "$FORCE" -ne 1 ]]; then
@@ -91,13 +91,13 @@ gunzip -c "$BACKUP/postgres.dump.gz" \
 echo "==> stopping minio + wiping volume contents"
 $COMPOSE stop minio
 docker run --rm \
-    -v anjumanlar_minio_data:/data \
+    -v monografiya_minio_data:/data \
     alpine:3.20 \
     sh -c "rm -rf /data/* /data/.[!.]* /data/..?* 2>/dev/null || true"
 
 echo "==> restoring minio data tarball"
 docker run --rm \
-    -v anjumanlar_minio_data:/data \
+    -v monografiya_minio_data:/data \
     -v "$BACKUP":/backup:ro \
     alpine:3.20 \
     sh -c "cd /data && tar xzf /backup/minio_data.tar.gz"

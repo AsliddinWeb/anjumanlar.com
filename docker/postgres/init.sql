@@ -1,4 +1,4 @@
--- Anjumanlar.com — PostgreSQL initial setup
+-- Monografiya — PostgreSQL initial setup
 -- Runs once on first container start (empty data dir).
 
 -- UUID generation used as primary key default across all tables.

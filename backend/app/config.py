@@ -18,17 +18,17 @@ class Settings(BaseSettings):
     )
 
     # ----- General -----
-    PROJECT_NAME: str = "anjumanlar"
+    PROJECT_NAME: str = "monografiya"
     ENVIRONMENT: Environment = "development"
     TZ: str = "Asia/Tashkent"
     API_V1_PREFIX: str = "/api/v1"
 
     # ----- Database -----
     DATABASE_URL: str = Field(
-        default="postgresql+asyncpg://anjumanlar:anjumanlar@postgres:5432/anjumanlar"
+        default="postgresql+asyncpg://monografiya:monografiya@postgres:5432/monografiya"
     )
     DATABASE_URL_SYNC: str = Field(
-        default="postgresql://anjumanlar:anjumanlar@postgres:5432/anjumanlar"
+        default="postgresql://monografiya:monografiya@postgres:5432/monografiya"
     )
     DATABASE_ECHO: bool = False
 
@@ -70,8 +70,8 @@ class Settings(BaseSettings):
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
     SMTP_TLS: bool = False
-    EMAIL_FROM: str = "noreply@anjumanlar.com"
-    EMAIL_FROM_NAME: str = "Anjumanlar.com"
+    EMAIL_FROM: str = "noreply@monografiya.com"
+    EMAIL_FROM_NAME: str = "Monografiya.com"
 
     # ----- Payme -----
     PAYME_MERCHANT_ID: str = ""

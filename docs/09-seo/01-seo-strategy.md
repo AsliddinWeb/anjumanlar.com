@@ -1,10 +1,10 @@
-# SEO Strategiyasi — Anjumanlar.com
+# SEO Strategiyasi — Monografiya
 
 Saytni Google va Yandex'da yaxshi joylashtirish — bu uzoq muddatli, lekin eng arzon foydalanuvchi olish kanali.
 
 ## Maqsadlar
 
-1. **6 oy ichida:** Brand so'rovlari uchun #1 ("anjumanlar", "anjumanlar.com")
+1. **6 oy ichida:** Brand so'rovlari uchun #1 ("monografiya", "monografiya.com")
 2. **12 oy ichida:** Asosiy kalit so'rovlar top 10'da ("monografiya yuklab olish", "ilmiy kitob uz")
 3. **18 oy ichida:** Long-tail so'rovlar bo'yicha 10K+ oylik organic visit
 
@@ -19,9 +19,9 @@ Saytni Google va Yandex'da yaxshi joylashtirish — bu uzoq muddatli, lekin eng 
 ### Kalit so'rov toifalari
 
 #### 1. Brand (oson)
-- `anjumanlar`
-- `anjumanlar.com`
-- `anjumanlar uz`
+- `monografiya`
+- `monografiya.com`
+- `monografiya uz`
 
 #### 2. Asosiy tijorat so'rovlari (o'rta-qiyin)
 - `monografiya yuklab olish`
@@ -99,7 +99,7 @@ slug = slugify(
 Har bir sahifada `<link rel="canonical">`:
 
 ```html
-<link rel="canonical" href="https://anjumanlar.com/uz/books/yashash-falsafasi" />
+<link rel="canonical" href="https://monografiya.com/uz/books/yashash-falsafasi" />
 ```
 
 ### Sahifa tezligi
@@ -124,9 +124,9 @@ Har bir sahifada `<link rel="canonical">`:
 **Formula:** `{Asosiy kalit so'z} — {Brand}`
 
 **Yaxshi misollar:**
-- `Yashash falsafasi — Aziz Aliyev | Anjumanlar.com`
-- `Iqtisodiyot bo'yicha monografiyalar | Anjumanlar`
-- `Aziz Aliyev — Anjumanlar.com mualliflari`
+- `Yashash falsafasi — Aziz Aliyev | Monografiya`
+- `Iqtisodiyot bo'yicha monografiyalar | Monografiya`
+- `Aziz Aliyev — Monografiya mualliflari`
 
 **Qoidalar:**
 - 50-60 belgi (Google 600px ko'rsatadi)
@@ -256,10 +256,10 @@ Har bir rasm `alt` ga ega:
 Har sahifada:
 
 ```html
-<link rel="alternate" hreflang="uz" href="https://anjumanlar.com/uz/books/yashash-falsafasi" />
-<link rel="alternate" hreflang="ru" href="https://anjumanlar.com/ru/books/yashash-falsafasi" />
-<link rel="alternate" hreflang="en" href="https://anjumanlar.com/en/books/yashash-falsafasi" />
-<link rel="alternate" hreflang="x-default" href="https://anjumanlar.com/uz/books/yashash-falsafasi" />
+<link rel="alternate" hreflang="uz" href="https://monografiya.com/uz/books/yashash-falsafasi" />
+<link rel="alternate" hreflang="ru" href="https://monografiya.com/ru/books/yashash-falsafasi" />
+<link rel="alternate" hreflang="en" href="https://monografiya.com/en/books/yashash-falsafasi" />
+<link rel="alternate" hreflang="x-default" href="https://monografiya.com/uz/books/yashash-falsafasi" />
 ```
 
 ### Tarjima sifati

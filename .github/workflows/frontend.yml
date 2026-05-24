@@ -67,6 +67,6 @@ jobs:
           context: ./frontend
           push: false
           load: true
-          tags: anjumanlar-frontend:ci
+          tags: monografiya-frontend:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max

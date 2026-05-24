@@ -1,4 +1,4 @@
-# Anjumanlar Frontend (Nuxt 3)
+# Monografiya Frontend (Nuxt 3)
 
 Vue 3 + Nuxt 3 + Tailwind + i18n (uz/ru/en) + color-mode + Pinia. SSR by default.
 

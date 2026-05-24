@@ -330,7 +330,7 @@ file: <binary>
 Javob:
 ```json
 {
-  "file_url": "https://cdn.anjumanlar.com/books/xxx.pdf",
+  "file_url": "https://cdn.monografiya.com/books/xxx.pdf",
   "size": 5242880,
   "pages": 250
 }

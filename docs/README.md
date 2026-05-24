@@ -1,4 +1,4 @@
-# 📚 Anjumanlar.com — Monografiya Sotuvi Platformasi
+# 📚 Monografiya — Monografiya Sotuvi Platformasi
 
 > Mualliflar uchun monografiyalarni yuklash va sotish platformasi. Onlayn kitob do'koni dizaynida, ko'p tilli, professional va to'liq Docker bilan deploy qilinadigan loyiha.
 
@@ -6,7 +6,7 @@
 
 ## 🎯 Loyiha Haqida Qisqacha
 
-**Anjumanlar.com** — bu mualliflar o'z monografiyalarini (kitoblar) yuklab, sotish yoki bepul tarqatish imkonini beradigan platforma. Sayt **payme.uz** orqali to'lov qabul qiladi, **3 ta tilda** (O'zbek, Rus, Ingliz) ishlaydi va **kunduzgi/tungi rejim**ga ega.
+**Monografiya** — bu mualliflar o'z monografiyalarini (kitoblar) yuklab, sotish yoki bepul tarqatish imkonini beradigan platforma. Sayt **payme.uz** orqali to'lov qabul qiladi, **3 ta tilda** (O'zbek, Rus, Ingliz) ishlaydi va **kunduzgi/tungi rejim**ga ega.
 
 ### Asosiy texnologiyalar
 
@@ -87,8 +87,8 @@ Quyidagi tartibda o'qish tavsiya etiladi:
 
 ```bash
 # 1. Repozitoriyani klonlash
-git clone <your-repo-url> anjumanlar
-cd anjumanlar
+git clone <your-repo-url> monografiya
+cd monografiya
 
 # 2. Environment fayllarni sozlash
 cp .env.example .env
