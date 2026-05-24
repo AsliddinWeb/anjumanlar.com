@@ -18,29 +18,38 @@ const initials = (name: string) =>
 <template>
   <NuxtLink
     :to="localePath(`/authors/${author.slug}`)"
-    class="group block rounded-md border border-border bg-bg-card p-4 shadow-sm transition-shadow hover:shadow-book hover:border-border-hover"
+    class="group flex flex-col rounded-md border border-border bg-bg-card p-4 transition-all hover:border-primary hover:shadow-sm"
   >
     <div class="flex items-start gap-3">
       <div
-        class="h-12 w-12 shrink-0 rounded-full bg-bg-secondary flex items-center justify-center font-medium text-ink-secondary"
+        class="h-12 w-12 shrink-0 rounded-full bg-primary text-ink-inverse flex items-center justify-center font-semibold text-sm"
       >
         {{ initials(author.display_name) || "?" }}
       </div>
       <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-2">
-          <h3 class="font-medium text-ink truncate group-hover:text-primary">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <h3 class="font-medium text-ink truncate group-hover:text-primary transition-colors">
             {{ author.display_name }}
           </h3>
-          <UiBadge v-if="author.verified" tone="success" size="sm" class="inline-flex items-center gap-1">
-            <Icon name="check-circle-solid" class="h-3 w-3" />
-            {{ t("authors.verified") }}
-          </UiBadge>
+          <Icon
+            v-if="author.verified"
+            name="check-circle-solid"
+            class="h-3.5 w-3.5 text-success shrink-0"
+            :title="t('authors.verified')"
+          />
+          <Icon
+            v-if="author.featured"
+            name="star-solid"
+            class="h-3.5 w-3.5 text-accent-gold shrink-0"
+            :title="t('authors.featured')"
+          />
         </div>
-        <p v-if="author.academic_title" class="text-xs text-ink-tertiary truncate">
+        <p v-if="author.academic_title" class="text-xs text-ink-secondary truncate mt-0.5">
           {{ author.academic_title }}
         </p>
-        <p v-if="author.institution" class="text-xs text-ink-tertiary truncate">
-          {{ author.institution }}
+        <p v-if="author.institution" class="inline-flex items-center gap-1 text-xs text-ink-tertiary truncate mt-0.5">
+          <Icon name="institution" class="h-3 w-3 shrink-0" />
+          <span class="truncate">{{ author.institution }}</span>
         </p>
       </div>
     </div>

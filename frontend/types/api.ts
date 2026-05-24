@@ -160,6 +160,13 @@ export interface BookOwnerView extends BookPublic {
   keywords: string[];
 }
 
+export interface BookOwnerList {
+  items: BookOwnerView[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
 // ---------- Review ----------
 
 export interface ReviewAuthorRef {

@@ -20,6 +20,7 @@ from app.models import BookStatus, User
 from app.schemas.book import (
     BookCreate,
     BookList,
+    BookOwnerList,
     BookOwnerView,
     BookPublic,
     BookRejectRequest,
@@ -37,7 +38,7 @@ router = APIRouter(prefix="/books", tags=["books"])
 
 @router.get(
     "/me",
-    response_model=BookList,
+    response_model=BookOwnerList,
     summary="Author's own books (all statuses)",
 )
 async def list_my_books(
@@ -46,12 +47,12 @@ async def list_my_books(
     page_size: int = Query(20, ge=1, le=100),
     status_filter: BookStatus | None = Query(None, alias="status"),
     db: AsyncSession = Depends(get_db),
-) -> BookList:
+) -> BookOwnerList:
     items, total = await book_service.list_my_books(
         db, user, page=page, page_size=page_size, status=status_filter
     )
-    return BookList(
-        items=[BookPublic.model_validate(b) for b in items],
+    return BookOwnerList(
+        items=[BookOwnerView.model_validate(b) for b in items],
         total=total,
         page=page,
         page_size=page_size,

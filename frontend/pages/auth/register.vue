@@ -163,6 +163,17 @@ async function onSubmit() {
         :label="t('auth.register.submit')"
         :loading-label="t('auth.register.submitting')"
       />
+
+      <p class="text-[11px] text-ink-tertiary text-center leading-relaxed">
+        {{ t("auth.register.terms_notice") }}
+        <NuxtLink :to="localePath('/legal/terms')" class="text-primary hover:underline">
+          {{ t("auth.register.terms_link") }}
+        </NuxtLink>
+        {{ t("auth.register.terms_and") }}
+        <NuxtLink :to="localePath('/legal/privacy')" class="text-primary hover:underline">
+          {{ t("auth.register.privacy_link") }}
+        </NuxtLink>{{ t("auth.register.terms_accept") }}
+      </p>
     </form>
 
     <template #footer>

@@ -20,7 +20,11 @@
   "wishlist": {
     "subtitle": "Books saved for later",
     "empty_title": "Your wishlist is empty",
-    "empty_body": "Tap the heart icon on a book to save it for later."
+    "empty_body": "Tap the heart icon on a book to save it for later.",
+    "results": "{n} books",
+    "empty_cta": "Browse books",
+    "error_title": "Couldn't load wishlist",
+    "error_body": "We're having trouble reaching the server. Try again."
   },
   "cart": {
     "title": "Cart",
@@ -64,7 +68,19 @@
     "go_orders": "My orders",
     "failed_title": "Payment failed",
     "failed_body": "Payment was cancelled or hit an error. Try again or contact support.",
-    "try_again": "Try again"
+    "try_again": "Try again",
+    "order_number": "Order number",
+    "created_at": "Created: {date}",
+    "pending_hint_title": "Payment is being confirmed",
+    "pending_hint_body": "Bank confirmation can take 1–5 minutes. Refresh the page or check the \"Orders\" section.",
+    "failure_label": "Error details",
+    "common_reasons": "Common reasons",
+    "reason_insufficient": "Insufficient funds on the card",
+    "reason_3ds": "3D-Secure was cancelled",
+    "reason_blocked": "Card is blocked or expired",
+    "reason_network": "Network error — please try again",
+    "need_help": "Need help?",
+    "failure_reasons": {}
   },
   "orders": {
     "title": "My orders",
@@ -89,7 +105,23 @@
       "cancelled": "Cancelled",
       "failed": "Failed",
       "refunded": "Refunded"
-    }
+    },
+    "results": "{n} orders",
+    "filter_all": "All statuses",
+    "empty_cta": "Make your first purchase",
+    "error_title": "Couldn't load orders",
+    "error_body": "We're having trouble reaching the server. Try again.",
+    "no_filter_match_title": "No orders with this status",
+    "no_filter_match_body": "Pick another status or clear the filter.",
+    "clear_filter": "Clear filter",
+    "cancel_modal_title": "Cancel order",
+    "cancel_modal_body": "Cancel order {number}? This cannot be undone.",
+    "cancel_modal_confirm": "Yes, cancel",
+    "cancel_modal_keep": "No, keep",
+    "cancel_success": "Order {number} cancelled",
+    "cancel_failed": "Couldn't cancel",
+    "pay_failed": "Couldn't reach the payment page",
+    "view_in_library": "Open in library"
   },
   "admin": {
     "title": "Admin panel",
@@ -486,7 +518,19 @@
     "commission_rate": "Platform commission",
     "request_withdrawal": "Request withdrawal",
     "no_author_profile_title": "No author profile",
-    "no_author_profile_body": "Create an author profile first to see your earnings."
+    "no_author_profile_body": "Create an author profile first to see your earnings.",
+    "become_author": "Become an author",
+    "error_title": "Couldn't load balance",
+    "amount_exceeds": "Exceeds available amount: {available}",
+    "request_success": "Request submitted. We'll review it shortly.",
+    "request_subtitle": "Minimum amount: {min}",
+    "amount_hint": "Between {min} — {max}",
+    "full_history": "Full history",
+    "see_all": "See all",
+    "preset_max": "All",
+    "quick": "Quick",
+    "insufficient": "You have {current} now. Need at least {min} to withdraw.",
+    "recent_withdrawals": "Recent requests"
   },
   "withdrawals": {
     "title": "Withdrawal requests",
@@ -510,7 +554,20 @@
       "completed": "Completed",
       "rejected": "Rejected",
       "cancelled": "Cancelled"
-    }
+    },
+    "results": "{n} requests",
+    "filter_all": "All statuses",
+    "cancel_success": "Request cancelled",
+    "cancel_failed": "Couldn't cancel",
+    "error_title": "Couldn't load requests",
+    "error_body": "We're having trouble reaching the server. Try again.",
+    "no_filter_match_title": "No requests with this status",
+    "no_filter_match_body": "Choose another status or clear the filter.",
+    "clear_filter": "Clear filter",
+    "cancel_modal_title": "Cancel request",
+    "cancel_modal_body": "Cancel the {amount} request?",
+    "cancel_modal_confirm": "Yes, cancel",
+    "cancel_modal_keep": "Keep it"
   },
   "library": {
     "title": "My library",
@@ -521,7 +578,17 @@
     "download_preparing": "Watermark in progress…",
     "downloaded": "Downloaded {n} times",
     "acquired": "Added {date}",
-    "download_error": "Download failed"
+    "download_error": "Download failed",
+    "search_placeholder": "Search by book or author...",
+    "results": "{n} books",
+    "empty_cta": "Pick your first book",
+    "error_title": "Couldn't load library",
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds.",
+    "no_match_title": "Nothing found",
+    "no_match_body": "Try a different keyword.",
+    "clear_search": "Clear search",
+    "download_started": "\"{title}\" is downloading",
+    "download_failed": "Download failed"
   },
   "theme": {
     "label": "Theme",
@@ -591,63 +658,68 @@
     "validation": {
       "email_invalid": "Invalid email format",
       "password_too_short": "Password must be at least 8 characters",
-      "password_weak": "Weak password — add upper, lower, digit and a symbol",
-      "name_too_short": "Name must be at least 2 characters"
+      "password_weak": "Weak password — add uppercase, lowercase and digits",
+      "name_too_short": "Enter your full name"
     },
     "login": {
-      "title": "Log in to your account",
-      "subtitle": "Enter your email and password",
+      "title": "Welcome back!",
+      "subtitle": "Sign in to continue with your library",
       "email": "Email",
       "password": "Password",
-      "submit": "Log in",
-      "submitting": "Signing in…",
+      "submit": "Sign in",
+      "submitting": "Checking…",
       "no_account": "Don't have an account?",
-      "register_link": "Sign up",
+      "register_link": "Create account",
       "forgot_link": "Forgot password?",
       "error_generic": "Invalid email or password"
     },
     "register": {
-      "title": "Create your account",
-      "subtitle": "Takes a few seconds — free",
+      "title": "Join us",
+      "subtitle": "Sign up free — takes less than 30 seconds",
       "full_name": "Full name",
       "email": "Email",
       "password": "Password",
-      "password_hint": "At least 8 chars with one uppercase, one lowercase and one digit",
+      "password_hint": "At least 8 characters — one uppercase, one lowercase and one digit.",
       "preferred_locale": "Language",
-      "submit": "Sign up",
+      "submit": "Create account",
       "submitting": "Creating…",
       "have_account": "Already have an account?",
-      "login_link": "Log in",
+      "login_link": "Sign in",
       "success_title": "Check your email",
-      "success_body": "We sent a verification link to {email}. Open it to activate your account."
+      "success_body": "We sent a confirmation link to {email}. Click the link in your inbox.",
+      "terms_notice": "By signing up, you agree to our",
+      "terms_link": "terms of use",
+      "terms_and": "and",
+      "privacy_link": "privacy policy",
+      "terms_accept": "."
     },
     "forgot": {
-      "title": "Forgot your password?",
+      "title": "Reset password",
       "subtitle": "Enter your email — we'll send a reset link",
       "email": "Email",
       "submit": "Send link",
       "submitting": "Sending…",
-      "success": "If the email is registered, a reset link has been sent.",
-      "back_to_login": "Back to login"
+      "success": "If that email is registered, a reset link has been sent. Check your inbox.",
+      "back_to_login": "Back to sign in"
     },
     "reset": {
       "title": "Set a new password",
-      "subtitle": "This link is time-limited",
+      "subtitle": "Enter your new password — the link expires soon",
       "new_password": "New password",
       "submit": "Save password",
       "submitting": "Saving…",
-      "success": "Password updated. You can now log in with the new one.",
-      "go_to_login": "Go to login",
-      "invalid_token": "This link is invalid or expired"
+      "success": "Password updated successfully. You can now sign in with the new one.",
+      "go_to_login": "Go to sign in",
+      "invalid_token": "Link is invalid or expired. Request a new one."
     },
     "verify": {
       "title": "Verify email",
       "in_progress": "Verifying…",
-      "success": "Email verified. You now have full account access.",
-      "error": "This link is invalid or expired",
-      "go_to_login": "Go to login"
+      "success": "Email verified successfully. You now have full access to your account.",
+      "error": "Link is invalid or expired. Request a new verification link.",
+      "go_to_login": "Go to sign in"
     },
-    "logout": "Log out"
+    "logout": "Sign out"
   },
   "account": {
     "title": "Account",
@@ -655,7 +727,44 @@
     "email_unverified": "Email not verified",
     "role": "Role",
     "logout": "Log out",
-    "logout_all": "Log out everywhere"
+    "logout_all": "Log out everywhere",
+    "greeting_morning": "Good morning",
+    "greeting_afternoon": "Good afternoon",
+    "greeting_evening": "Good evening",
+    "verified": "Verified",
+    "email_unverified_body": "Click the link in the email we sent you — required for full use of orders and library.",
+    "tile_library": "Library",
+    "tile_library_hint": "Purchased books",
+    "tile_orders": "Orders",
+    "tile_orders_hint": "Purchase history",
+    "tile_wishlist": "Wishlist",
+    "tile_wishlist_hint": "Saved books",
+    "tile_cart": "In cart",
+    "tile_cart_hint": "Ready to buy",
+    "tile_balance": "Balance",
+    "tile_balance_hint": "Author earnings",
+    "recent_library": "Recently added",
+    "recent_library_hint": "Your latest books",
+    "see_all": "See all",
+    "dashboard_empty_title": "Your library is empty",
+    "dashboard_empty_body": "Pick your first book — it'll show up here.",
+    "dashboard_empty_cta": "Browse catalogue",
+    "nav": {
+      "menu": "Menu",
+      "dashboard": "Dashboard",
+      "library": "Library",
+      "orders": "Orders",
+      "wishlist": "Wishlist",
+      "cart": "Cart",
+      "balance": "Balance",
+      "withdrawals": "Withdrawals"
+    },
+    "roles": {
+      "reader": "Reader",
+      "author": "Author",
+      "admin": "Administrator",
+      "superadmin": "Superadmin"
+    }
   },
   "about": {
     "hero": {
@@ -727,15 +836,29 @@
   },
   "blog": {
     "title": "Blog",
-    "subtitle": "News, guides and author interviews",
+    "subtitle": "Academic publishing, new books, author interviews",
     "coming_soon_title": "Coming soon",
     "coming_soon_body": "The blog is under construction. Subscribe to our newsletter — we'll notify you when the first posts go live.",
     "empty_title": "No posts yet",
-    "empty_body": "The first articles are on the way.",
+    "empty_body": "No articles yet. Our first posts are on the way.",
     "read_more": "Read more",
     "back_to_list": "Back to all posts",
     "published_on": "Published {date}",
-    "not_found": "Post not found"
+    "not_found": "Post not found",
+    "tag": "News & articles",
+    "label": "Article",
+    "latest": "Latest",
+    "more_posts": "More articles",
+    "total": "{n} total",
+    "reading_minutes": "{n} min read",
+    "error_title": "Couldn't load articles",
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds.",
+    "empty_cta": "Browse books",
+    "share": "Share",
+    "copy_link": "Copy link",
+    "copied": "Copied",
+    "related": "Read more",
+    "see_all": "See all"
   },
   "footer": {
     "tagline": "A marketplace for academic monographs",
@@ -750,14 +873,95 @@
   "legal": {
     "draft_title": "Document in preparation",
     "draft_body": "This document is being drafted by our legal team. The full text will be published soon.",
-    "last_updated": "Last updated: {date}"
+    "last_updated": "Last updated: {date}",
+    "toc": "Contents",
+    "draft_notice": "This document is an MVP draft. A final version will be published after legal review.",
+    "terms": {
+      "s_intro": "Introduction",
+      "s_account": "Account",
+      "s_content": "Content",
+      "s_payments": "Payments",
+      "s_authors": "Authors",
+      "s_conduct": "Conduct",
+      "s_termination": "Termination",
+      "s_liability": "Liability",
+      "s_changes": "Changes",
+      "s_contact": "Contact",
+      "intro": "By using Monografiya.com, you agree to the terms below. Please read this document carefully.",
+      "account_p1": "To open an account you must be at least 18 years old and provide accurate information.",
+      "account_l1": "One user, one account. Creating multiple accounts is prohibited.",
+      "account_l2": "Keeping your password and login details safe is your responsibility.",
+      "account_l3": "You are responsible for all activity in your account.",
+      "content_p1": "Every book, cover and article on the site is protected by copyright. Downloads are permitted for personal use only.",
+      "content_p2": "Redistributing, reselling or uploading purchased files to public networks is strictly prohibited.",
+      "payments_p1": "Payments are processed via Payme, Click, UzCard and other approved systems. Prices are in Uzbek soums.",
+      "payments_l1": "After payment, the book is added to your personal library immediately.",
+      "payments_l2": "Refunds for digital products are issued only in cases of technical failure.",
+      "payments_l3": "The final order amount is displayed before you go to payment.",
+      "authors_p1": "By registering as an author, you can publish your own works.",
+      "authors_l1": "80% of revenue goes to the author, 20% to the platform.",
+      "authors_l2": "Every uploaded book goes through moderation (24–48 hours).",
+      "authors_l3": "Uploading content that infringes others' rights is not allowed — the account will be blocked.",
+      "conduct_p1": "Please treat other users with respect.",
+      "conduct_l1": "Spam, advertising and unlawful content are not allowed.",
+      "conduct_l2": "Threats or harassment of other users are grounds for immediate suspension.",
+      "conduct_l3": "Technical attacks or automated data collection are not permitted.",
+      "termination_p1": "We reserve the right to terminate accounts that violate these terms without notice. You may also delete your account at any time.",
+      "liability_p1": "The platform is provided \"as is\". We don't guarantee uninterrupted operation but work to minimise disruptions.",
+      "changes_p1": "These terms are updated periodically. We'll notify you of material changes by email.",
+      "contact_p1": "For questions or complaints, write to us:"
+    },
+    "privacy": {
+      "s_intro": "Introduction",
+      "s_collect": "What we collect",
+      "s_use": "How we use data",
+      "s_share": "Sharing",
+      "s_cookies": "Cookies & analytics",
+      "s_rights": "Your rights",
+      "s_security": "Security",
+      "s_retention": "Retention",
+      "s_changes": "Changes",
+      "s_contact": "Contact",
+      "intro": "Monografiya.com takes your personal data seriously. This policy explains what we collect, why, and how we protect it.",
+      "collect_p1": "We collect the following from you:",
+      "collect_l1": "On signup: name, email, password (hashed).",
+      "collect_l2": "For the author profile: academic title, institution, bio, social links (if provided).",
+      "collect_l3": "Orders and payments: list of books, total (card numbers are stored by Payme, we don't see them).",
+      "collect_l4": "Technical: IP address, browser type, usage log (for security).",
+      "use_p1": "We use the data we collect to:",
+      "use_l1": "Manage your account and fulfil orders.",
+      "use_l2": "Notify you about new publications and important updates (with your consent).",
+      "use_l3": "Improve the platform and ensure security.",
+      "share_p1": "We share data with third parties only when necessary:",
+      "share_l1": "Payment systems (Payme, Click) — to process payments.",
+      "share_l2": "Technical providers (hosting, email delivery) — under confidentiality agreements.",
+      "share_l3": "Authorities — if required by law.",
+      "cookies_p1": "The site uses cookies for convenience and analytics. Disabling cookies in your browser may break some features.",
+      "rights_p1": "Your rights:",
+      "rights_l1": "View and edit your personal information in your account.",
+      "rights_l2": "Delete your account entirely (anonymisation).",
+      "rights_l3": "Unsubscribe from marketing emails.",
+      "rights_l4": "Request a copy of the data we hold about you.",
+      "security_p1": "Passwords are hashed with bcrypt. Card data isn't stored on our side. Connections are protected by HTTPS.",
+      "retention_p1": "We keep data while your account is active. After deletion — fully removed within 30 days (except logs required by law).",
+      "changes_p1": "We'll notify you in advance if this policy changes. Material changes — by email.",
+      "contact_p1": "For privacy questions:"
+    }
   },
   "error": {
     "404_title": "Page not found",
     "404_body": "The page you are looking for does not exist or has been moved.",
     "500_title": "Server error",
     "500_body": "Something went wrong. Please try again later.",
-    "go_home": "Back to home"
+    "go_home": "Back to home",
+    "search_placeholder": "Try searching for something else...",
+    "popular": {
+      "heading": "Popular pages",
+      "catalog": "Catalogue",
+      "authors": "Authors",
+      "blog": "Blog",
+      "about": "About"
+    }
   },
   "search": {
     "title": "Search",
@@ -795,7 +999,7 @@
   },
   "authors": {
     "title": "Authors",
-    "subtitle": "Authors publishing on Monografiya.com",
+    "subtitle": "Academics sharing their knowledge on Monografiya.com",
     "results": "{n} authors",
     "search_placeholder": "Search by name or institution",
     "no_authors": "No authors found",
@@ -808,7 +1012,18 @@
     "academic_title": "Academic title",
     "website": "Website",
     "total_sales": "Total sales: {n}",
-    "joined_at": "Joined {date}"
+    "joined_at": "Joined {date}",
+    "tag": "Scholars and researchers",
+    "no_authors_body": "No authors have signed up yet. You could be the first.",
+    "no_books_by_body": "This author hasn't published any books yet.",
+    "error_title": "Couldn't load authors",
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds.",
+    "error_books_title": "Couldn't load books",
+    "error_books_body": "We're having trouble reaching the server. Try again.",
+    "about_heading": "About the author",
+    "stat_books": "Books",
+    "stat_sales": "Sales",
+    "stat_joined": "Joined"
   },
   "catalog": {
     "title": "Books catalogue",
@@ -919,5 +1134,60 @@
     "next": "Next",
     "prev": "Previous",
     "cancel": "Cancel"
+  },
+  "author_cabinet": {
+    "title": "Author cabinet",
+    "view_public": "Public profile",
+    "edit_profile": "Edit",
+    "edit_title": "Edit profile",
+    "edit_subtitle": "Update what readers see.",
+    "edit_success": "Profile updated",
+    "save": "Save",
+    "error_title": "Couldn't load profile",
+    "stat_available": "Available to withdraw",
+    "stat_pending": "Pending",
+    "stat_total_revenue": "Total revenue",
+    "stat_books": "Books",
+    "my_books": "My books",
+    "published": "published",
+    "in_review": "in review",
+    "drafts": "drafts",
+    "no_books_title": "No books yet",
+    "no_books_body": "Contact admin to upload your first book.",
+    "joined": "Joined {date}",
+    "commission": "Commission: {rate}%",
+    "status": {
+      "draft": "Draft",
+      "pending": "In review",
+      "approved": "Published",
+      "rejected": "Rejected"
+    },
+    "perks": {
+      "earn_title": "80% revenue share",
+      "earn_body": "Most of every sale goes to you.",
+      "reach_title": "Ready audience",
+      "reach_body": "Universities, students, specialists.",
+      "insights_title": "Real-time analytics",
+      "insights_body": "Sales and reading stats."
+    },
+    "become": {
+      "title": "Become an author",
+      "subtitle": "Fill in your profile — you can publish books right after.",
+      "form_title": "Author profile",
+      "form_hint": "Name is required; everything else can be added later.",
+      "submit": "Sign up as an author",
+      "success": "Profile created. You're an author now!",
+      "error_name_required": "Enter your name"
+    },
+    "fields": {
+      "display_name": "Display name",
+      "display_name_hint": "Shown on your public profile.",
+      "academic_title": "Academic title",
+      "academic_title_placeholder": "e.g. PhD, Professor",
+      "institution": "Institution",
+      "institution_placeholder": "e.g. NUUz",
+      "website": "Website",
+      "bio": "Short bio"
+    }
   }
 }

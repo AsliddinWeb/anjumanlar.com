@@ -123,6 +123,13 @@ class BookList(BaseModel):
     page_size: int
 
 
+class BookOwnerList(BaseModel):
+    items: list[BookOwnerView]
+    total: int
+    page: int
+    page_size: int
+
+
 # ----- Admin moderation -----
 
 
