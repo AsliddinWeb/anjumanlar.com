@@ -19,6 +19,7 @@ useHead({ title: t("admin.reviews.title") });
 const { data: pendingRaw, pending: loading, refresh } = await useAsyncData(
   "admin:reviews:pending",
   () => api<ReviewAdminView[]>("/admin/reviews", { query: { page: 1, page_size: 100 } }),
+  { server: false },
 );
 
 const allItems = computed<ReviewAdminView[]>(

@@ -34,7 +34,7 @@ const queryParams = computed(() => {
 const { data: listRaw, pending, refresh } = await useAsyncData(
   "admin:withdrawals",
   () => api<WithdrawalList>("/admin/withdrawals", { query: queryParams.value }),
-  { watch: [queryParams] },
+  { server: false, watch: [queryParams] },
 );
 
 const list = computed(() => listRaw.value as WithdrawalList | null);

@@ -32,7 +32,7 @@ const queryParams = computed(() => ({
 const { data: usersRaw, pending, refresh } = await useAsyncData(
   "admin:users",
   () => api<UserList>("/admin/users", { query: queryParams.value }),
-  { watch: [queryParams] },
+  { server: false, watch: [queryParams] },
 );
 
 const users = computed(() => usersRaw.value as UserList | null);

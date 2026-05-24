@@ -35,7 +35,7 @@ const queryParams = computed(() => {
 const { data: listRaw, pending, refresh } = await useAsyncData(
   "admin:blog:list",
   () => api<BlogPostAdminList>("/admin/blog", { query: queryParams.value }),
-  { watch: [queryParams] },
+  { server: false, watch: [queryParams] },
 );
 
 const list = computed(() => listRaw.value as BlogPostAdminList | null);

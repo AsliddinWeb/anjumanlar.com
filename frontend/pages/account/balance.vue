@@ -44,6 +44,7 @@ const { data: withdrawalsRaw, refresh: refreshWithdrawals } = await useAsyncData
     noProfile.value
       ? Promise.resolve(null as WithdrawalList | null)
       : api<WithdrawalList>("/authors/me/withdrawals", { query: { page: 1, page_size: 5 } }),
+  { server: false },
 );
 
 const recentWithdrawals = computed(() => (withdrawalsRaw.value as WithdrawalList | null)?.items ?? []);

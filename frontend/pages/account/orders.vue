@@ -26,7 +26,7 @@ const { data: ordersRaw, pending, refresh, error: ordersError } = await useAsync
     api<OrderList>("/orders/me", {
       query: { page: currentPage.value, page_size: PAGE_SIZE },
     }),
-  { watch: [currentPage] },
+  { server: false, watch: [currentPage] },
 );
 
 const orders = computed(() => ordersRaw.value as OrderList | null);

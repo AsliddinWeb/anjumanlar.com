@@ -31,6 +31,7 @@ const { data: stats } = await useAsyncData(
       wishlist_total: wishlist.status === "fulfilled" ? wishlist.value.total : 0,
     };
   },
+  { server: false },
 );
 
 const libraryCount = computed(() => stats.value?.library?.total ?? 0);

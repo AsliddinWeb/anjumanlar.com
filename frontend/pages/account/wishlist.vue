@@ -20,7 +20,7 @@ const { data: wishlistRaw, pending, refresh, error: wishlistError } = await useA
     api<WishlistList>("/users/me/wishlist", {
       query: { page: currentPage.value, page_size: PAGE_SIZE },
     }),
-  { watch: [currentPage] },
+  { server: false, watch: [currentPage] },
 );
 
 const wishlist = computed(() => wishlistRaw.value as WishlistList | null);

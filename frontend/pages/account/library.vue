@@ -24,7 +24,7 @@ const { data: libRaw, pending, error: libError } = await useAsyncData(
     api<UserLibraryList>("/libraries/me", {
       query: { page: currentPage.value, page_size: PAGE_SIZE },
     }),
-  { watch: [currentPage] },
+  { server: false, watch: [currentPage] },
 );
 
 const library = computed(() => libRaw.value as UserLibraryList | null);

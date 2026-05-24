@@ -18,6 +18,7 @@ useHead({ title: t("admin.categories.form.create_title") });
 const { data: catRaw } = await useAsyncData(
   "admin:categories:parents",
   () => api<CategoryList>("/categories", { query: { active_only: false } }),
+  { server: false },
 );
 
 const parents = computed<CategoryPublic[]>(

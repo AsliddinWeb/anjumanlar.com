@@ -20,6 +20,7 @@ const postId = computed(() => route.params.id as string);
 const { data: postRaw } = await useAsyncData(
   `admin:blog:edit:${postId.value}`,
   () => api<BlogPostAdminView>(`/admin/blog/${postId.value}`),
+  { server: false },
 );
 
 const post = computed(() => postRaw.value as BlogPostAdminView | null);

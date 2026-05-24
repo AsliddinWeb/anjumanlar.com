@@ -33,7 +33,7 @@ const queryParams = computed(() => {
 const { data: rawList, pending } = await useAsyncData(
   "admin:audit",
   () => api<AuditLogList>("/admin/audit", { query: queryParams.value }),
-  { watch: [queryParams] },
+  { server: false, watch: [queryParams] },
 );
 
 const list = computed(() => rawList.value as AuditLogList | null);

@@ -26,7 +26,7 @@ const { data: catRaw, refresh, pending } = await useAsyncData(
   () => api<CategoryList>("/categories", {
     query: { active_only: activeOnly.value },
   }),
-  { watch: [activeOnly] },
+  { server: false, watch: [activeOnly] },
 );
 
 const allCategories = computed<CategoryPublic[]>(

@@ -35,7 +35,7 @@ const { data: dataRaw, pending, refresh, error: listError } = await useAsyncData
       }
       throw err;
     }),
-  { watch: [currentPage] },
+  { server: false, watch: [currentPage] },
 );
 
 const list = computed(() => dataRaw.value as WithdrawalList | null);

@@ -20,6 +20,7 @@ const categoryId = computed(() => route.params.id as string);
 const { data: catRaw } = await useAsyncData(
   "admin:categories:edit",
   () => api<CategoryList>("/categories", { query: { active_only: false } }),
+  { server: false },
 );
 
 const allCategories = computed<CategoryPublic[]>(

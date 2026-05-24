@@ -29,7 +29,7 @@ const { data: queueRaw, pending, refresh } = await useAsyncData(
     api<BookList>("/books/admin/moderation", {
       query: { page: currentPage.value, page_size: PAGE_SIZE },
     }),
-  { watch: [currentPage] },
+  { server: false, watch: [currentPage] },
 );
 
 const queue = computed(() => queueRaw.value as BookList | null);

@@ -27,6 +27,7 @@ useHead({ title: t("admin.title") });
 const { data: statsRaw, pending } = await useAsyncData(
   "admin:stats",
   () => api<StatsSnapshot>("/admin/stats"),
+  { server: false },
 );
 
 const stats = computed(() => statsRaw.value as StatsSnapshot | null);

@@ -56,6 +56,7 @@ const { data: booksRaw, refresh: refreshBooks } = await useAsyncData(
     noProfile.value
       ? Promise.resolve({ items: [], total: 0, page: 1, page_size: 0 } as BookOwnerList)
       : api<BookOwnerList>("/books/me", { query: { page: 1, page_size: 8 } }),
+  { server: false },
 );
 
 const myBooks = computed(() => (booksRaw.value as BookOwnerList | null)?.items ?? []);
