@@ -4,6 +4,7 @@
  * /account so they can't accidentally re-login.
  */
 export default defineNuxtRouteMiddleware(() => {
+  if (import.meta.server) return;
   const auth = useAuthStore();
   if (auth.isAuthenticated) {
     const localePath = useLocalePath();
