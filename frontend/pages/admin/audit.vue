@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AuditAction, AuditLogList, AuditLogPublic } from "~/types/api";
 import type { Column } from "~/components/admin/AdminDataTable.vue";
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 definePageMeta({
   layout: "admin",

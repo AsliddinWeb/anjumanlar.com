@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 export interface Column<R> {
   key: string;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { WithdrawalList, WithdrawalPublic, WithdrawalStatus } from "~/types/api";
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 import { formatPrice } from "~/composables/useLocaleText";
 import { apiErrorMessage } from "~/composables/useAuth";
 

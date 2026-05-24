@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatPrice } from "~/composables/useLocaleText";
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 definePageMeta({
   layout: "admin",

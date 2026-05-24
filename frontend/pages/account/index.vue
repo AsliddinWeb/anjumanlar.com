@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { OrderList, UserLibraryList, WishlistList } from "~/types/api";
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 definePageMeta({ middleware: "auth" });
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { BookList, CategoryList } from "~/types/api";
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 const { t } = useI18n();
 const { localised } = useLocaleText();

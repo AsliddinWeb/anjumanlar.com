@@ -1,4 +1,4 @@
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 export type ToastTone = "success" | "error" | "warning" | "info";
 

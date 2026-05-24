@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ICON_NAMES, type IconName } from "~/components/ui/Icon.vue";
+import { ICON_NAMES, type IconName } from "~/utils/icons";
 
 const props = defineProps<{
   modelValue: string;

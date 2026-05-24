@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IconName } from "~/components/ui/Icon.vue";
+import type { IconName } from "~/utils/icons";
 
 type Tone = "success" | "warning" | "error" | "info" | "neutral";
 
