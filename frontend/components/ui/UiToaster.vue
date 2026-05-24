@@ -11,7 +11,7 @@ const toneClass: Record<string, string> = {
 
 <template>
   <Teleport to="body">
-    <Transition-group
+    <TransitionGroup
       tag="div"
       name="toast"
       class="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-2 pointer-events-none"
@@ -43,7 +43,7 @@ const toneClass: Record<string, string> = {
           </button>
         </div>
       </div>
-    </Transition-group>
+    </TransitionGroup>
   </Teleport>
 </template>
 
