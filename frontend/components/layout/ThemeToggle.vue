@@ -23,12 +23,11 @@ const icon = computed<IconName>(() => {
 <template>
   <button
     type="button"
-    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-border hover:border-border-hover text-sm text-ink-secondary"
+    class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-border text-ink-secondary hover:border-primary hover:text-primary transition-colors"
     :aria-label="t('theme.label')"
     :title="`${t('theme.label')}: ${label}`"
     @click="cycle"
   >
     <Icon :name="icon" class="h-4 w-4" />
-    <span class="hidden sm:inline">{{ label }}</span>
   </button>
 </template>

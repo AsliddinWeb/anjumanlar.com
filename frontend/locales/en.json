@@ -978,7 +978,8 @@
     "clear_recent": "Clear",
     "popular_topics": "Popular topics",
     "error_title": "Search failed",
-    "error_body": "We're having trouble reaching the server. Try again in a few seconds."
+    "error_body": "We're having trouble reaching the server. Try again in a few seconds.",
+    "advanced": "Advanced search"
   },
   "category": {
     "not_found": "Category not found",

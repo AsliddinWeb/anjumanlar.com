@@ -978,7 +978,8 @@
     "clear_recent": "Tozalash",
     "popular_topics": "Mashhur mavzular",
     "error_title": "Qidirib bo'lmadi",
-    "error_body": "Server bilan aloqada muammo. Bir necha soniyadan keyin qayta urinib ko'ring."
+    "error_body": "Server bilan aloqada muammo. Bir necha soniyadan keyin qayta urinib ko'ring.",
+    "advanced": "Kengaytirilgan qidiruv"
   },
   "category": {
     "not_found": "Kategoriya topilmadi",
