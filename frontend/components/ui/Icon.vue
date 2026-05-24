@@ -139,6 +139,9 @@ const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
+/** Sorted list of every icon name, exported for pickers / autocompletes. */
+export const ICON_NAMES = Object.keys(ICONS) as IconName[];
+
 const props = defineProps<{
   /** Accepts any string at runtime to tolerate user-supplied category icons. */
   name: IconName | string | null | undefined;

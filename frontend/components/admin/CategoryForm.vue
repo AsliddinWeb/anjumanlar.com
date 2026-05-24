@@ -94,18 +94,13 @@ const parentOptions = computed(() => {
       </h2>
 
       <div class="grid sm:grid-cols-2 gap-3">
-        <div class="space-y-1.5">
-          <UiInput
-            :model-value="form.icon"
-            :label="t('admin.categories.form.icon')"
-            placeholder="book, academic, scale..."
-            @update:model-value="(v) => update('icon', v)"
-          />
-          <div v-if="form.icon" class="flex items-center gap-2 text-xs text-ink-tertiary">
-            <span>{{ t("admin.categories.form.icon_preview") }}:</span>
-            <Icon :name="form.icon" fallback="book" class="h-5 w-5 text-primary" />
-          </div>
-        </div>
+        <IconPicker
+          :model-value="form.icon"
+          :label="t('admin.categories.form.icon')"
+          :hint="t('admin.categories.form.icon_hint')"
+          clearable
+          @update:model-value="(v) => update('icon', v)"
+        />
 
         <UiSelect
           :model-value="form.parent_id"

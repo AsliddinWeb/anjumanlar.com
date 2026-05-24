@@ -274,7 +274,8 @@
         "section_identity": "Asosiy ma'lumotlar",
         "section_display": "Ko'rinish va tartib",
         "icon_preview": "Ko'rinish",
-        "create_subtitle": "Yangi kategoriya yarating va nomlarini barcha tillarga tarjima qiling."
+        "create_subtitle": "Yangi kategoriya yarating va nomlarini barcha tillarga tarjima qiling.",
+        "icon_hint": "Mavjud iconlardan birini tanlang"
       },
       "delete": "O'chirish",
       "delete_confirm": "Bu kategoriyani o'chirishni istaysizmi? Sub-kategoriyalari yuqori darajaga ko'tariladi.",
@@ -507,7 +508,14 @@
     "greeting_morning": "Xayrli tong",
     "greeting_afternoon": "Xayrli kun",
     "greeting_evening": "Xayrli kech",
-    "welcome_short": "Salom"
+    "welcome_short": "Salom",
+    "icon_picker": {
+      "placeholder": "Iconni tanlang",
+      "search": "Qidirish...",
+      "clear": "Tozalash",
+      "no_match": "Mos icon topilmadi",
+      "count": "{n} ta icon"
+    }
   },
   "balance": {
     "title": "Daromad",

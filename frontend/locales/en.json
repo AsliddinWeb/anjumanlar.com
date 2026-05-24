@@ -274,7 +274,8 @@
         "section_identity": "Core details",
         "section_display": "Display & ordering",
         "icon_preview": "Preview",
-        "create_subtitle": "Create a new category and translate its name across all languages."
+        "create_subtitle": "Create a new category and translate its name across all languages.",
+        "icon_hint": "Choose from the available icons"
       },
       "delete": "Delete",
       "delete_confirm": "Delete this category? Subcategories will become top-level.",
@@ -507,7 +508,14 @@
     "greeting_morning": "Good morning",
     "greeting_afternoon": "Good afternoon",
     "greeting_evening": "Good evening",
-    "welcome_short": "Welcome"
+    "welcome_short": "Welcome",
+    "icon_picker": {
+      "placeholder": "Pick an icon",
+      "search": "Search...",
+      "clear": "Clear",
+      "no_match": "No matching icons",
+      "count": "{n} icons"
+    }
   },
   "balance": {
     "title": "Earnings",
