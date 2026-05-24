@@ -27,33 +27,35 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [seed] %(message)s")
 
 CATEGORIES = [
     # (slug, parent_slug, name_dict, icon, sort_order)
-    ("tibbiyot", None, {"uz": "Tibbiyot", "ru": "Медицина", "en": "Medicine"}, "🩺", 1),
-    ("iqtisod", None, {"uz": "Iqtisod", "ru": "Экономика", "en": "Economics"}, "📈", 2),
-    ("filologiya", None, {"uz": "Filologiya", "ru": "Филология", "en": "Philology"}, "📚", 3),
-    ("tarix", None, {"uz": "Tarix", "ru": "История", "en": "History"}, "🏺", 4),
-    ("muhandislik", None, {"uz": "Muhandislik", "ru": "Инженерия", "en": "Engineering"}, "🛠", 5),
+    # Icon names must exist in frontend ~/utils/icons.ts; emojis fall back
+    # to the generic "book" placeholder.
+    ("tibbiyot", None, {"uz": "Tibbiyot", "ru": "Медицина", "en": "Medicine"}, "heart-solid", 1),
+    ("iqtisod", None, {"uz": "Iqtisod", "ru": "Экономика", "en": "Economics"}, "chart", 2),
+    ("filologiya", None, {"uz": "Filologiya", "ru": "Филология", "en": "Philology"}, "document", 3),
+    ("tarix", None, {"uz": "Tarix", "ru": "История", "en": "History"}, "library", 4),
+    ("muhandislik", None, {"uz": "Muhandislik", "ru": "Инженерия", "en": "Engineering"}, "wrench", 5),
     (
         "kompyuter-fanlari",
         None,
         {"uz": "Kompyuter fanlari", "ru": "Информатика", "en": "Computer Science"},
-        "💻",
+        "desktop",
         6,
     ),
-    ("huquq", None, {"uz": "Huquq", "ru": "Право", "en": "Law"}, "⚖", 7),
-    ("falsafa", None, {"uz": "Falsafa", "ru": "Философия", "en": "Philosophy"}, "🦉", 8),
+    ("huquq", None, {"uz": "Huquq", "ru": "Право", "en": "Law"}, "scale", 7),
+    ("falsafa", None, {"uz": "Falsafa", "ru": "Философия", "en": "Philosophy"}, "academic", 8),
     # Children
     (
         "kardiologiya",
         "tibbiyot",
         {"uz": "Kardiologiya", "ru": "Кардиология", "en": "Cardiology"},
-        None,
+        "heart",
         1,
     ),
     (
         "makroiqtisod",
         "iqtisod",
         {"uz": "Makroiqtisodiyot", "ru": "Макроэкономика", "en": "Macroeconomics"},
-        None,
+        "currency",
         1,
     ),
 ]
