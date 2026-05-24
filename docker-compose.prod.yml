@@ -232,10 +232,17 @@ services:
     networks: [monografiya]
 
   # ---------- Nginx (TLS terminator + reverse proxy) ----------
+  # Parked behind the "docker-nginx" profile — only starts when invoked
+  # explicitly (`docker compose --profile docker-nginx up -d`). On servers
+  # that already run a host-level nginx (apt-installed) for other projects,
+  # leave this disabled and configure the host nginx to proxy to
+  # 127.0.0.1:8307 (backend) and 127.0.0.1:8308 (frontend) instead — see
+  # nginx-host/monografiya.com.conf for a drop-in config.
   nginx:
     image: nginx:1.27-alpine
     container_name: monografiya-nginx
     restart: always
+    profiles: ["docker-nginx"]
     ports:
       - "${NGINX_HTTP_PORT:-80}:80"
       - "${NGINX_HTTPS_PORT:-443}:443"
@@ -243,7 +250,6 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - certbot_certs:/etc/letsencrypt
       - certbot_www:/var/www/certbot
-      # Optional: a place to drop dhparam.pem if you generate one.
       - ./nginx/dhparam:/etc/nginx/dhparam:ro
     depends_on:
       backend:
@@ -252,14 +258,14 @@ services:
         condition: service_started
     networks: [monografiya]
 
-  # ---------- Certbot (one-shot; run manually to issue/renew certs) ----------
+  # ---------- Certbot (paired with the docker nginx variant) ----------
   certbot:
     image: certbot/certbot:latest
     container_name: monografiya-certbot
+    profiles: ["docker-nginx"]
     volumes:
       - certbot_certs:/etc/letsencrypt
       - certbot_www:/var/www/certbot
-    # Manual: ``docker compose -f docker-compose.prod.yml run --rm certbot ...``
     entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done"]
     restart: always
     networks: [monografiya]
