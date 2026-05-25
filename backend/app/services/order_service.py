@@ -86,7 +86,6 @@ async def _fetch_books(db: AsyncSession, book_ids: list[UUID]) -> list[Book]:
                 .where(
                     Book.id.in_(unique_ids),
                     Book.status == BookStatus.approved,
-                    Book.deleted_at.is_(None),
                 )
             )
         )

@@ -23,7 +23,6 @@ async def _get_visible_book(db: AsyncSession, book_id: UUID) -> Book:
             select(Book).where(
                 Book.id == book_id,
                 Book.status == BookStatus.approved,
-                Book.deleted_at.is_(None),
             )
         )
     ).scalar_one_or_none()
@@ -83,7 +82,6 @@ async def list_for_user(
         .where(
             Wishlist.user_id == user.id,
             Book.status == BookStatus.approved,
-            Book.deleted_at.is_(None),
         )
     )
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()

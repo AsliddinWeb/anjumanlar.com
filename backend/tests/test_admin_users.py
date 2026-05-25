@@ -145,15 +145,19 @@ async def test_block_user_revokes_sessions(
 
 
 @pytest.mark.asyncio
-async def test_block_via_delete_path_is_rejected(db_session: AsyncSession):
+async def test_admin_hard_delete_removes_row(db_session: AsyncSession):
+    from sqlalchemy import select
+    from app.models import User
+
     admin = await _make_user(db_session, "del-admin@example.com", role=UserRole.admin)
     target = await _make_user(db_session, "del-target@example.com")
-    from app.core.exceptions import ConflictError
+    target_id = target.id
 
-    with pytest.raises(ConflictError):
-        await user_service.admin_change_status(
-            db_session, admin, target.id, UserStatus.deleted
-        )
+    await user_service.admin_delete_user(db_session, admin, target_id)
+    await db_session.flush()
+
+    found = (await db_session.execute(select(User).where(User.id == target_id))).scalar_one_or_none()
+    assert found is None
 
 
 # ---------- HTTP layer ----------

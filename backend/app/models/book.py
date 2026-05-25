@@ -152,7 +152,6 @@ class Book(UUIDMixin, TimestampMixin, Base):
         Boolean, nullable=False, default=False, server_default="false"
     )
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Relationships
     author: Mapped[AuthorProfile] = relationship(back_populates="books", foreign_keys=[author_id])

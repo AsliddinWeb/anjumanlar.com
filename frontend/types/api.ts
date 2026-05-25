@@ -6,7 +6,7 @@
 // the fallback chain inline.
 
 export type UserRole = "reader" | "author" | "admin" | "superadmin";
-export type UserStatus = "active" | "pending" | "blocked" | "deleted";
+export type UserStatus = "active" | "pending" | "blocked";
 export type Locale = "uz" | "ru" | "en";
 
 export type LocalisedText = Partial<Record<Locale | string, string>>;

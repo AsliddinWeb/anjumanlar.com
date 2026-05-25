@@ -77,7 +77,6 @@ async def _get_approved_book(db: AsyncSession, book_id: UUID) -> Book:
             select(Book).where(
                 Book.id == book_id,
                 Book.status == BookStatus.approved,
-                Book.deleted_at.is_(None),
             )
         )
     ).scalar_one_or_none()
@@ -196,7 +195,7 @@ async def list_for_book(
         .where(
             Review.book_id == book_id,
             Review.status == ReviewStatus.approved,
-            User.status.notin_([UserStatus.blocked, UserStatus.deleted]),
+            User.status != UserStatus.blocked,
         )
     )
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()

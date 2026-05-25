@@ -24,7 +24,6 @@ from app.models import (
     ReviewStatus,
     User,
     UserRole,
-    UserStatus,
     Withdrawal,
     WithdrawalStatus,
 )
@@ -39,15 +38,11 @@ async def snapshot(db: AsyncSession) -> dict[str, Any]:
 
     # ---- users ----
     users_total = (
-        await db.execute(
-            select(func.count()).select_from(User).where(User.status != UserStatus.deleted)
-        )
+        await db.execute(select(func.count()).select_from(User))
     ).scalar_one()
     users_last_7d = (
         await db.execute(
-            select(func.count())
-            .select_from(User)
-            .where(User.status != UserStatus.deleted, User.created_at >= week_ago)
+            select(func.count()).select_from(User).where(User.created_at >= week_ago)
         )
     ).scalar_one()
     authors = (
@@ -66,16 +61,12 @@ async def snapshot(db: AsyncSession) -> dict[str, Any]:
     # ---- books ----
     books_total = (
         await db.execute(
-            select(func.count())
-            .select_from(Book)
-            .where(Book.status == BookStatus.approved, Book.deleted_at.is_(None))
+            select(func.count()).select_from(Book).where(Book.status == BookStatus.approved)
         )
     ).scalar_one()
     books_pending = (
         await db.execute(
-            select(func.count())
-            .select_from(Book)
-            .where(Book.status == BookStatus.pending, Book.deleted_at.is_(None))
+            select(func.count()).select_from(Book).where(Book.status == BookStatus.pending)
         )
     ).scalar_one()
 

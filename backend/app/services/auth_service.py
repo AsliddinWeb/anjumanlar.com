@@ -202,7 +202,7 @@ async def login(
     :class:`UnauthorizedError` so attackers can't enumerate accounts.
     """
     user = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
-    if user is None or user.status == UserStatus.deleted:
+    if user is None:
         raise UnauthorizedError("Invalid email or password", details={"code": "invalid_credentials"})
     if not verify_password(password, user.password_hash):
         raise UnauthorizedError("Invalid email or password", details={"code": "invalid_credentials"})
@@ -246,7 +246,7 @@ async def refresh_tokens(
     old = await _lookup_active_refresh(db, plain_refresh)
 
     user = (await db.execute(select(User).where(User.id == old.user_id))).scalar_one_or_none()
-    if user is None or user.status in {UserStatus.deleted, UserStatus.blocked}:
+    if user is None or user.status == UserStatus.blocked:
         raise UnauthorizedError("Account unavailable")
 
     old.revoked_at = datetime.now(UTC)
@@ -322,11 +322,11 @@ def _build_reset_url(token: str, locale: str) -> str:
 
 
 async def request_password_reset(db: AsyncSession, email: str) -> None:
-    """Email-bound reset flow. Silent on unknown / blocked / deleted accounts
+    """Email-bound reset flow. Silent on unknown / blocked accounts
     so attackers can't enumerate emails. Any previously-issued unused reset
     tokens are invalidated so old links stop working."""
     user = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
-    if user is None or user.status in {UserStatus.deleted, UserStatus.blocked}:
+    if user is None or user.status == UserStatus.blocked:
         return
 
     await db.execute(
@@ -382,7 +382,7 @@ async def reset_password_with_token(db: AsyncSession, plain_token: str, new_pass
         raise ValidationError("Token expired", details={"code": "token_expired"})
 
     user = (await db.execute(select(User).where(User.id == token.user_id))).scalar_one()
-    if user.status in {UserStatus.deleted, UserStatus.blocked}:
+    if user.status == UserStatus.blocked:
         raise UnauthorizedError("Account unavailable")
 
     token.used_at = datetime.now(UTC)

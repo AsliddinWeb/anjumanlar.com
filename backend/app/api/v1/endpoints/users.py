@@ -100,14 +100,14 @@ async def upload_avatar(
 @router.delete(
     "/me",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Soft-delete the current account (email freed, every session killed)",
+    summary="Hard-delete the current account (every session killed; refuses if books/orders/withdrawals exist)",
 )
 async def delete_me(
     response: Response,
     user: Annotated[User, Depends(get_current_user)],
     db: AsyncSession = Depends(get_db),
 ) -> Response:
-    await user_service.soft_delete(db, user)
+    await user_service.delete_user(db, user)
     await db.commit()
     _clear_refresh_cookie(response)
     response.status_code = status.HTTP_204_NO_CONTENT

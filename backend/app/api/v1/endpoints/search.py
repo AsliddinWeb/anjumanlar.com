@@ -78,7 +78,6 @@ async def search(
                 .where(
                     Book.id.in_(hit_ids),
                     Book.status == BookStatus.approved,
-                    Book.deleted_at.is_(None),
                 )
             )
         )

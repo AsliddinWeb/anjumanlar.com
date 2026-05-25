@@ -91,7 +91,6 @@ async def sitemap(db: AsyncSession = Depends(get_db)) -> Response:
             await db.execute(
                 select(Book.slug, Book.updated_at).where(
                     Book.status == BookStatus.approved,
-                    Book.deleted_at.is_(None),
                 )
             )
         )

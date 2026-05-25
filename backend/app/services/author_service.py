@@ -96,7 +96,7 @@ async def get_public_by_slug(db: AsyncSession, slug: str) -> AuthorProfile:
         .join(User, AuthorProfile.user_id == User.id)
         .where(
             AuthorProfile.slug == slug,
-            User.status.notin_([UserStatus.blocked, UserStatus.deleted]),
+            User.status != UserStatus.blocked,
         )
     )
     profile = row.scalar_one_or_none()
@@ -116,7 +116,7 @@ async def list_public(
     base = (
         select(AuthorProfile)
         .join(User, AuthorProfile.user_id == User.id)
-        .where(User.status.notin_([UserStatus.blocked, UserStatus.deleted]))
+        .where(User.status != UserStatus.blocked)
     )
     if search:
         like = f"%{search}%"

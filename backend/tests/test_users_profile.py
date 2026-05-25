@@ -180,21 +180,22 @@ async def test_upload_avatar_rejects_corrupted_image_with_image_mime(
 
 
 @pytest.mark.asyncio
-async def test_delete_me_soft_deletes_and_frees_email(
+async def test_delete_me_hard_deletes_row(
     api_client: AsyncClient, db_session: AsyncSession
 ):
     user = await _bake_user(db_session, email="bye@example.com")
+    user_id = user.id
     token = await _login(api_client, user.email)
 
     resp = await api_client.delete("/api/v1/users/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 204
 
-    await db_session.refresh(user)
-    assert user.status == UserStatus.deleted
-    assert user.deleted_at is not None
-    assert user.email != "bye@example.com"  # anonymised
+    # Row is gone — the email is free again for re-registration.
+    from sqlalchemy import select
+    from app.models import User
+    found = (await db_session.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
+    assert found is None
 
-    # Original email is free again — registration with it should succeed.
     re = await api_client.post(
         "/api/v1/auth/register",
         json={"email": "bye@example.com", "password": PW, "full_name": "Reborn"},

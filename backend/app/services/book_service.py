@@ -9,8 +9,9 @@ State machine:
 
 - Authors create + edit in ``draft`` / ``rejected`` states only.
 - ``submit`` moves draft → pending; admin then ``approve`` or ``reject``.
-- ``soft_delete`` flips ``deleted_at``; books never leave the table
-  because order_items reference them.
+- ``delete_book`` removes the row outright (no soft-delete column). The
+  FK from ``order_items.book_id`` defaults to RESTRICT, so a book that
+  has been ordered will refuse to delete with a friendly error.
 
 Public listings only ever surface ``approved`` rows.
 """
@@ -96,7 +97,7 @@ async def _get_loaded(db: AsyncSession, book_id: UUID) -> Book:
     book = (
         await db.execute(select(Book).options(*_book_load_options()).where(Book.id == book_id))
     ).scalar_one_or_none()
-    if book is None or book.deleted_at is not None:
+    if book is None:
         raise NotFoundError("Book not found", details={"code": "book_not_found"})
     return book
 
@@ -169,17 +170,28 @@ async def update_book(db: AsyncSession, user: User, book_id: UUID, data: BookUpd
     return await _get_loaded(db, book.id)
 
 
-async def soft_delete(db: AsyncSession, user: User, book_id: UUID) -> None:
+async def delete_book(db: AsyncSession, user: User, book_id: UUID) -> None:
     from app.tasks.search_tasks import remove_book_from_meilisearch
 
     book = await _get_loaded(db, book_id)
     if user.role not in {UserRole.admin, UserRole.superadmin} and book.uploaded_by != user.id:
         raise ForbiddenError("Not your book", details={"code": "not_owner"})
-    book.deleted_at = datetime.now(UTC)
-    if book.status not in {BookStatus.rejected, BookStatus.archived}:
-        book.status = BookStatus.archived
-    await db.flush()
-    remove_book_from_meilisearch.delay(str(book.id))
+
+    book_id_str = str(book.id)
+    await db.delete(book)
+    try:
+        await db.flush()
+    except IntegrityError as exc:
+        # order_items.book_id is RESTRICT — books that have been ordered
+        # cannot be hard-deleted; refuse with a clear error rather than
+        # exploding mid-transaction.
+        await db.rollback()
+        raise ConflictError(
+            "Cannot delete a book that has orders. Archive it instead.",
+            details={"code": "book_has_orders"},
+        ) from exc
+
+    remove_book_from_meilisearch.delay(book_id_str)
 
 
 async def submit_for_moderation(db: AsyncSession, user: User, book_id: UUID) -> Book:
@@ -297,7 +309,6 @@ async def get_public_by_slug(db: AsyncSession, slug: str) -> Book:
             .where(
                 Book.slug == slug,
                 Book.status == BookStatus.approved,
-                Book.deleted_at.is_(None),
             )
         )
     ).scalar_one_or_none()
@@ -332,7 +343,7 @@ async def list_public(
     base = (
         select(Book)
         .options(*_book_load_options())
-        .where(Book.status == BookStatus.approved, Book.deleted_at.is_(None))
+        .where(Book.status == BookStatus.approved)
     )
 
     if search:
@@ -376,7 +387,7 @@ async def list_my_books(
     base = (
         select(Book)
         .options(*_book_load_options())
-        .where(Book.uploaded_by == user.id, Book.deleted_at.is_(None))
+        .where(Book.uploaded_by == user.id)
     )
     if status is not None:
         base = base.where(Book.status == status)
@@ -393,7 +404,7 @@ async def list_moderation_queue(
     base = (
         select(Book)
         .options(*_book_load_options())
-        .where(Book.status == BookStatus.pending, Book.deleted_at.is_(None))
+        .where(Book.status == BookStatus.pending)
     )
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
     items = (

@@ -2,8 +2,10 @@
 
 1. ``update_profile``: copy-over of the optional fields the user can edit.
 2. ``set_avatar``: hands the bytes to storage_service then patches the URL.
-3. ``soft_delete``: marks status=deleted, anonymizes the email so it can be
-   re-used by future registrations, and revokes every refresh token.
+3. ``delete_user``: hard-deletes the row. Auth tokens / refresh tokens /
+   author profile / reviews / library / wishlist all cascade. Books the
+   user uploaded, orders, and withdrawals use RESTRICT — if any of those
+   exist the delete refuses with a clear error.
 
 Side-effects (revoking sessions) reuse helpers from ``auth_service`` to avoid
 duplicating logic.
@@ -11,10 +13,10 @@ duplicating logic.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import func, or_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError
@@ -136,15 +138,6 @@ async def admin_change_status(
         )
     _assert_target_not_superadmin(target, actor)
 
-    if new_status == UserStatus.deleted:
-        # Soft-delete uses the dedicated path so it anonymises the email
-        # and kills sessions; the admin endpoint should call that helper
-        # instead of flipping the column raw.
-        raise ConflictError(
-            "Use the delete endpoint to remove a user",
-            details={"code": "use_delete_endpoint"},
-        )
-
     target.status = new_status
     if new_status == UserStatus.blocked:
         await logout_all(db, target.id)
@@ -152,17 +145,39 @@ async def admin_change_status(
     return target
 
 
-async def soft_delete(db: AsyncSession, user: User) -> None:
-    """Soft-delete the account so the email frees up for re-registration and
-    every session dies. The row stays in the DB to preserve foreign-key
-    integrity (orders, reviews, …)."""
-    user_id: UUID = user.id
-    now = datetime.now(UTC)
+async def delete_user(db: AsyncSession, user: User) -> None:
+    """Hard-delete the account. Cascading FKs (refresh_tokens, auth_tokens,
+    author_profile, reviews, library, wishlist) clean up automatically.
 
-    user.status = UserStatus.deleted
-    user.deleted_at = now
-    user.email = f"deleted+{user_id}@monografiya.invalid"
-    user.password_hash = ""  # disables password login for this row
+    Refuses (with a friendly error) if RESTRICT-protected references
+    still exist — books the user uploaded, orders, withdrawals — so the
+    operator knows to deal with those first.
+    """
+    user_id: UUID = user.id
 
     await logout_all(db, user_id)
-    await db.flush()
+    await db.delete(user)
+    try:
+        await db.flush()
+    except IntegrityError as exc:
+        await db.rollback()
+        raise ConflictError(
+            "Cannot delete a user that still has books, orders, or withdrawals.",
+            details={"code": "user_has_dependents"},
+        ) from exc
+
+
+async def admin_delete_user(
+    db: AsyncSession,
+    actor: User,
+    user_id: UUID,
+) -> None:
+    """Admin variant of :func:`delete_user` — same hard-delete semantics
+    plus the usual self/superadmin guards."""
+    target = await _get(db, user_id)
+    if target.id == actor.id:
+        raise ConflictError(
+            "You can't delete your own account from here", details={"code": "self_delete"}
+        )
+    _assert_target_not_superadmin(target, actor)
+    await delete_user(db, target)

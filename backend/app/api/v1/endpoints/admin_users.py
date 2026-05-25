@@ -1,9 +1,8 @@
 """Admin-only user management endpoints.
 
-Lives under ``/admin/users/*``. Read + role + status mutations; deletion
-still flows through the per-user ``DELETE /users/me`` endpoint by design
-(an admin who really wants a user gone can demote → block them, or
-ssh in for the soft-delete corner case).
+Lives under ``/admin/users/*``. Read + role + status mutations + hard
+delete (refuses if the target still has books, orders, or withdrawals
+attached — those have to be resolved first).
 """
 
 from __future__ import annotations
@@ -11,7 +10,7 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
@@ -88,3 +87,17 @@ async def admin_change_user_status(
     target = await user_service.admin_change_status(db, admin, user_id, data.status)
     await db.commit()
     return UserPublic.model_validate(target)
+
+
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Hard-delete a user (admin+). Refuses if books/orders/withdrawals exist.",
+)
+async def admin_delete_user(
+    user_id: UUID,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    await user_service.admin_delete_user(db, admin, user_id)
+    await db.commit()

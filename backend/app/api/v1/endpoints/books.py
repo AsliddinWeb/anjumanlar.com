@@ -156,14 +156,14 @@ async def update_book(
 @router.delete(
     "/{book_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Soft-delete a book (author or admin)",
+    summary="Delete a book (author or admin) — refuses if orders exist",
 )
 async def delete_book(
     book_id: UUID,
     user: Annotated[User, Depends(require_author)],
     db: AsyncSession = Depends(get_db),
 ) -> None:
-    await book_service.soft_delete(db, user, book_id)
+    await book_service.delete_book(db, user, book_id)
     await db.commit()
 
 

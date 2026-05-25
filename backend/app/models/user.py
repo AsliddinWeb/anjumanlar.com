@@ -33,7 +33,6 @@ class UserStatus(enum.StrEnum):
     active = "active"
     pending = "pending"  # email not yet verified
     blocked = "blocked"
-    deleted = "deleted"  # soft-deleted
 
 
 class User(UUIDMixin, TimestampMixin, Base):
@@ -67,7 +66,6 @@ class User(UUIDMixin, TimestampMixin, Base):
     )
 
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Relationships ---------------------------------------------------------
     refresh_tokens: Mapped[list[RefreshToken]] = relationship(

@@ -122,7 +122,6 @@ const STATUS_TONE: Record<UserStatus, "success" | "warning" | "neutral" | "error
   active: "success",
   pending: "warning",
   blocked: "error",
-  deleted: "neutral",
 };
 
 const ROLE_ICON: Record<UserRole, IconName> = {
@@ -216,7 +215,6 @@ const columns: Column<UserPublic>[] = [
           { value: 'active', label: t('admin.users.statuses.active') },
           { value: 'pending', label: t('admin.users.statuses.pending') },
           { value: 'blocked', label: t('admin.users.statuses.blocked') },
-          { value: 'deleted', label: t('admin.users.statuses.deleted') },
         ]"
         @update:model-value="(v) => setQuery({ status: v })"
       />

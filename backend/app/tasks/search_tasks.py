@@ -4,7 +4,7 @@ Three triggers fire :func:`sync_book_to_meilisearch`:
 
 - admin ``approve`` → book becomes searchable.
 - admin ``reject`` → book is removed (it never should have been there).
-- ``soft_delete`` → ditto.
+- ``delete_book`` → ditto.
 
 The remove path is idempotent so re-firing on a missing doc is fine.
 """

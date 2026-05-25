@@ -49,7 +49,7 @@ async def get_current_user(
         raise UnauthorizedError("Malformed access token") from exc
 
     user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
-    if user is None or user.status == UserStatus.deleted:
+    if user is None:
         raise UnauthorizedError("User no longer exists")
     if user.status == UserStatus.blocked:
         raise ForbiddenError("Account blocked")

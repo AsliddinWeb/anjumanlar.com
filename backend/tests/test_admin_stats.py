@@ -65,17 +65,11 @@ async def test_snapshot_contains_every_section(db_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_snapshot_counts_active_users(db_session: AsyncSession):
+async def test_snapshot_counts_all_users(db_session: AsyncSession):
+    # Hard-delete is the policy now — every row in `users` counts.
     await _make_user(db_session, "active-1@example.com")
-    deleted = await _make_user(db_session, "deleted-1@example.com")
-    deleted.status = UserStatus.deleted
-    await db_session.flush()
-
     snap = await stats_service.snapshot(db_session)
     assert snap["users"]["total"] >= 1
-    # The deleted user should not be included in ``total``.
-    # We can't easily assert exact counts because conftest may have created
-    # other users; instead, check the deleted one *isn't* added on top.
     snap_after = await stats_service.snapshot(db_session)
     assert snap_after["users"]["total"] == snap["users"]["total"]
 
