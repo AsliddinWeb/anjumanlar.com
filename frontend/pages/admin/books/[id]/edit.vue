@@ -28,7 +28,7 @@ const book = computed(() => bookRaw.value as BookOwnerView | null);
 
 const { data: categoriesRaw } = await useAsyncData(
   "admin:books:edit:categories",
-  () => api<CategoryList>("/categories", { query: { page_size: 200 } }),
+  () => api<CategoryList>("/categories"),
   { server: false },
 );
 const categories = computed(() => categoriesRaw.value?.items ?? []);

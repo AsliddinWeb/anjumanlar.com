@@ -15,7 +15,7 @@ useHead({ title: t("account_books.new_page_title") });
 
 const { data: categoriesRaw } = await useAsyncData(
   "account:books:new:categories",
-  () => api<CategoryList>("/categories", { query: { page_size: 200 } }),
+  () => api<CategoryList>("/categories"),
   { server: false },
 );
 const categories = computed(() => categoriesRaw.value?.items ?? []);

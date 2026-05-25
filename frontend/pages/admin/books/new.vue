@@ -18,14 +18,14 @@ useHead({ title: t("admin.books.new_page_title") });
 
 const { data: categoriesRaw } = await useAsyncData(
   "admin:books:new:categories",
-  () => api<CategoryList>("/categories", { query: { page_size: 200 } }),
+  () => api<CategoryList>("/categories"),
   { server: false },
 );
 const categories = computed(() => categoriesRaw.value?.items ?? []);
 
 const { data: authorsRaw } = await useAsyncData(
   "admin:books:new:authors",
-  () => api<AuthorList>("/authors", { query: { page_size: 200 } }),
+  () => api<AuthorList>("/authors", { query: { page_size: 100 } }),
   { server: false },
 );
 const authors = computed<AuthorPublic[]>(() => authorsRaw.value?.items ?? []);
