@@ -199,6 +199,13 @@ export interface ReviewAdminView extends ReviewPublic {
   status: ReviewStatus;
 }
 
+export interface ReviewAdminList {
+  items: ReviewAdminView[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
 // ---------- Admin user list ----------
 
 export interface UserList {

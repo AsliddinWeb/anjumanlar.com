@@ -63,10 +63,11 @@ const filtersDirty = computed(() =>
   Boolean(route.query.q || route.query.role || route.query.status),
 );
 
-// ---- Role + status actions ----
+// ---- Role + status + delete actions ----
 const busy = ref<Set<string>>(new Set());
 const roleTarget = ref<{ user: UserPublic; newRole: UserRole } | null>(null);
 const blockTarget = ref<UserPublic | null>(null);
+const deleteTarget = ref<UserPublic | null>(null);
 
 const roleOptions: UserRole[] = ["reader", "author", "admin"];
 
@@ -108,6 +109,25 @@ async function confirmBlock() {
     });
     blocking ? toast.warning(t("admin.users.block_success")) : toast.success(t("admin.users.unblock_success"));
     blockTarget.value = null;
+    await refresh();
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    busy.value.delete(target.id);
+  }
+}
+
+async function confirmDelete() {
+  if (!deleteTarget.value) return;
+  const target = deleteTarget.value;
+  if (busy.value.has(target.id)) return;
+  busy.value.add(target.id);
+  try {
+    await api(`/admin/users/${target.id}`, { method: "DELETE" });
+    toast.success(t("admin.users.delete_success"));
+    deleteTarget.value = null;
     await refresh();
   }
   catch (err) {
@@ -278,10 +298,12 @@ const columns: Column<UserPublic>[] = [
             row.status === 'blocked'
               ? { key: 'unblock', label: t('admin.users.actions.unblock'), icon: 'check-circle' as const, divider: true }
               : { key: 'block', label: t('admin.users.actions.block'), icon: 'lock' as const, danger: true, divider: true },
+            { key: 'delete', label: t('admin.users.actions.delete'), icon: 'trash' as const, danger: true, divider: true },
           ]"
           @action="(k) => {
             if (k.startsWith('role:')) roleTarget = { user: row, newRole: k.slice(5) as UserRole };
             else if (k === 'block' || k === 'unblock') blockTarget = row;
+            else if (k === 'delete') deleteTarget = row;
           }"
         />
       </template>
@@ -322,6 +344,19 @@ const columns: Column<UserPublic>[] = [
       :loading="blockTarget ? busy.has(blockTarget.id) : false"
       @update:open="(v) => !v && (blockTarget = null)"
       @confirm="confirmBlock"
+    />
+
+    <AdminConfirmDialog
+      :open="!!deleteTarget"
+      tone="danger"
+      icon="trash"
+      :title="t('admin.users.delete_modal_title')"
+      :description="deleteTarget ? t('admin.users.delete_modal_body', { name: deleteTarget.full_name }) : ''"
+      :confirm-label="t('admin.users.actions.delete')"
+      :cancel-label="t('admin.actions.cancel')"
+      :loading="deleteTarget ? busy.has(deleteTarget.id) : false"
+      @update:open="(v) => !v && (deleteTarget = null)"
+      @confirm="confirmDelete"
     />
   </section>
 </template>

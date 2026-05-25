@@ -22,7 +22,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.dependencies import get_current_user, require_admin
 from app.models import User
+from app.models import ReviewStatus
 from app.schemas.review import (
+    ReviewAdminList,
     ReviewAdminView,
     ReviewCreate,
     ReviewList,
@@ -114,17 +116,25 @@ async def delete_review(
 
 @admin_review_router.get(
     "",
-    response_model=list[ReviewAdminView],
-    summary="Pending reviews queued for moderation (admin+)",
+    response_model=ReviewAdminList,
+    summary="Admin review list — pending by default, filterable to any status",
 )
-async def list_pending_reviews(
+async def admin_list_reviews(
     _: Annotated[User, Depends(require_admin)],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
+    status_filter: ReviewStatus | None = Query(None, alias="status"),
     db: AsyncSession = Depends(get_db),
-) -> list[ReviewAdminView]:
-    items, _total = await review_service.list_pending(db, page=page, page_size=page_size)
-    return [ReviewAdminView.model_validate(r) for r in items]
+) -> ReviewAdminList:
+    items, total = await review_service.admin_list(
+        db, page=page, page_size=page_size, status=status_filter
+    )
+    return ReviewAdminList(
+        items=[ReviewAdminView.model_validate(r) for r in items],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 @admin_review_router.post(

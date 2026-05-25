@@ -62,3 +62,10 @@ class ReviewList(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class ReviewAdminList(BaseModel):
+    items: list[ReviewAdminView]
+    total: int
+    page: int
+    page_size: int

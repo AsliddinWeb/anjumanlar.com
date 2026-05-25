@@ -215,18 +215,31 @@ async def list_for_book(
 
 
 async def list_pending(db: AsyncSession, *, page: int, page_size: int) -> tuple[list[Review], int]:
-    base = (
-        select(Review)
-        .options(selectinload(Review.user))
-        .where(Review.status == ReviewStatus.pending)
-    )
+    return await admin_list(db, page=page, page_size=page_size, status=ReviewStatus.pending)
+
+
+async def admin_list(
+    db: AsyncSession,
+    *,
+    page: int,
+    page_size: int,
+    status: ReviewStatus | None = None,
+) -> tuple[list[Review], int]:
+    """Admin list with optional status filter (None = all statuses).
+
+    Sorted oldest-first when filtering by pending (so the moderation
+    queue surfaces the oldest waiters first) and newest-first otherwise.
+    """
+    base = select(Review).options(selectinload(Review.user))
+    if status is not None:
+        base = base.where(Review.status == status)
+
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    order = Review.created_at.asc() if status == ReviewStatus.pending else Review.created_at.desc()
     rows = (
         (
             await db.execute(
-                base.order_by(Review.created_at.asc())
-                .offset((page - 1) * page_size)
-                .limit(page_size)
+                base.order_by(order).offset((page - 1) * page_size).limit(page_size)
             )
         )
         .scalars()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ReviewAdminView } from "~/types/api";
+import type { ReviewAdminList, ReviewAdminView, ReviewStatus } from "~/types/api";
 import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
@@ -16,18 +16,26 @@ const toast = useToast();
 
 useHead({ title: t("admin.reviews.title") });
 
-const { data: pendingRaw, pending: loading, refresh } = await useAsyncData(
-  "admin:reviews:pending",
-  () => api<ReviewAdminView[]>("/admin/reviews", { query: { page: 1, page_size: 100 } }),
-  { server: false },
+const PAGE_SIZE = 20;
+
+const queryParams = computed(() => ({
+  page: Math.max(1, Number(route.query.page) || 1),
+  page_size: PAGE_SIZE,
+  status: ((route.query.status as string) || "pending") as ReviewStatus,
+}));
+
+const { data: listRaw, pending: loading, refresh } = await useAsyncData(
+  "admin:reviews:list",
+  () => api<ReviewAdminList>("/admin/reviews", { query: queryParams.value }),
+  { server: false, watch: [queryParams] },
 );
 
-const allItems = computed<ReviewAdminView[]>(
-  () => (pendingRaw.value as ReviewAdminView[] | null) ?? [],
-);
+const list = computed(() => listRaw.value as ReviewAdminList | null);
+const allItems = computed<ReviewAdminView[]>(() => list.value?.items ?? []);
 
 const searchQuery = computed(() => (route.query.q as string) || "");
 const ratingFilter = computed(() => (route.query.rating as string) || "");
+const statusFilter = computed(() => (route.query.status as string) || "pending");
 
 const items = computed<ReviewAdminView[]>(() => {
   const q = searchQuery.value.trim().toLowerCase();
@@ -41,7 +49,9 @@ const items = computed<ReviewAdminView[]>(() => {
   });
 });
 
-const filtersDirty = computed(() => Boolean(searchQuery.value || ratingFilter.value));
+const filtersDirty = computed(() =>
+  Boolean(searchQuery.value || ratingFilter.value || statusFilter.value !== "pending"),
+);
 
 function setQuery(updates: Record<string, string | number | undefined>) {
   const next: Record<string, string> = {};
@@ -52,6 +62,7 @@ function setQuery(updates: Record<string, string | number | undefined>) {
     if (v === undefined || v === null || v === "") delete next[k];
     else next[k] = String(v);
   }
+  if (!("page" in updates)) delete next.page;
   router.push({ query: next });
 }
 
@@ -59,7 +70,14 @@ function resetFilters() {
   router.replace({ query: {} });
 }
 
+function changePage(page: number) {
+  setQuery({ page });
+  if (import.meta.client) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ---- Approve / reject ----
 const actionTarget = ref<{ review: ReviewAdminView; action: "approve" | "reject" } | null>(null);
+const deleteTarget = ref<ReviewAdminView | null>(null);
 const busy = ref(false);
 
 async function confirmAction() {
@@ -87,14 +105,34 @@ async function confirmAction() {
   }
 }
 
+async function confirmDelete() {
+  if (!deleteTarget.value || busy.value) return;
+  const target = deleteTarget.value;
+  busy.value = true;
+  try {
+    await api(`/reviews/${target.id}`, { method: "DELETE" });
+    toast.success(t("admin.reviews.delete_success"));
+    deleteTarget.value = null;
+    await refresh();
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    busy.value = false;
+  }
+}
+
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
   }).format(new Date(iso));
+
+const STATUS_TONE: Record<ReviewStatus, "success" | "warning" | "neutral" | "error"> = {
+  pending: "warning",
+  approved: "success",
+  rejected: "error",
+};
 </script>
 
 <template>
@@ -110,9 +148,10 @@ const formatDate = (iso: string) =>
     >
       <template #actions>
         <AdminStatusPill
-          tone="warning"
+          v-if="list"
+          :tone="statusFilter === 'pending' ? 'warning' : 'info'"
           icon="clipboard-list"
-          :label="t('admin.reviews.queue_count', { n: allItems.length })"
+          :label="t('admin.reviews.results', { n: list.total })"
         />
       </template>
     </AdminPageHeader>
@@ -124,6 +163,16 @@ const formatDate = (iso: string) =>
       @update:search="(v) => setQuery({ q: v })"
       @reset="resetFilters"
     >
+      <UiSelect
+        :model-value="statusFilter"
+        size="sm"
+        :options="[
+          { value: 'pending', label: t('admin.reviews.statuses.pending') },
+          { value: 'approved', label: t('admin.reviews.statuses.approved') },
+          { value: 'rejected', label: t('admin.reviews.statuses.rejected') },
+        ]"
+        @update:model-value="(v) => setQuery({ status: v })"
+      />
       <UiSelect
         :model-value="ratingFilter"
         size="sm"
@@ -164,7 +213,7 @@ const formatDate = (iso: string) =>
         class="rounded-md border border-border bg-bg-card overflow-hidden hover:border-primary/40 transition-colors"
       >
         <div class="p-4 space-y-3">
-          <header class="flex items-start justify-between gap-3">
+          <header class="flex items-start justify-between gap-3 flex-wrap">
             <div class="flex items-center gap-3 min-w-0">
               <div
                 class="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0"
@@ -180,7 +229,16 @@ const formatDate = (iso: string) =>
             </div>
             <div class="flex items-center gap-2">
               <StarRating :value="r.rating" size="sm" />
-              <AdminStatusPill tone="warning" :label="t('admin.reviews.status_pending')" />
+              <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium"
+                :class="{
+                  'bg-success/10 text-success': STATUS_TONE[r.status] === 'success',
+                  'bg-warning/10 text-warning': STATUS_TONE[r.status] === 'warning',
+                  'bg-error/10 text-error': STATUS_TONE[r.status] === 'error',
+                }"
+              >
+                {{ t(`admin.reviews.statuses.${r.status}`) }}
+              </span>
             </div>
           </header>
 
@@ -195,6 +253,7 @@ const formatDate = (iso: string) =>
           </span>
           <span class="flex-1" />
           <UiButton
+            v-if="r.status === 'pending'"
             size="sm"
             variant="ghost"
             :disabled="busy"
@@ -204,6 +263,7 @@ const formatDate = (iso: string) =>
             {{ t("admin.reviews.reject") }}
           </UiButton>
           <UiButton
+            v-if="r.status === 'pending'"
             size="sm"
             :disabled="busy"
             @click="actionTarget = { review: r, action: 'approve' }"
@@ -211,9 +271,28 @@ const formatDate = (iso: string) =>
             <Icon name="check" class="h-4 w-4" />
             {{ t("admin.reviews.approve") }}
           </UiButton>
+          <UiButton
+            size="sm"
+            variant="ghost"
+            class="text-error hover:text-error"
+            :disabled="busy"
+            @click="deleteTarget = r"
+          >
+            <Icon name="trash" class="h-4 w-4" />
+            {{ t("admin.reviews.delete_button") }}
+          </UiButton>
         </footer>
       </li>
     </ul>
+
+    <div v-if="list && list.total > PAGE_SIZE" class="pt-4">
+      <UiPagination
+        :page="queryParams.page"
+        :page-size="PAGE_SIZE"
+        :total="list.total"
+        @change="changePage"
+      />
+    </div>
 
     <AdminConfirmDialog
       :open="!!actionTarget"
@@ -230,6 +309,19 @@ const formatDate = (iso: string) =>
       :loading="busy"
       @update:open="(v) => !v && (actionTarget = null)"
       @confirm="confirmAction"
+    />
+
+    <AdminConfirmDialog
+      :open="!!deleteTarget"
+      tone="danger"
+      icon="trash"
+      :title="t('admin.reviews.delete_modal_title')"
+      :description="t('admin.reviews.delete_modal_body')"
+      :confirm-label="t('admin.reviews.delete_button')"
+      :cancel-label="t('admin.actions.cancel')"
+      :loading="busy"
+      @update:open="(v) => !v && (deleteTarget = null)"
+      @confirm="confirmDelete"
     />
   </section>
 </template>

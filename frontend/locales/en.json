@@ -234,12 +234,13 @@
       "approve_modal_body": "Publish book \"{title}\"? The author will be notified."
     },
     "reviews": {
-      "title": "Review moderation",
-      "subtitle": "Reviews awaiting approval",
-      "empty_title": "Queue is empty",
-      "empty_body": "No reviews are currently awaiting moderation.",
+      "title": "Reviews",
+      "subtitle": "Manage user reviews — approve, reject, delete.",
+      "empty_title": "No reviews",
+      "empty_body": "No reviews in this status yet.",
       "approve": "Approve",
       "reject": "Reject",
+      "delete_button": "Delete",
       "approve_confirm": "Approve this review?",
       "reject_confirm": "Reject this review?",
       "by_user": "User",
@@ -247,14 +248,23 @@
       "open_book": "Open book",
       "search_placeholder": "Search by user, title or text...",
       "queue_count": "{n} reviews",
+      "results": "{n} reviews",
       "rating_any": "Any rating",
       "status_pending": "Pending",
+      "statuses": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
       "approve_success": "Review approved",
       "reject_success": "Review rejected",
+      "delete_success": "Review deleted",
       "approve_modal_title": "Confirm review",
       "approve_modal_body": "Make this review visible on the site?",
       "reject_modal_title": "Reject review",
-      "reject_modal_body": "The review will not appear on the site. This cannot be undone."
+      "reject_modal_body": "The review will not appear on the site. This cannot be undone.",
+      "delete_modal_title": "Delete review",
+      "delete_modal_body": "The review will be permanently deleted."
     },
     "categories": {
       "title": "Categories",
@@ -343,6 +353,7 @@
         "change_role": "Change role",
         "block": "Block",
         "unblock": "Unblock",
+        "delete": "Delete",
         "block_confirm": "Block this user? All their sessions will end.",
         "unblock_confirm": "Unblock this user?"
       },
@@ -354,6 +365,9 @@
       "block_modal_body": "\"{name}\" won't be able to sign in. You can unblock later.",
       "unblock_modal_title": "Unblock user",
       "unblock_modal_body": "\"{name}\" will be able to sign in again.",
+      "delete_modal_title": "Permanently delete user",
+      "delete_modal_body": "\"{name}\"'s account and all related data (sessions, reviews, library, wishlist) will be wiped. If they own any books, orders, or withdrawals, resolve those first. This cannot be undone.",
+      "delete_success": "User deleted",
       "role_success": "{name} is now {role}",
       "block_success": "User blocked",
       "unblock_success": "User unblocked"

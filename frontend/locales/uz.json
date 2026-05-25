@@ -234,12 +234,13 @@
       "approve_modal_body": "\"{title}\" kitobini chop etishni tasdiqlaysizmi? Muallifga xabarnoma yuboriladi."
     },
     "reviews": {
-      "title": "Sharhlar moderatsiyasi",
-      "subtitle": "Tasdiqlashni kutayotgan sharhlar",
+      "title": "Sharhlar",
+      "subtitle": "Foydalanuvchi sharhlarini boshqarish — tasdiqlash, rad etish, o'chirish.",
       "empty_title": "Sharhlar yo'q",
-      "empty_body": "Hozircha tasdiqlashni kutayotgan sharh yo'q.",
+      "empty_body": "Hozircha bu holatda sharh yo'q.",
       "approve": "Tasdiqlash",
       "reject": "Rad etish",
+      "delete_button": "O'chirish",
       "approve_confirm": "Bu sharhni tasdiqlashni istaysizmi?",
       "reject_confirm": "Bu sharhni rad etishni istaysizmi?",
       "by_user": "Foydalanuvchi",
@@ -247,14 +248,23 @@
       "open_book": "Kitobni ochish",
       "search_placeholder": "Foydalanuvchi, sarlavha yoki matn bo'yicha qidirish...",
       "queue_count": "{n} ta sharh",
+      "results": "{n} ta sharh",
       "rating_any": "Barcha reytinglar",
       "status_pending": "Tekshiruvda",
+      "statuses": {
+        "pending": "Tekshiruvda",
+        "approved": "Tasdiqlangan",
+        "rejected": "Rad etilgan"
+      },
       "approve_success": "Sharh tasdiqlandi",
       "reject_success": "Sharh rad etildi",
+      "delete_success": "Sharh o'chirildi",
       "approve_modal_title": "Sharhni tasdiqlash",
       "approve_modal_body": "Bu sharh saytda ko'rinishini xohlaysizmi?",
       "reject_modal_title": "Sharhni rad etish",
-      "reject_modal_body": "Sharh saytda chiqmaydi. Bu amalni qaytarish mumkin emas."
+      "reject_modal_body": "Sharh saytda chiqmaydi. Bu amalni qaytarish mumkin emas.",
+      "delete_modal_title": "Sharhni o'chirish",
+      "delete_modal_body": "Sharh butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi."
     },
     "categories": {
       "title": "Kategoriyalar",
@@ -343,6 +353,7 @@
         "change_role": "Rolni o'zgartirish",
         "block": "Bloklash",
         "unblock": "Blokdan chiqarish",
+        "delete": "O'chirish",
         "block_confirm": "Bu foydalanuvchini bloklashni istaysizmi? Barcha sessiyalari yopiladi.",
         "unblock_confirm": "Foydalanuvchini blokdan chiqarish?"
       },
@@ -354,6 +365,9 @@
       "block_modal_body": "\"{name}\" tizimga kira olmaydi. Keyin yana ochishingiz mumkin.",
       "unblock_modal_title": "Blokdan chiqarish",
       "unblock_modal_body": "\"{name}\" tizimga yana kira oladi.",
+      "delete_modal_title": "Foydalanuvchini butunlay o'chirish",
+      "delete_modal_body": "\"{name}\" hisobi va unga bog'liq barcha ma'lumotlar (sessiyalar, sharhlar, kutubxona, sevimlilar) butunlay o'chiriladi. Agar mualliflik kitoblari, buyurtmalari yoki pul yechish so'rovlari bo'lsa — avval ularni hal qiling. Bu amalni qaytarib bo'lmaydi.",
+      "delete_success": "Foydalanuvchi o'chirildi",
       "role_success": "{name} endi {role}",
       "block_success": "Foydalanuvchi bloklandi",
       "unblock_success": "Foydalanuvchi blokdan chiqarildi"
