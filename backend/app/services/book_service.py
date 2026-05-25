@@ -170,6 +170,113 @@ async def update_book(db: AsyncSession, user: User, book_id: UUID, data: BookUpd
     return await _get_loaded(db, book.id)
 
 
+async def admin_create_book(
+    db: AsyncSession, admin: User, author_id: UUID, data: BookCreate
+) -> Book:
+    """Admin creates a book on behalf of any author profile.
+
+    Unlike the author-self path the admin doesn't need to own an
+    author_profile of their own — they just pick which author the book
+    belongs to. ``uploaded_by`` still points at the admin so audit logs
+    show who pushed the row in.
+    """
+    if not any((v or "").strip() for v in data.title.values()):
+        raise ValidationError(
+            "title must contain at least one non-empty locale",
+            details={"code": "empty_title"},
+        )
+
+    profile = (
+        await db.execute(select(AuthorProfile).where(AuthorProfile.id == author_id))
+    ).scalar_one_or_none()
+    if profile is None:
+        raise ValidationError(
+            "Author profile not found", details={"code": "author_not_found"}
+        )
+
+    slug = await _unique_slug(db, _primary_title(data.title))
+    categories = await _load_categories(db, data.category_ids)
+
+    book = Book(
+        author_id=profile.id,
+        uploaded_by=admin.id,
+        slug=slug,
+        title=data.title,
+        subtitle=data.subtitle or {},
+        description=data.description or {},
+        language=data.language,
+        isbn=data.isbn,
+        publication_year=data.publication_year,
+        publisher=data.publisher,
+        price=data.price,
+        discount_price=data.discount_price,
+        keywords=data.keywords,
+        status=BookStatus.draft,
+    )
+    book.categories = categories
+    db.add(book)
+    try:
+        await db.flush()
+    except IntegrityError as exc:
+        raise ConflictError("Slug collision creating book", details={"code": "slug_taken"}) from exc
+    return await _get_loaded(db, book.id)
+
+
+async def admin_update_book(
+    db: AsyncSession, admin: User, book_id: UUID, data: BookUpdate
+) -> Book:
+    """Admin edit path — no status guard. Lets admins fix typos in
+    already-approved books without having to bounce them through the
+    full author/reject loop.
+    """
+    if admin.role not in {UserRole.admin, UserRole.superadmin}:
+        raise ForbiddenError("Admin only", details={"code": "admin_required"})
+
+    book = await _get_loaded(db, book_id)
+    updates: dict[str, Any] = data.model_dump(exclude_unset=True, exclude={"category_ids"})
+    for key, value in updates.items():
+        setattr(book, key, value)
+    if data.category_ids is not None:
+        book.categories = await _load_categories(db, data.category_ids)
+
+    await db.flush()
+    # Re-index after admin tweaks so the search results catch up.
+    if book.status == BookStatus.approved:
+        from app.tasks.search_tasks import sync_book_to_meilisearch
+        sync_book_to_meilisearch.delay(str(book.id))
+    return await _get_loaded(db, book.id)
+
+
+async def admin_list_all(
+    db: AsyncSession,
+    *,
+    page: int,
+    page_size: int,
+    status: BookStatus | None = None,
+    search: str | None = None,
+    author_id: UUID | None = None,
+) -> tuple[list[Book], int]:
+    """Full admin catalogue — every book regardless of status. Filters
+    are AND-composed; missing values are ignored."""
+    base = select(Book).options(*_book_load_options())
+    if status is not None:
+        base = base.where(Book.status == status)
+    if author_id is not None:
+        base = base.where(Book.author_id == author_id)
+    if search:
+        like = f"%{search}%"
+        base = base.where(
+            or_(
+                func.cast(Book.title, sql_text_type()).ilike(like),
+                Book.slug.ilike(like),
+            )
+        )
+    total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    base = base.order_by(Book.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
+    items = (await db.execute(base)).scalars().unique().all()
+    return list(items), total
+
+
 async def delete_book(db: AsyncSession, user: User, book_id: UUID) -> None:
     from app.tasks.search_tasks import remove_book_from_meilisearch
 

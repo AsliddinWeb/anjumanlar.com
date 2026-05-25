@@ -54,6 +54,15 @@ class BookUpdate(BaseModel):
     keywords: list[str] | None = Field(default=None, max_length=20)
 
 
+class BookAdminCreate(BookCreate):
+    """Admin payload for POST /books/admin — same fields plus an
+    explicit ``author_id`` so the admin can attribute the book to any
+    author profile (the author-self path takes the profile from the
+    caller, which admins typically don't have)."""
+
+    author_id: UUID
+
+
 # ----- Read paths -----
 
 

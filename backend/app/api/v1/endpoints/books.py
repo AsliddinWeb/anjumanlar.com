@@ -18,6 +18,7 @@ from app.db.session import get_db
 from app.dependencies import require_admin, require_author
 from app.models import BookStatus, User
 from app.schemas.book import (
+    BookAdminCreate,
     BookCreate,
     BookList,
     BookOwnerList,
@@ -239,10 +240,72 @@ async def upload_book_file(
     return BookOwnerView.model_validate(book)
 
 
-# ---------- Admin moderation ----------
+# ---------- Admin moderation + full CRUD ----------
 #
 # Mounted as /books/admin/* to keep the router single-file. Phase 5 may
 # split these into a dedicated admin sub-router.
+
+
+@router.get(
+    "/admin/all",
+    response_model=BookOwnerList,
+    summary="Full admin catalogue — every book regardless of status (admin+)",
+)
+async def admin_list_all(
+    _: Annotated[User, Depends(require_admin)],
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    status_filter: BookStatus | None = Query(None, alias="status"),
+    search: str | None = Query(None, min_length=1, max_length=200),
+    author_id: UUID | None = None,
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerList:
+    items, total = await book_service.admin_list_all(
+        db,
+        page=page,
+        page_size=page_size,
+        status=status_filter,
+        search=search,
+        author_id=author_id,
+    )
+    return BookOwnerList(
+        items=[BookOwnerView.model_validate(b) for b in items],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.post(
+    "/admin",
+    response_model=BookOwnerView,
+    status_code=status.HTTP_201_CREATED,
+    summary="Admin creates a book on behalf of any author (admin+)",
+)
+async def admin_create_book(
+    data: BookAdminCreate,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerView:
+    book = await book_service.admin_create_book(db, admin, data.author_id, data)
+    await db.commit()
+    return BookOwnerView.model_validate(book)
+
+
+@router.patch(
+    "/admin/{book_id}",
+    response_model=BookOwnerView,
+    summary="Admin edit — any status, any field (admin+)",
+)
+async def admin_patch_book(
+    book_id: UUID,
+    data: BookUpdate,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerView:
+    book = await book_service.admin_update_book(db, admin, book_id, data)
+    await db.commit()
+    return BookOwnerView.model_validate(book)
 
 
 @router.get(
