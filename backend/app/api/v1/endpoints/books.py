@@ -83,6 +83,22 @@ async def create_book(
     return BookOwnerView.model_validate(book)
 
 
+# ---------- Owner / admin single read ----------
+
+
+@router.get(
+    "/owner/{book_id}",
+    response_model=BookOwnerView,
+    summary="Author/admin single-book view — exposes status, rejection reason, file URL",
+)
+async def read_owner_book(
+    book_id: UUID,
+    user: Annotated[User, Depends(require_author)],
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerView:
+    return BookOwnerView.model_validate(await book_service.get_for_owner(db, user, book_id))
+
+
 # ---------- Public listing ----------
 
 

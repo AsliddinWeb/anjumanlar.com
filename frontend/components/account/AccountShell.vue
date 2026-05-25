@@ -27,6 +27,7 @@ const navItems = computed<NavItem[]>(() => {
   ];
   if (isAuthor.value) {
     items.push(
+      { to: "/account/books", icon: "book", label: t("account_books.nav_label") },
       { to: "/account/balance", icon: "currency", label: t("account.nav.balance") },
       { to: "/account/withdrawals", icon: "money", label: t("account.nav.withdrawals") },
     );

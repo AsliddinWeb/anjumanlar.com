@@ -1163,7 +1163,7 @@
     "in_review": "на проверке",
     "drafts": "черновики",
     "no_books_title": "Пока нет книг",
-    "no_books_body": "Свяжитесь с админом для загрузки первой книги.",
+    "no_books_body": "Нажмите \"Новая книга\", чтобы добавить первую.",
     "joined": "Присоединён: {date}",
     "commission": "Комиссия: {rate}%",
     "status": {
@@ -1198,6 +1198,114 @@
       "institution_placeholder": "Например: НУУз",
       "website": "Сайт",
       "bio": "Краткая биография"
+    }
+  },
+  "account_books": {
+    "title": "Мои книги",
+    "subtitle": "Управляйте своими книгами — добавляйте новые, редактируйте или отправляйте на модерацию.",
+    "nav_label": "Мои книги",
+    "new_button": "Новая книга",
+    "search_placeholder": "Поиск по названию",
+    "filter_status_any": "Все статусы",
+    "results": "{n} книг",
+    "empty_title": "Книг пока нет",
+    "empty_body": "Нажмите \"Новая книга\", чтобы добавить первую.",
+    "must_be_author_title": "Сначала создайте профиль автора",
+    "must_be_author_body": "Чтобы добавить книгу, нужно заполнить профиль автора.",
+    "go_to_profile": "Перейти к профилю",
+    "status": {
+      "draft": "Черновик",
+      "pending": "На модерации",
+      "approved": "Опубликовано",
+      "rejected": "Отклонено",
+      "archived": "В архиве"
+    },
+    "table": {
+      "title_col": "Название",
+      "status": "Статус",
+      "price": "Цена",
+      "updated_at": "Обновлено"
+    },
+    "rejection_reason_label": "Причина отклонения",
+    "new_page_title": "Новая книга",
+    "new_page_subtitle": "Заполните основные данные. Файлы загрузите на следующем шаге.",
+    "edit_page_title": "Редактирование книги",
+    "edit_page_subtitle": "Обновите данные, загрузите файлы и отправьте на модерацию.",
+    "create_success": "Книга создана. Теперь загрузите обложку и PDF.",
+    "update_success": "Книга обновлена",
+    "delete_success": "Книга удалена",
+    "delete_modal_title": "Удалить книгу",
+    "delete_modal_body": "Книга \"{title}\" будет удалена безвозвратно.",
+    "delete_button": "Удалить",
+    "submit_for_review": "Отправить на модерацию",
+    "submit_success": "Книга отправлена на модерацию",
+    "submit_disabled_reason": "Для отправки нужны название, категория и PDF.",
+    "section_identity": "Основные данные",
+    "section_content": "Многоязычный контент",
+    "section_classification": "Классификация",
+    "section_pricing": "Цена",
+    "section_keywords": "Ключевые слова",
+    "section_files": "Файлы",
+    "form": {
+      "title_field": "Название ({lang})",
+      "title_required_hint": "Минимум один язык должен быть заполнен.",
+      "subtitle_field": "Подзаголовок ({lang})",
+      "description_field": "Описание ({lang})",
+      "language": "Основной язык",
+      "languages": {
+        "uz": "Узбекский",
+        "ru": "Русский",
+        "en": "Английский",
+        "mixed": "Смешанный"
+      },
+      "isbn": "ISBN",
+      "isbn_placeholder": "978-...",
+      "publication_year": "Год издания",
+      "publisher": "Издательство",
+      "categories": "Категории",
+      "categories_hint": "Можно выбрать несколько",
+      "categories_empty": "Ни одна категория не выбрана",
+      "price": "Цена (сум)",
+      "price_hint": "0 означает, что книга бесплатная.",
+      "discount_price": "Цена со скидкой (сум)",
+      "discount_price_hint": "Оставьте пустым — без скидки.",
+      "keywords": "Ключевые слова",
+      "keywords_hint": "Разделяйте запятой. Для SEO и поиска.",
+      "keywords_placeholder": "медицина, кардиология, ...",
+      "lang_hint": "Переключайтесь между языками"
+    },
+    "errors": {
+      "title_required": "Введите название хотя бы на одном языке",
+      "wrong_status": "В этом статусе книгу нельзя редактировать"
+    },
+    "upload": {
+      "cover_title": "Обложка",
+      "cover_hint": "JPEG/PNG, рекомендуется 800×1200 px, макс. 5 МБ",
+      "file_title": "PDF книги",
+      "file_hint": "Только PDF, макс. 100 МБ. Демо генерируется автоматически.",
+      "demo_title": "Демо PDF",
+      "demo_hint": "Генерируется автоматически — загружать не нужно",
+      "no_file": "Не загружено",
+      "uploaded": "Загружено",
+      "uploading": "Загрузка…",
+      "select_file": "Выбрать файл",
+      "replace_file": "Заменить",
+      "view": "Открыть",
+      "upload_failed": "Ошибка загрузки",
+      "size_too_large": "Файл превышает допустимый размер",
+      "wrong_type": "Неверный тип файла"
+    },
+    "rejected_banner": {
+      "title": "Книга отклонена",
+      "body": "Админ указал причину. Исправьте и отправьте повторно."
+    },
+    "pending_banner": {
+      "title": "На модерации",
+      "body": "Дождитесь подтверждения админа. После одобрения книга появится на сайте."
+    },
+    "approved_banner": {
+      "title": "Опубликовано",
+      "body": "Книга доступна на сайте. Для редактирования свяжитесь с админом."
     }
   },
   "errors": {

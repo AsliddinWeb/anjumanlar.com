@@ -1163,7 +1163,7 @@
     "in_review": "tekshiruvda",
     "drafts": "qoralama",
     "no_books_title": "Hozircha kitob yo'q",
-    "no_books_body": "Birinchi kitobingizni yuklash uchun admin bilan bog'laning.",
+    "no_books_body": "\"Yangi kitob\" tugmasini bosib birinchi kitobingizni qo'shing.",
     "joined": "{date}da qo'shilgan",
     "commission": "Komissiya: {rate}%",
     "status": {
@@ -1198,6 +1198,114 @@
       "institution_placeholder": "Masalan: O'zMU",
       "website": "Veb-sayt",
       "bio": "Qisqacha tarjimai hol"
+    }
+  },
+  "account_books": {
+    "title": "Mening kitoblarim",
+    "subtitle": "Kitoblaringizni boshqaring — yangi qo'shing, tahrirlang yoki moderatsiyaga yuboring.",
+    "nav_label": "Mening kitoblarim",
+    "new_button": "Yangi kitob",
+    "search_placeholder": "Sarlavha bo'yicha qidirish",
+    "filter_status_any": "Barcha holatlar",
+    "results": "{n} ta kitob",
+    "empty_title": "Hozircha kitob yo'q",
+    "empty_body": "Birinchi kitobingizni qo'shish uchun \"Yangi kitob\" tugmasini bosing.",
+    "must_be_author_title": "Avval muallif profilini yarating",
+    "must_be_author_body": "Kitob qo'shish uchun avval muallif profilingizni to'ldirishingiz kerak.",
+    "go_to_profile": "Profilga o'tish",
+    "status": {
+      "draft": "Qoralama",
+      "pending": "Tekshiruvda",
+      "approved": "Nashr etilgan",
+      "rejected": "Rad etilgan",
+      "archived": "Arxivlangan"
+    },
+    "table": {
+      "title_col": "Sarlavha",
+      "status": "Holat",
+      "price": "Narx",
+      "updated_at": "Yangilangan"
+    },
+    "rejection_reason_label": "Rad etish sababi",
+    "new_page_title": "Yangi kitob",
+    "new_page_subtitle": "Asosiy ma'lumotlarni to'ldiring. Fayllarni keyingi qadamda yuklaysiz.",
+    "edit_page_title": "Kitobni tahrirlash",
+    "edit_page_subtitle": "Ma'lumotlarni yangilang, fayllarni yuklang va moderatsiyaga yuboring.",
+    "create_success": "Kitob yaratildi. Endi muqova va PDF yuklang.",
+    "update_success": "Kitob yangilandi",
+    "delete_success": "Kitob o'chirildi",
+    "delete_modal_title": "Kitobni o'chirish",
+    "delete_modal_body": "\"{title}\" kitobi butunlay o'chirib tashlanadi. Bu amalni qaytarib bo'lmaydi.",
+    "delete_button": "O'chirish",
+    "submit_for_review": "Moderatsiyaga yuborish",
+    "submit_success": "Kitob moderatsiyaga yuborildi",
+    "submit_disabled_reason": "Kitobni moderatsiyaga yuborish uchun sarlavha, kategoriya va PDF kerak.",
+    "section_identity": "Asosiy ma'lumotlar",
+    "section_content": "Ko'p tilli mazmun",
+    "section_classification": "Tasnif",
+    "section_pricing": "Narxlash",
+    "section_keywords": "Kalit so'zlar",
+    "section_files": "Fayllar",
+    "form": {
+      "title_field": "Sarlavha ({lang})",
+      "title_required_hint": "Kamida bitta tilda sarlavha bo'lishi shart.",
+      "subtitle_field": "Qo'shimcha sarlavha ({lang})",
+      "description_field": "Tavsif ({lang})",
+      "language": "Asosiy til",
+      "languages": {
+        "uz": "O'zbekcha",
+        "ru": "Ruscha",
+        "en": "Inglizcha",
+        "mixed": "Aralash"
+      },
+      "isbn": "ISBN",
+      "isbn_placeholder": "978-...",
+      "publication_year": "Nashr yili",
+      "publisher": "Nashriyot",
+      "categories": "Kategoriyalar",
+      "categories_hint": "Bittadan ko'p tanlash mumkin",
+      "categories_empty": "Hech qanday kategoriya tanlanmagan",
+      "price": "Narx (so'm)",
+      "price_hint": "0 deb belgilasangiz, kitob bepul bo'ladi.",
+      "discount_price": "Chegirmali narx (so'm)",
+      "discount_price_hint": "Bo'sh qoldirilsa — chegirma yo'q.",
+      "keywords": "Kalit so'zlar",
+      "keywords_hint": "Vergul bilan ajrating. SEO va qidiruv uchun.",
+      "keywords_placeholder": "tibbiyot, kardiologiya, ...",
+      "lang_hint": "Til tablari orasida o'ting"
+    },
+    "errors": {
+      "title_required": "Kamida bitta tilda sarlavha kiriting",
+      "wrong_status": "Bu holatda kitobni tahrirlab bo'lmaydi"
+    },
+    "upload": {
+      "cover_title": "Muqova",
+      "cover_hint": "JPEG/PNG, 800×1200 px tavsiya etiladi, max 5 MB",
+      "file_title": "Kitob PDF",
+      "file_hint": "Faqat PDF, max 100 MB. Yuklangach demo avto yaratiladi.",
+      "demo_title": "Demo PDF",
+      "demo_hint": "Avto yaratiladi — qo'lda yuklash shart emas",
+      "no_file": "Hali yuklanmagan",
+      "uploaded": "Yuklangan",
+      "uploading": "Yuklanmoqda…",
+      "select_file": "Fayl tanlash",
+      "replace_file": "Almashtirish",
+      "view": "Ko'rish",
+      "upload_failed": "Yuklash muvaffaqiyatsiz",
+      "size_too_large": "Fayl hajmi ruxsat etilganidan katta",
+      "wrong_type": "Fayl turi noto'g'ri"
+    },
+    "rejected_banner": {
+      "title": "Kitob rad etildi",
+      "body": "Admin sababini ko'rsatdi. Tuzating va qayta yuboring."
+    },
+    "pending_banner": {
+      "title": "Tekshiruvda",
+      "body": "Admin tasdiqlashini kuting. Tasdiqlangach saytda chiqadi."
+    },
+    "approved_banner": {
+      "title": "Nashr etilgan",
+      "body": "Kitob saytda mavjud. Tahrirlash uchun avval admin bilan bog'laning."
     }
   },
   "errors": {

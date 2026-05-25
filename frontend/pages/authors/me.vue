@@ -497,7 +497,7 @@ const joinedAt = computed(() => {
 
       <!-- My books -->
       <section class="space-y-4 mb-8">
-        <div class="flex items-end justify-between gap-3">
+        <div class="flex items-end justify-between gap-3 flex-wrap">
           <div>
             <h2 class="font-serif text-2xl text-ink leading-tight">
               {{ t("author_cabinet.my_books") }}
@@ -511,6 +511,16 @@ const joinedAt = computed(() => {
                 · <span class="tabular-nums">{{ draftBooks.length }}</span> {{ t("author_cabinet.drafts") }}
               </template>
             </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <UiButton variant="ghost" :to="localePath('/account/books')">
+              <Icon name="book" class="h-4 w-4" />
+              {{ t("account_books.nav_label") }}
+            </UiButton>
+            <UiButton :to="localePath('/account/books/new')">
+              <Icon name="plus" class="h-4 w-4" />
+              {{ t("account_books.new_button") }}
+            </UiButton>
           </div>
         </div>
 

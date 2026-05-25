@@ -1163,7 +1163,7 @@
     "in_review": "in review",
     "drafts": "drafts",
     "no_books_title": "No books yet",
-    "no_books_body": "Contact admin to upload your first book.",
+    "no_books_body": "Click \"New book\" to add your first.",
     "joined": "Joined {date}",
     "commission": "Commission: {rate}%",
     "status": {
@@ -1198,6 +1198,114 @@
       "institution_placeholder": "e.g. NUUz",
       "website": "Website",
       "bio": "Short bio"
+    }
+  },
+  "account_books": {
+    "title": "My books",
+    "subtitle": "Manage your books — add new ones, edit, or submit for review.",
+    "nav_label": "My books",
+    "new_button": "New book",
+    "search_placeholder": "Search by title",
+    "filter_status_any": "All statuses",
+    "results": "{n} books",
+    "empty_title": "No books yet",
+    "empty_body": "Click \"New book\" to add your first.",
+    "must_be_author_title": "Create your author profile first",
+    "must_be_author_body": "You need to fill in your author profile before adding books.",
+    "go_to_profile": "Go to profile",
+    "status": {
+      "draft": "Draft",
+      "pending": "In review",
+      "approved": "Published",
+      "rejected": "Rejected",
+      "archived": "Archived"
+    },
+    "table": {
+      "title_col": "Title",
+      "status": "Status",
+      "price": "Price",
+      "updated_at": "Updated"
+    },
+    "rejection_reason_label": "Rejection reason",
+    "new_page_title": "New book",
+    "new_page_subtitle": "Fill in the basics. You'll upload files in the next step.",
+    "edit_page_title": "Edit book",
+    "edit_page_subtitle": "Update details, upload files, and submit for review.",
+    "create_success": "Book created. Now upload the cover and PDF.",
+    "update_success": "Book updated",
+    "delete_success": "Book deleted",
+    "delete_modal_title": "Delete book",
+    "delete_modal_body": "\"{title}\" will be permanently deleted. This cannot be undone.",
+    "delete_button": "Delete",
+    "submit_for_review": "Submit for review",
+    "submit_success": "Book submitted for review",
+    "submit_disabled_reason": "Title, category and PDF are required before submission.",
+    "section_identity": "Basics",
+    "section_content": "Multilingual content",
+    "section_classification": "Classification",
+    "section_pricing": "Pricing",
+    "section_keywords": "Keywords",
+    "section_files": "Files",
+    "form": {
+      "title_field": "Title ({lang})",
+      "title_required_hint": "At least one language is required.",
+      "subtitle_field": "Subtitle ({lang})",
+      "description_field": "Description ({lang})",
+      "language": "Primary language",
+      "languages": {
+        "uz": "Uzbek",
+        "ru": "Russian",
+        "en": "English",
+        "mixed": "Mixed"
+      },
+      "isbn": "ISBN",
+      "isbn_placeholder": "978-...",
+      "publication_year": "Year",
+      "publisher": "Publisher",
+      "categories": "Categories",
+      "categories_hint": "Pick one or more",
+      "categories_empty": "No categories selected",
+      "price": "Price (UZS)",
+      "price_hint": "Set to 0 for a free book.",
+      "discount_price": "Discount price (UZS)",
+      "discount_price_hint": "Leave empty for no discount.",
+      "keywords": "Keywords",
+      "keywords_hint": "Comma-separated. Helps SEO and search.",
+      "keywords_placeholder": "medicine, cardiology, ...",
+      "lang_hint": "Switch between language tabs"
+    },
+    "errors": {
+      "title_required": "Enter the title in at least one language",
+      "wrong_status": "Books in this status cannot be edited"
+    },
+    "upload": {
+      "cover_title": "Cover",
+      "cover_hint": "JPEG/PNG, 800×1200 px recommended, max 5 MB",
+      "file_title": "Book PDF",
+      "file_hint": "PDF only, max 100 MB. The demo is generated automatically.",
+      "demo_title": "Demo PDF",
+      "demo_hint": "Generated automatically — no upload needed",
+      "no_file": "Not uploaded",
+      "uploaded": "Uploaded",
+      "uploading": "Uploading…",
+      "select_file": "Select file",
+      "replace_file": "Replace",
+      "view": "View",
+      "upload_failed": "Upload failed",
+      "size_too_large": "File is larger than allowed",
+      "wrong_type": "Wrong file type"
+    },
+    "rejected_banner": {
+      "title": "Book rejected",
+      "body": "The admin left a reason. Fix and resubmit."
+    },
+    "pending_banner": {
+      "title": "In review",
+      "body": "Waiting on admin approval. Once approved it goes live."
+    },
+    "approved_banner": {
+      "title": "Published",
+      "body": "Book is live. Contact the admin to edit."
     }
   },
   "errors": {
