@@ -329,6 +329,36 @@ async def admin_list_moderation(
 
 
 @router.post(
+    "/admin/{book_id}/publish",
+    response_model=BookOwnerView,
+    summary="Admin shortcut — publish a draft / rejected / pending book straight away",
+)
+async def admin_publish_book_endpoint(
+    book_id: UUID,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerView:
+    book = await book_service.admin_publish_book(db, admin, book_id)
+    await db.commit()
+    return BookOwnerView.model_validate(book)
+
+
+@router.post(
+    "/admin/{book_id}/unpublish",
+    response_model=BookOwnerView,
+    summary="Admin shortcut — pull an approved book back to draft (hides it)",
+)
+async def admin_unpublish_book_endpoint(
+    book_id: UUID,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerView:
+    book = await book_service.admin_unpublish_book(db, admin, book_id)
+    await db.commit()
+    return BookOwnerView.model_validate(book)
+
+
+@router.post(
     "/admin/{book_id}/approve",
     response_model=BookOwnerView,
     summary="Approve a pending book (admin+)",

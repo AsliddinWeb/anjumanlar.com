@@ -247,6 +247,53 @@ async def admin_update_book(
     return await _get_loaded(db, book.id)
 
 
+async def admin_publish_book(db: AsyncSession, admin: User, book_id: UUID) -> Book:
+    """Admin shortcut — push a draft / rejected / pending book straight to
+    approved without the explicit moderation round-trip. Useful when
+    admin themselves authored the row (no point self-moderating)."""
+    from app.tasks.search_tasks import sync_book_to_meilisearch
+
+    if admin.role not in {UserRole.admin, UserRole.superadmin}:
+        raise ForbiddenError("Admin only", details={"code": "admin_required"})
+
+    book = await _get_loaded(db, book_id)
+    if book.status == BookStatus.approved:
+        raise ConflictError(
+            "Already published", details={"code": "wrong_status", "status": book.status.value}
+        )
+
+    book.status = BookStatus.approved
+    book.moderated_by = admin.id
+    book.moderated_at = datetime.now(UTC)
+    book.rejection_reason = None
+    if book.published_at is None:
+        book.published_at = book.moderated_at
+    await db.flush()
+    sync_book_to_meilisearch.delay(str(book.id))
+    return await _get_loaded(db, book.id)
+
+
+async def admin_unpublish_book(db: AsyncSession, admin: User, book_id: UUID) -> Book:
+    """Admin shortcut — pull an approved book back to draft (hidden from
+    the public catalogue and search index) without deleting it."""
+    from app.tasks.search_tasks import remove_book_from_meilisearch
+
+    if admin.role not in {UserRole.admin, UserRole.superadmin}:
+        raise ForbiddenError("Admin only", details={"code": "admin_required"})
+
+    book = await _get_loaded(db, book_id)
+    if book.status != BookStatus.approved:
+        raise ConflictError(
+            "Only approved books can be unpublished",
+            details={"code": "wrong_status", "status": book.status.value},
+        )
+
+    book.status = BookStatus.draft
+    await db.flush()
+    remove_book_from_meilisearch.delay(str(book.id))
+    return await _get_loaded(db, book.id)
+
+
 async def admin_list_all(
     db: AsyncSession,
     *,

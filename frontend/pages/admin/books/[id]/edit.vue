@@ -153,6 +153,42 @@ async function approveBook() {
   }
 }
 
+// ---- Publish (admin shortcut for draft/rejected) ----
+const publishing = ref(false);
+async function publishBook() {
+  if (!book.value || publishing.value) return;
+  publishing.value = true;
+  try {
+    await api(`/books/admin/${book.value.id}/publish`, { method: "POST" });
+    toast.success(t("admin.books.publish_success", { title: localised(book.value.title, book.value.slug) }));
+    await refreshBook();
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    publishing.value = false;
+  }
+}
+
+// ---- Unpublish (admin shortcut for approved → draft) ----
+const unpublishing = ref(false);
+async function unpublishBook() {
+  if (!book.value || unpublishing.value) return;
+  unpublishing.value = true;
+  try {
+    await api(`/books/admin/${book.value.id}/unpublish`, { method: "POST" });
+    toast.warning(t("admin.books.unpublish_success", { title: localised(book.value.title, book.value.slug) }));
+    await refreshBook();
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    unpublishing.value = false;
+  }
+}
+
 const rejectOpen = ref(false);
 const rejectReason = ref("");
 const rejectError = ref<string | null>(null);
@@ -249,6 +285,42 @@ const formatDate = (iso: string) =>
       <UiButton :loading="approving" @click="approveBook">
         <Icon name="check" class="h-4 w-4" />
         {{ t("admin.books.approve") }}
+      </UiButton>
+    </div>
+
+    <!-- Draft / rejected → admin publish shortcut -->
+    <div
+      v-else-if="book.status === 'draft' || book.status === 'rejected'"
+      class="rounded-md border border-primary/30 bg-primary/5 p-4 flex flex-wrap items-center gap-3"
+    >
+      <Icon name="upload" class="h-5 w-5 text-primary shrink-0" />
+      <div class="min-w-0 flex-1">
+        <h3 class="font-medium text-ink">{{ t("admin.books.publish_cta_title") }}</h3>
+        <p class="text-xs text-ink-tertiary mt-0.5">{{ t("admin.books.publish_cta_body") }}</p>
+      </div>
+      <UiButton :loading="publishing" @click="publishBook">
+        <Icon name="check-circle-solid" class="h-4 w-4" />
+        {{ t("admin.books.publish") }}
+      </UiButton>
+    </div>
+
+    <!-- Approved → unpublish shortcut -->
+    <div
+      v-else-if="book.status === 'approved'"
+      class="rounded-md border border-success/30 bg-success/5 p-4 flex flex-wrap items-center gap-3"
+    >
+      <Icon name="check-circle-solid" class="h-5 w-5 text-success shrink-0" />
+      <div class="min-w-0 flex-1">
+        <h3 class="font-medium text-ink">{{ t("admin.books.published_cta_title") }}</h3>
+        <p class="text-xs text-ink-tertiary mt-0.5">{{ t("admin.books.published_cta_body") }}</p>
+      </div>
+      <UiButton variant="ghost" :to="localePath(`/books/${book.slug}`)" target="_blank">
+        <Icon name="external" class="h-4 w-4" />
+        {{ t("admin.books.view_full") }}
+      </UiButton>
+      <UiButton variant="ghost" :loading="unpublishing" @click="unpublishBook">
+        <Icon name="eye-slash" class="h-4 w-4" />
+        {{ t("admin.books.unpublish") }}
       </UiButton>
     </div>
 
