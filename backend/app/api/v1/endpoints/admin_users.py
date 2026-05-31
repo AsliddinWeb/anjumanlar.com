@@ -17,8 +17,10 @@ from app.db.session import get_db
 from app.dependencies import require_admin
 from app.models import User, UserRole, UserStatus
 from app.schemas.auth import (
+    AdminUserCreate,
     AdminUserRoleUpdate,
     AdminUserStatusUpdate,
+    AdminUserUpdate,
     UserList,
     UserPublic,
 )
@@ -55,6 +57,52 @@ async def admin_list_users(
         page=page,
         page_size=page_size,
     )
+
+
+@router.post(
+    "",
+    response_model=UserPublic,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a user from the admin panel (admin+; superadmin role is superadmin-only)",
+)
+async def admin_create_user_endpoint(
+    data: AdminUserCreate,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> UserPublic:
+    user = await user_service.admin_create_user(db, admin, data)
+    await db.commit()
+    return UserPublic.model_validate(user)
+
+
+@router.get(
+    "/{user_id}",
+    response_model=UserPublic,
+    summary="Fetch a single user (admin+)",
+)
+async def admin_read_user(
+    user_id: UUID,
+    _: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> UserPublic:
+    user = await user_service.get_by_id(db, user_id)
+    return UserPublic.model_validate(user)
+
+
+@router.patch(
+    "/{user_id}",
+    response_model=UserPublic,
+    summary="Admin edit: any field (email, name, role, status, password)",
+)
+async def admin_patch_user(
+    user_id: UUID,
+    data: AdminUserUpdate,
+    admin: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> UserPublic:
+    user = await user_service.admin_update_user(db, admin, user_id, data)
+    await db.commit()
+    return UserPublic.model_validate(user)
 
 
 @router.patch(

@@ -370,7 +370,30 @@
       "delete_success": "Foydalanuvchi o'chirildi",
       "role_success": "{name} endi {role}",
       "block_success": "Foydalanuvchi bloklandi",
-      "unblock_success": "Foydalanuvchi blokdan chiqarildi"
+      "unblock_success": "Foydalanuvchi blokdan chiqarildi",
+      "new_button": "Yangi foydalanuvchi",
+      "new_page_title": "Yangi foydalanuvchi",
+      "new_page_subtitle": "Adminkadan to'g'ridan-to'g'ri foydalanuvchi yarating — email tasdiqlash qadami o'tkazib yuboriladi.",
+      "edit_page_title": "Foydalanuvchini tahrirlash",
+      "delete_button": "O'chirish",
+      "create_success": "\"{name}\" yaratildi",
+      "update_success": "Foydalanuvchi yangilandi",
+      "form": {
+        "section_identity": "Asosiy ma'lumotlar",
+        "section_access": "Rol va holat",
+        "section_password": "Parol",
+        "full_name": "To'liq ism",
+        "email": "Email",
+        "role": "Rol",
+        "status": "Holat",
+        "password": "Parol",
+        "password_hint": "Kamida 8 belgi, katta + kichik harf + raqam",
+        "change_password": "Parolni o'zgartirish",
+        "cancel_password_change": "O'zgartirishdan voz kechish"
+      },
+      "errors": {
+        "missing_required": "Majburiy maydonlarni to'ldiring"
+      }
     },
     "withdrawals": {
       "title": "Pul yechish so'rovlari",

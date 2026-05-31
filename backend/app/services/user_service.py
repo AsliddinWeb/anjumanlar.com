@@ -20,8 +20,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError
+from app.core.security import hash_password
 from app.models import User, UserRole, UserStatus
-from app.schemas.auth import UserUpdate
+from app.schemas.auth import AdminUserCreate, AdminUserUpdate, UserUpdate
 from app.services import storage_service
 from app.services.auth_service import logout_all
 
@@ -91,6 +92,12 @@ async def _get(db: AsyncSession, user_id: UUID) -> User:
     return row
 
 
+async def get_by_id(db: AsyncSession, user_id: UUID) -> User:
+    """Public alias of :func:`_get` — keeps endpoints out of the underscore-
+    prefixed internal."""
+    return await _get(db, user_id)
+
+
 def _assert_target_not_superadmin(target: User, actor: User) -> None:
     """Superadmin rows are append-only from the admin panel — only another
     superadmin (in DB-shell territory) can mutate them. This stops a
@@ -141,6 +148,95 @@ async def admin_change_status(
     target.status = new_status
     if new_status == UserStatus.blocked:
         await logout_all(db, target.id)
+    await db.flush()
+    return target
+
+
+async def admin_create_user(
+    db: AsyncSession,
+    actor: User,
+    data: AdminUserCreate,
+) -> User:
+    """Admin creates a user from the panel — skips email verification.
+
+    Only a superadmin can mint another superadmin (matches the role-change
+    guard rail).
+    """
+    if data.role == UserRole.superadmin and actor.role != UserRole.superadmin:
+        raise ForbiddenError(
+            "Only a superadmin can create another superadmin",
+            details={"code": "superadmin_required"},
+        )
+
+    existing = (await db.execute(select(User).where(User.email == data.email))).scalar_one_or_none()
+    if existing is not None:
+        raise ConflictError(
+            "Email already registered", details={"code": "email_taken"}
+        )
+
+    user = User(
+        email=data.email,
+        password_hash=hash_password(data.password),
+        full_name=data.full_name,
+        role=data.role,
+        status=data.status,
+        email_verified=True,
+        preferred_locale=data.preferred_locale,
+    )
+    db.add(user)
+    await db.flush()
+    return user
+
+
+async def admin_update_user(
+    db: AsyncSession,
+    actor: User,
+    user_id: UUID,
+    data: AdminUserUpdate,
+) -> User:
+    """Admin PATCH on any user field. Self-edits are blocked for role/status
+    to mirror the dedicated /role and /status endpoints' guard rails;
+    everything else (name/email/password) is fine to self-edit here too.
+    """
+    target = await _get(db, user_id)
+
+    role_change = data.role is not None and data.role != target.role
+    status_change = data.status is not None and data.status != target.status
+
+    if (role_change or status_change) and target.id == actor.id:
+        raise ConflictError(
+            "You can't change your own role or status",
+            details={"code": "self_role_change"},
+        )
+    if role_change or status_change:
+        _assert_target_not_superadmin(target, actor)
+    if role_change and data.role == UserRole.superadmin and actor.role != UserRole.superadmin:
+        raise ForbiddenError(
+            "Only a superadmin can promote to superadmin",
+            details={"code": "superadmin_required"},
+        )
+
+    if data.email is not None and data.email != target.email:
+        clash = (
+            await db.execute(select(User.id).where(User.email == data.email, User.id != target.id))
+        ).scalar_one_or_none()
+        if clash is not None:
+            raise ConflictError(
+                "Email already registered", details={"code": "email_taken"}
+            )
+        target.email = data.email
+    if data.full_name is not None:
+        target.full_name = data.full_name
+    if data.role is not None:
+        target.role = data.role
+    if data.status is not None:
+        target.status = data.status
+        if data.status == UserStatus.blocked:
+            await logout_all(db, target.id)
+    if data.password is not None:
+        target.password_hash = hash_password(data.password)
+        await logout_all(db, target.id)
+
     await db.flush()
     return target
 

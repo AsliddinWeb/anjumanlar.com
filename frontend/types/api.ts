@@ -215,6 +215,23 @@ export interface UserList {
   page_size: number;
 }
 
+export interface AdminUserCreate {
+  email: string;
+  password: string;
+  full_name: string;
+  role: UserRole;
+  status: UserStatus;
+  preferred_locale?: Locale;
+}
+
+export interface AdminUserUpdate {
+  email?: string;
+  full_name?: string;
+  role?: UserRole;
+  status?: UserStatus;
+  password?: string;
+}
+
 // ---------- Audit log ----------
 
 export type AuditAction =

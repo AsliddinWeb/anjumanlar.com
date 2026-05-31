@@ -370,7 +370,30 @@
       "delete_success": "User deleted",
       "role_success": "{name} is now {role}",
       "block_success": "User blocked",
-      "unblock_success": "User unblocked"
+      "unblock_success": "User unblocked",
+      "new_button": "New user",
+      "new_page_title": "New user",
+      "new_page_subtitle": "Create a user directly from the admin panel — email verification is skipped.",
+      "edit_page_title": "Edit user",
+      "delete_button": "Delete",
+      "create_success": "\"{name}\" created",
+      "update_success": "User updated",
+      "form": {
+        "section_identity": "Basics",
+        "section_access": "Role and status",
+        "section_password": "Password",
+        "full_name": "Full name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "password": "Password",
+        "password_hint": "At least 8 characters, uppercase + lowercase + digit",
+        "change_password": "Change password",
+        "cancel_password_change": "Cancel password change"
+      },
+      "errors": {
+        "missing_required": "Fill in the required fields"
+      }
     },
     "withdrawals": {
       "title": "Withdrawal requests",

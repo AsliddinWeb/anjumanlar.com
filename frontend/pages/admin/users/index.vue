@@ -205,6 +205,10 @@ const columns: Column<UserPublic>[] = [
           icon="users"
           :label="t('admin.users.results', { n: users.total })"
         />
+        <UiButton :to="localePath('/admin/users/new')">
+          <Icon name="plus" class="h-4 w-4" />
+          {{ t('admin.users.new_button') }}
+        </UiButton>
       </template>
     </AdminPageHeader>
 
@@ -259,12 +263,15 @@ const columns: Column<UserPublic>[] = [
             {{ initials(row.full_name) || "?" }}
           </div>
           <div class="min-w-0">
-            <div class="text-ink truncate font-medium">
+            <NuxtLink
+              :to="localePath(`/admin/users/${row.id}/edit`)"
+              class="text-ink truncate font-medium hover:text-primary block"
+            >
               {{ row.full_name }}
               <span v-if="isSelf(row)" class="text-xs text-ink-tertiary ml-1">
                 ({{ t("admin.users.you") }})
               </span>
-            </div>
+            </NuxtLink>
             <div class="text-xs text-ink-tertiary truncate">{{ row.email }}</div>
           </div>
         </div>
@@ -286,19 +293,31 @@ const columns: Column<UserPublic>[] = [
       </template>
       <template #actions="{ row }">
         <AdminActionMenu
-          v-if="canAct(row)"
           :items="[
-            ...roleOptions
-              .filter((r) => r !== row.role)
-              .map((r) => ({
-                key: `role:${r}`,
-                label: t('admin.users.set_role', { role: t(`admin.users.roles.${r}`) }),
-                icon: ROLE_ICON[r],
-              })),
-            row.status === 'blocked'
-              ? { key: 'unblock', label: t('admin.users.actions.unblock'), icon: 'check-circle' as const, divider: true }
-              : { key: 'block', label: t('admin.users.actions.block'), icon: 'lock' as const, danger: true, divider: true },
-            { key: 'delete', label: t('admin.users.actions.delete'), icon: 'trash' as const, danger: true, divider: true },
+            {
+              key: 'edit',
+              label: t('admin.actions.edit'),
+              icon: 'pencil' as const,
+              to: localePath(`/admin/users/${row.id}/edit`),
+            },
+            ...(canAct(row)
+              ? roleOptions
+                .filter((r) => r !== row.role)
+                .map((r) => ({
+                  key: `role:${r}`,
+                  label: t('admin.users.set_role', { role: t(`admin.users.roles.${r}`) }),
+                  icon: ROLE_ICON[r],
+                  divider: r === roleOptions.filter((rx) => rx !== row.role)[0],
+                }))
+              : []),
+            ...(canAct(row)
+              ? [row.status === 'blocked'
+                ? { key: 'unblock', label: t('admin.users.actions.unblock'), icon: 'check-circle' as const, divider: true }
+                : { key: 'block', label: t('admin.users.actions.block'), icon: 'lock' as const, danger: true, divider: true }]
+              : []),
+            ...(canAct(row)
+              ? [{ key: 'delete', label: t('admin.users.actions.delete'), icon: 'trash' as const, danger: true }]
+              : []),
           ]"
           @action="(k) => {
             if (k.startsWith('role:')) roleTarget = { user: row, newRole: k.slice(5) as UserRole };

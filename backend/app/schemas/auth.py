@@ -87,6 +87,41 @@ class AdminUserStatusUpdate(BaseModel):
     status: UserStatus
 
 
+class AdminUserCreate(BaseModel):
+    """Admin payload for POST /admin/users — create a user from the panel.
+
+    Skips the email-verification dance: created accounts land active and
+    email-verified so the admin doesn't have to chase a confirmation link.
+    """
+
+    email: EmailStr
+    password: PasswordStr
+    full_name: str = Field(..., min_length=1, max_length=255)
+    role: UserRole = UserRole.reader
+    status: UserStatus = UserStatus.active
+    preferred_locale: Literal["uz", "ru", "en"] = "uz"
+
+    @field_validator("full_name")
+    @classmethod
+    def _strip(cls, v: str) -> str:
+        return v.strip()
+
+
+class AdminUserUpdate(BaseModel):
+    """Admin PATCH payload for /admin/users/{id} — every field optional."""
+
+    email: EmailStr | None = None
+    full_name: str | None = Field(default=None, min_length=1, max_length=255)
+    role: UserRole | None = None
+    status: UserStatus | None = None
+    password: PasswordStr | None = None
+
+    @field_validator("full_name")
+    @classmethod
+    def _strip_name(cls, v: str | None) -> str | None:
+        return v.strip() if v else v
+
+
 class EmailVerifyRequest(BaseModel):
     token: str = Field(..., min_length=20, max_length=128)
 

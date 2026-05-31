@@ -370,7 +370,30 @@
       "delete_success": "Пользователь удалён",
       "role_success": "{name} теперь {role}",
       "block_success": "Пользователь заблокирован",
-      "unblock_success": "Пользователь разблокирован"
+      "unblock_success": "Пользователь разблокирован",
+      "new_button": "Новый пользователь",
+      "new_page_title": "Новый пользователь",
+      "new_page_subtitle": "Создание пользователя прямо из админки — проверка email пропускается.",
+      "edit_page_title": "Редактирование пользователя",
+      "delete_button": "Удалить",
+      "create_success": "\"{name}\" создан",
+      "update_success": "Пользователь обновлён",
+      "form": {
+        "section_identity": "Основные данные",
+        "section_access": "Роль и статус",
+        "section_password": "Пароль",
+        "full_name": "Полное имя",
+        "email": "Email",
+        "role": "Роль",
+        "status": "Статус",
+        "password": "Пароль",
+        "password_hint": "Минимум 8 символов, заглавная + строчная буква + цифра",
+        "change_password": "Изменить пароль",
+        "cancel_password_change": "Отменить смену пароля"
+      },
+      "errors": {
+        "missing_required": "Заполните обязательные поля"
+      }
     },
     "withdrawals": {
       "title": "Заявки на выплату",

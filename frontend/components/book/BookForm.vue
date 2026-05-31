@@ -45,21 +45,22 @@ function update<K extends keyof BookFormValue>(key: K, value: BookFormValue[K]) 
   emit("update:modelValue", { ...props.modelValue, [key]: value });
 }
 
-const activeLang = ref<"uz" | "ru" | "en">("uz");
+type LangKey = "uz" | "ru" | "en";
+const activeLang = ref<LangKey>("uz");
 const langs = [
   { key: "uz" as const, label: "O'zbek" },
   { key: "ru" as const, label: "Русский" },
   { key: "en" as const, label: "English" },
 ];
 
-function titleKey(l: "uz" | "ru" | "en") {
-  return `title_${l}` as const;
+function setActive(l: LangKey) {
+  activeLang.value = l;
 }
-function subtitleKey(l: "uz" | "ru" | "en") {
-  return `subtitle_${l}` as const;
-}
-function descriptionKey(l: "uz" | "ru" | "en") {
-  return `description_${l}` as const;
+
+const activeLabel = computed(() => langs.find((l) => l.key === activeLang.value)?.label ?? "");
+
+function fieldKey(kind: "title" | "subtitle" | "description"): keyof BookFormValue {
+  return `${kind}_${activeLang.value}` as keyof BookFormValue;
 }
 
 const languageOptions = computed(() => [
@@ -98,7 +99,7 @@ function isCategorySelected(id: string) {
           :class="activeLang === l.key
             ? 'border-primary text-primary font-medium'
             : 'border-transparent text-ink-secondary hover:text-ink'"
-          @click="activeLang = l.key"
+          @click="setActive(l.key)"
         >
           {{ l.label }}
         </button>
@@ -107,27 +108,27 @@ function isCategorySelected(id: string) {
         </span>
       </div>
 
-      <div v-for="l in langs" v-show="activeLang === l.key" :key="l.key" class="p-5 space-y-4">
+      <div :key="activeLang" class="p-5 space-y-4">
         <UiInput
-          :model-value="modelValue[titleKey(l.key)]"
-          :label="t('account_books.form.title_field', { lang: l.label })"
-          :hint="l.key === 'uz' ? t('account_books.form.title_required_hint') : ''"
-          @update:model-value="(v) => update(titleKey(l.key), v)"
+          :model-value="modelValue[fieldKey('title')] as string"
+          :label="t('account_books.form.title_field', { lang: activeLabel })"
+          :hint="activeLang === 'uz' ? t('account_books.form.title_required_hint') : ''"
+          @update:model-value="(v) => update(fieldKey('title'), v as never)"
         />
         <UiInput
-          :model-value="modelValue[subtitleKey(l.key)]"
-          :label="t('account_books.form.subtitle_field', { lang: l.label })"
-          @update:model-value="(v) => update(subtitleKey(l.key), v)"
+          :model-value="modelValue[fieldKey('subtitle')] as string"
+          :label="t('account_books.form.subtitle_field', { lang: activeLabel })"
+          @update:model-value="(v) => update(fieldKey('subtitle'), v as never)"
         />
         <label class="block">
           <span class="block text-sm text-ink-secondary mb-1">
-            {{ t("account_books.form.description_field", { lang: l.label }) }}
+            {{ t("account_books.form.description_field", { lang: activeLabel }) }}
           </span>
           <textarea
-            :value="modelValue[descriptionKey(l.key)]"
+            :value="modelValue[fieldKey('description')] as string"
             rows="8"
             class="w-full px-3 py-2 rounded border border-border bg-bg text-ink text-sm focus:outline-none focus:border-primary"
-            @input="(e) => update(descriptionKey(l.key), (e.target as HTMLTextAreaElement).value)"
+            @input="(e) => update(fieldKey('description'), (e.target as HTMLTextAreaElement).value as never)"
           />
         </label>
       </div>
