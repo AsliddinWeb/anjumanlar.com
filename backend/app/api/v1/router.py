@@ -16,6 +16,7 @@ from app.api.v1.endpoints import (
     libraries,
     orders,
     payments,
+    review_requests,
     reviews,
     search,
     site_settings,
@@ -61,3 +62,5 @@ api_router.include_router(blog.router)
 api_router.include_router(blog.admin_router)
 api_router.include_router(site_settings.public_router)
 api_router.include_router(site_settings.admin_router)
+api_router.include_router(review_requests.router)
+api_router.include_router(review_requests.admin_router)

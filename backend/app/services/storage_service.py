@@ -179,6 +179,70 @@ def _validate_pdf(raw: bytes, content_type: str) -> int:
     return pages
 
 
+# ---------------------------------------------------------------------------
+# Review-request files
+# ---------------------------------------------------------------------------
+
+REVIEW_MANUSCRIPT_MIME = {"application/pdf"}
+REVIEW_MAX_MB = 100
+
+
+def upload_review_manuscript(
+    request_id: UUID, raw: bytes, content_type: str, filename: str | None = None
+) -> tuple[str, str | None]:
+    """Push a peer-review manuscript PDF into the books bucket.
+
+    Returns (url, original_filename). We piggyback on the existing
+    ``books`` bucket since both store PDFs that need to be private +
+    served via presigned URLs.
+    """
+    if content_type.lower() not in REVIEW_MANUSCRIPT_MIME:
+        raise ValidationError("Manuscript must be a PDF")
+    if len(raw) > REVIEW_MAX_MB * 1024 * 1024:
+        raise ValidationError(f"Manuscript exceeds the {REVIEW_MAX_MB} MB limit")
+    # Light PDF sanity-check so we don't store junk.
+    try:
+        PdfReader(io.BytesIO(raw))
+    except PdfReadError as exc:
+        raise ValidationError("File is not a valid PDF") from exc
+
+    url = put_bytes(
+        settings.MINIO_BUCKET_BOOKS,
+        f"review-manuscripts/{request_id}.pdf",
+        raw,
+        "application/pdf",
+    )
+    safe_name = filename.strip() if filename else None
+    if safe_name and len(safe_name) > 255:
+        safe_name = safe_name[:255]
+    return url, safe_name
+
+
+def upload_review_response_file(
+    request_id: UUID, raw: bytes, content_type: str
+) -> str:
+    """Author's supporting file alongside the textual review.
+
+    PDF only, capped at REVIEW_MAX_MB. Stored under a separate prefix
+    so the manuscript and the response don't collide.
+    """
+    if content_type.lower() not in REVIEW_MANUSCRIPT_MIME:
+        raise ValidationError("Review file must be a PDF")
+    if len(raw) > REVIEW_MAX_MB * 1024 * 1024:
+        raise ValidationError(f"Review file exceeds the {REVIEW_MAX_MB} MB limit")
+    try:
+        PdfReader(io.BytesIO(raw))
+    except PdfReadError as exc:
+        raise ValidationError("File is not a valid PDF") from exc
+
+    return put_bytes(
+        settings.MINIO_BUCKET_BOOKS,
+        f"review-responses/{request_id}.pdf",
+        raw,
+        "application/pdf",
+    )
+
+
 def upload_book_file(book_id: UUID, raw: bytes, content_type: str) -> BookFileUpload:
     """Validate the PDF, drop the original into the *private* ``books`` bucket.
 

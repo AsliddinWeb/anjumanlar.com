@@ -165,6 +165,7 @@
       "withdrawals": "Выплаты",
       "audit": "Аудит-журнал",
       "blog": "Блог",
+      "review_requests": "Заявки на рецензию",
       "settings": "Настройки сайта"
     },
     "cards": {
@@ -1345,6 +1346,100 @@
       "website": "Сайт",
       "bio": "Краткая биография"
     }
+  },
+  "review_requests": {
+    "title": "Заявки на рецензию",
+    "subtitle": "Получите рецензию от автора на свою научную работу",
+    "new_title": "Новая заявка на рецензию",
+    "new_subtitle": "Загрузите рукопись и выберите автора. Автор назначит цену, вы оплачиваете, затем получаете рецензию.",
+    "section_author": "Выбор автора",
+    "author_field": "Автор",
+    "author_required": "Выберите автора",
+    "author_select_placeholder": "Выберите автора…",
+    "section_manuscript": "Рукопись (PDF)",
+    "manuscript_hint": "Только PDF, макс. 100 МБ",
+    "section_details": "Дополнительно",
+    "notes_field": "Комментарий / требования (необязательно)",
+    "notes_placeholder": "На какие разделы обратить внимание, сроки и т.д.",
+    "proposed_price": "Предлагаемая цена (UZS, необязательно)",
+    "proposed_price_hint": "Автор учтёт это, но финальную цену устанавливает сам",
+    "create_button": "Создать заявку",
+    "create_success": "Заявка создана. Теперь загрузите рукопись.",
+    "upload_first_hint": "Перед отправкой автору нужно загрузить PDF рукописи.",
+    "my_requests_title": "Мои заявки на рецензию",
+    "my_requests_subtitle": "Отслеживайте статус ваших заявок",
+    "incoming_title": "Входящие заявки на рецензию",
+    "incoming_subtitle": "Пользователи, попросившие у вас рецензию",
+    "empty_title": "Заявок нет",
+    "empty_body": "Пока нет заявок на рецензию.",
+    "no_authors_title": "Авторы не найдены",
+    "no_authors_body": "Пока в системе нет пользователей с профилем автора.",
+    "statuses": {
+      "pending": "Ожидает",
+      "quoted": "Цена назначена",
+      "paid": "Оплачено",
+      "completed": "Рецензия написана",
+      "cancelled": "Отменено"
+    },
+    "filter_status_any": "Все статусы",
+    "table": {
+      "manuscript": "Рукопись",
+      "requester": "Пользователь",
+      "author": "Автор",
+      "status": "Статус",
+      "price": "Цена",
+      "created_at": "Создана"
+    },
+    "actions": {
+      "view": "Подробнее",
+      "upload_manuscript": "Загрузить PDF",
+      "replace_manuscript": "Заменить PDF",
+      "set_price": "Назначить цену",
+      "save_quote": "Сохранить",
+      "pay": "Оплатить",
+      "cancel": "Отменить",
+      "write_review": "Написать рецензию",
+      "submit_review": "Отправить рецензию",
+      "download_manuscript": "Скачать рукопись",
+      "download_review_file": "Скачать файл рецензии"
+    },
+    "detail_title": "Заявка на рецензию",
+    "detail_back": "Назад к списку",
+    "fields": {
+      "notes": "Комментарий пользователя",
+      "proposed_price": "Предложенная цена",
+      "final_price": "Финальная цена",
+      "review_text": "Текст рецензии",
+      "review_file": "Дополнительный файл",
+      "cancellation_reason": "Причина отмены"
+    },
+    "quote_modal_title": "Назначить цену",
+    "quote_modal_body": "Пользователь предложил — {proposed}. Установите свою цену.",
+    "quote_field": "Финальная цена (UZS)",
+    "submit_modal_title": "Отправить рецензию",
+    "submit_modal_body": "Напишите текст. Опционально приложите PDF файл.",
+    "submit_text_field": "Текст рецензии",
+    "submit_file_field": "Дополнительный файл (PDF, опционально)",
+    "cancel_modal_title": "Отменить заявку",
+    "cancel_modal_body": "Отменить эту заявку? Можно указать причину.",
+    "cancel_reason": "Причина (необязательно)",
+    "pay_modal_title": "Оплата",
+    "pay_modal_body": "Указанная цена: {price}. После подтверждения оплаты автор начнёт писать рецензию.",
+    "pay_modal_button": "Я оплатил (тест)",
+    "pay_hint": "Сейчас в тестовом режиме. В Phase J будет интеграция с Payme.",
+    "success": {
+      "manuscript_uploaded": "Рукопись загружена",
+      "quoted": "Цена назначена",
+      "paid": "Оплата подтверждена",
+      "submitted": "Рецензия отправлена",
+      "cancelled": "Заявка отменена"
+    },
+    "errors": {
+      "no_manuscript": "Сначала загрузите PDF",
+      "no_review_text": "Введите текст рецензии"
+    },
+    "nav_label_my": "Мои рецензии",
+    "nav_label_incoming": "Входящие рецензии"
   },
   "account_books": {
     "title": "Мои книги",

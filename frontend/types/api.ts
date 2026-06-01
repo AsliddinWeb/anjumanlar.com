@@ -236,6 +236,54 @@ export interface AdminUserCreate {
   bio?: string;
 }
 
+// ---------- Review requests (paid peer review) ----------
+
+export type ReviewRequestStatus =
+  | "pending"
+  | "quoted"
+  | "paid"
+  | "completed"
+  | "cancelled";
+
+export interface ReviewRequestAuthorRef {
+  id: string;
+  slug: string;
+  display_name: string;
+}
+
+export interface ReviewRequestRequesterRef {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
+export interface ReviewRequestPublic {
+  id: string;
+  requester: ReviewRequestRequesterRef;
+  author: ReviewRequestAuthorRef;
+  manuscript_url: string | null;
+  manuscript_filename: string | null;
+  notes: string | null;
+  status: ReviewRequestStatus;
+  proposed_price: number | null;
+  final_price: number | null;
+  review_text: string | null;
+  review_file_url: string | null;
+  cancellation_reason: string | null;
+  created_at: string;
+  quoted_at: string | null;
+  paid_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
+}
+
+export interface ReviewRequestList {
+  items: ReviewRequestPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
 export interface AdminUserUpdate {
   email?: string;
   full_name?: string;

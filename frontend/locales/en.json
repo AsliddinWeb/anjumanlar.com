@@ -165,6 +165,7 @@
       "withdrawals": "Withdrawals",
       "audit": "Audit log",
       "blog": "Blog",
+      "review_requests": "Review requests",
       "settings": "Site settings"
     },
     "cards": {
@@ -1345,6 +1346,100 @@
       "website": "Website",
       "bio": "Short bio"
     }
+  },
+  "review_requests": {
+    "title": "Peer-review requests",
+    "subtitle": "Commission a review of your manuscript from an author",
+    "new_title": "New review request",
+    "new_subtitle": "Upload your manuscript and pick an author. The author sets a price, you pay, then receive the review.",
+    "section_author": "Choose an author",
+    "author_field": "Author",
+    "author_required": "Pick an author",
+    "author_select_placeholder": "Choose an author…",
+    "section_manuscript": "Manuscript (PDF)",
+    "manuscript_hint": "PDF only, max 100 MB",
+    "section_details": "Additional details",
+    "notes_field": "Notes / requirements (optional)",
+    "notes_placeholder": "Which sections to focus on, deadline, etc.",
+    "proposed_price": "Proposed price (UZS, optional)",
+    "proposed_price_hint": "The author will see this — but they set the final price",
+    "create_button": "Create request",
+    "create_success": "Request created. Now upload the manuscript.",
+    "upload_first_hint": "Upload the manuscript PDF before sending the request to the author.",
+    "my_requests_title": "My review requests",
+    "my_requests_subtitle": "Track the status of your outgoing requests",
+    "incoming_title": "Incoming review requests",
+    "incoming_subtitle": "People who've asked you for a review",
+    "empty_title": "No requests",
+    "empty_body": "No peer-review requests yet.",
+    "no_authors_title": "No authors found",
+    "no_authors_body": "No users with an author profile yet.",
+    "statuses": {
+      "pending": "Pending",
+      "quoted": "Quoted",
+      "paid": "Paid",
+      "completed": "Review written",
+      "cancelled": "Cancelled"
+    },
+    "filter_status_any": "All statuses",
+    "table": {
+      "manuscript": "Manuscript",
+      "requester": "Requester",
+      "author": "Author",
+      "status": "Status",
+      "price": "Price",
+      "created_at": "Created"
+    },
+    "actions": {
+      "view": "View",
+      "upload_manuscript": "Upload PDF",
+      "replace_manuscript": "Replace PDF",
+      "set_price": "Set price",
+      "save_quote": "Save",
+      "pay": "Pay",
+      "cancel": "Cancel",
+      "write_review": "Write review",
+      "submit_review": "Submit review",
+      "download_manuscript": "Download manuscript",
+      "download_review_file": "Download review file"
+    },
+    "detail_title": "Review request",
+    "detail_back": "Back to list",
+    "fields": {
+      "notes": "Requester notes",
+      "proposed_price": "Proposed price",
+      "final_price": "Final price",
+      "review_text": "Review text",
+      "review_file": "Supporting file",
+      "cancellation_reason": "Cancellation reason"
+    },
+    "quote_modal_title": "Set the price",
+    "quote_modal_body": "Requester proposed — {proposed}. Set your final price.",
+    "quote_field": "Final price (UZS)",
+    "submit_modal_title": "Submit the review",
+    "submit_modal_body": "Write the review text. Optionally attach a PDF supplement.",
+    "submit_text_field": "Review text",
+    "submit_file_field": "Supporting file (PDF, optional)",
+    "cancel_modal_title": "Cancel request",
+    "cancel_modal_body": "Cancel this request? You can leave an optional reason.",
+    "cancel_reason": "Reason (optional)",
+    "pay_modal_title": "Pay",
+    "pay_modal_body": "Quoted price: {price}. Once payment is confirmed the author will write the review.",
+    "pay_modal_button": "I've paid (test)",
+    "pay_hint": "Test mode for now — Payme integration lands in Phase J.",
+    "success": {
+      "manuscript_uploaded": "Manuscript uploaded",
+      "quoted": "Price set",
+      "paid": "Payment confirmed",
+      "submitted": "Review submitted",
+      "cancelled": "Request cancelled"
+    },
+    "errors": {
+      "no_manuscript": "Upload the PDF first",
+      "no_review_text": "Write the review text"
+    },
+    "nav_label_my": "My reviews",
+    "nav_label_incoming": "Incoming reviews"
   },
   "account_books": {
     "title": "My books",

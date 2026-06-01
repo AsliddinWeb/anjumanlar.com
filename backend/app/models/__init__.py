@@ -14,6 +14,7 @@ from app.models.order import Order, OrderItem, OrderStatus
 from app.models.payment import Payment, PaymentProvider, PaymentStatus
 from app.models.refresh_token import RefreshToken
 from app.models.review import Review, ReviewStatus
+from app.models.review_request import ReviewRequest, ReviewRequestStatus
 from app.models.site_settings import SiteSettings
 from app.models.user import User, UserRole, UserStatus
 from app.models.user_library import UserLibrary
@@ -40,6 +41,8 @@ __all__ = [
     "PaymentStatus",
     "RefreshToken",
     "Review",
+    "ReviewRequest",
+    "ReviewRequestStatus",
     "ReviewStatus",
     "SiteSettings",
     "User",

@@ -20,6 +20,7 @@ const items = computed<Item[]>(() => [
   { to: "/admin", icon: "chart", label: t("admin.nav.dashboard"), exact: true },
   { to: "/admin/books", icon: "book", label: t("admin.nav.books") },
   { to: "/admin/reviews", icon: "chat", label: t("admin.nav.reviews") },
+  { to: "/admin/review-requests", icon: "inbox", label: t("admin.nav.review_requests") },
   { to: "/admin/blog", icon: "news", label: t("admin.nav.blog") },
   { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories") },
   { to: "/admin/users", icon: "users", label: t("admin.nav.users") },

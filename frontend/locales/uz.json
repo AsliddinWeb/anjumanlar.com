@@ -165,6 +165,7 @@
       "withdrawals": "Pul yechish",
       "audit": "Audit log",
       "blog": "Blog",
+      "review_requests": "Taqriz so'rovlari",
       "settings": "Sayt sozlamalari"
     },
     "cards": {
@@ -1345,6 +1346,100 @@
       "website": "Veb-sayt",
       "bio": "Qisqacha tarjimai hol"
     }
+  },
+  "review_requests": {
+    "title": "Taqriz so'rovi",
+    "subtitle": "Mualliflardan ilmiy ishingizga taqriz oling",
+    "new_title": "Yangi taqriz so'rovi",
+    "new_subtitle": "Ilmiy ishingizni yuklang va mos muallifni tanlang. Muallif narx belgilaydi, siz to'laysiz, keyin taqriz keladi.",
+    "section_author": "Muallifni tanlash",
+    "author_field": "Muallif",
+    "author_required": "Muallifni tanlang",
+    "author_select_placeholder": "Muallifni tanlang…",
+    "section_manuscript": "Ilmiy ish (PDF)",
+    "manuscript_hint": "Faqat PDF, max 100 MB",
+    "section_details": "Qo'shimcha ma'lumot",
+    "notes_field": "Izoh / talab (ixtiyoriy)",
+    "notes_placeholder": "Qaysi bo'limlarga e'tibor qaratish kerak, qancha vaqtda kerak va h.k.",
+    "proposed_price": "Taklif qilingan narx (UZS, ixtiyoriy)",
+    "proposed_price_hint": "Muallif buni hisobga oladi, lekin yakuniy narxni o'zi belgilaydi",
+    "create_button": "So'rov yaratish",
+    "create_success": "So'rov yaratildi. Endi ilmiy ishni yuklang.",
+    "upload_first_hint": "So'rov muallifga yuborilmasdan oldin ilmiy ish PDF yuklash kerak.",
+    "my_requests_title": "Mening taqriz so'rovlarim",
+    "my_requests_subtitle": "Yuborilgan so'rovlarni va ularning holatini kuzating",
+    "incoming_title": "Kiruvchi taqriz so'rovlari",
+    "incoming_subtitle": "Sizdan taqriz so'ragan foydalanuvchilar",
+    "empty_title": "So'rovlar yo'q",
+    "empty_body": "Hozircha taqriz so'rovi yo'q.",
+    "no_authors_title": "Mualliflar topilmadi",
+    "no_authors_body": "Hozircha tizimda muallif profili yaratgan foydalanuvchi yo'q.",
+    "statuses": {
+      "pending": "Kutilmoqda",
+      "quoted": "Narx belgilangan",
+      "paid": "To'langan",
+      "completed": "Taqriz yozildi",
+      "cancelled": "Bekor qilingan"
+    },
+    "filter_status_any": "Barcha holatlar",
+    "table": {
+      "manuscript": "Ilmiy ish",
+      "requester": "Foydalanuvchi",
+      "author": "Muallif",
+      "status": "Holat",
+      "price": "Narx",
+      "created_at": "Yaratilgan"
+    },
+    "actions": {
+      "view": "Batafsil",
+      "upload_manuscript": "PDF yuklash",
+      "replace_manuscript": "PDF almashtirish",
+      "set_price": "Narx belgilash",
+      "save_quote": "Saqlash",
+      "pay": "To'lash",
+      "cancel": "Bekor qilish",
+      "write_review": "Taqriz yozish",
+      "submit_review": "Taqrizni yuborish",
+      "download_manuscript": "Ilmiy ishni yuklab olish",
+      "download_review_file": "Taqriz faylini yuklab olish"
+    },
+    "detail_title": "Taqriz so'rovi",
+    "detail_back": "Ro'yxatga qaytish",
+    "fields": {
+      "notes": "Foydalanuvchi izohi",
+      "proposed_price": "Taklif qilingan narx",
+      "final_price": "Yakuniy narx",
+      "review_text": "Taqriz matni",
+      "review_file": "Qo'shimcha fayl",
+      "cancellation_reason": "Bekor qilish sababi"
+    },
+    "quote_modal_title": "Narx belgilash",
+    "quote_modal_body": "Foydalanuvchi taqlif qilgan narx — {proposed}. Mualliflik narxingizni belgilang.",
+    "quote_field": "Yakuniy narx (UZS)",
+    "submit_modal_title": "Taqrizni yuborish",
+    "submit_modal_body": "Matnni yozing. Ixtiyoriy: qo'shimcha PDF fayl ham qo'shing.",
+    "submit_text_field": "Taqriz matni",
+    "submit_file_field": "Qo'shimcha fayl (PDF, ixtiyoriy)",
+    "cancel_modal_title": "So'rovni bekor qilish",
+    "cancel_modal_body": "Bu so'rovni bekor qilmoqchimisiz? Ixtiyoriy ravishda sabab yozing.",
+    "cancel_reason": "Sabab (ixtiyoriy)",
+    "pay_modal_title": "To'lash",
+    "pay_modal_body": "Belgilangan narx: {price}. To'lov tasdiqlangach muallif taqriz yozadi.",
+    "pay_modal_button": "To'ladim (test)",
+    "pay_hint": "Hozircha test rejimida — to'lov tugmasi bilan tasdiqlanadi. Phase J'da Payme integratsiyasi keladi.",
+    "success": {
+      "manuscript_uploaded": "Ilmiy ish yuklandi",
+      "quoted": "Narx belgilandi",
+      "paid": "To'lov tasdiqlandi",
+      "submitted": "Taqriz yuborildi",
+      "cancelled": "So'rov bekor qilindi"
+    },
+    "errors": {
+      "no_manuscript": "Avval PDF yuklang",
+      "no_review_text": "Taqriz matnini yozing"
+    },
+    "nav_label_my": "Mening taqrizlarim",
+    "nav_label_incoming": "Kiruvchi taqrizlar"
   },
   "account_books": {
     "title": "Mening kitoblarim",

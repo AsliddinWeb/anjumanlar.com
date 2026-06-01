@@ -23,11 +23,13 @@ const navItems = computed<NavItem[]>(() => {
     { to: "/account/library", icon: "library", label: t("account.nav.library") },
     { to: "/account/orders", icon: "clipboard-check", label: t("account.nav.orders") },
     { to: "/account/wishlist", icon: "heart", label: t("account.nav.wishlist") },
+    { to: "/account/review-requests", icon: "chat", label: t("review_requests.nav_label_my") },
     { to: "/cart", icon: "cart", label: t("account.nav.cart"), badge: cart.count },
   ];
   if (isAuthor.value) {
     items.push(
       { to: "/account/books", icon: "book", label: t("account_books.nav_label") },
+      { to: "/account/incoming-reviews", icon: "inbox", label: t("review_requests.nav_label_incoming") },
       { to: "/account/balance", icon: "currency", label: t("account.nav.balance") },
       { to: "/account/withdrawals", icon: "money", label: t("account.nav.withdrawals") },
     );
