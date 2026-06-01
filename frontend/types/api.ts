@@ -216,6 +216,13 @@ export interface UserList {
   page_size: number;
 }
 
+export interface AdminUserDetail extends UserPublic {
+  author_display_name: string | null;
+  author_academic_title: string | null;
+  author_institution: string | null;
+  author_bio: string | null;
+}
+
 export interface AdminUserCreate {
   email: string;
   password: string;
@@ -223,6 +230,10 @@ export interface AdminUserCreate {
   role: UserRole;
   status: UserStatus;
   preferred_locale?: Locale;
+  display_name?: string;
+  academic_title?: string;
+  institution?: string;
+  bio?: string;
 }
 
 export interface AdminUserUpdate {
@@ -231,6 +242,10 @@ export interface AdminUserUpdate {
   role?: UserRole;
   status?: UserStatus;
   password?: string;
+  display_name?: string;
+  academic_title?: string;
+  institution?: string;
+  bio?: string;
 }
 
 // ---------- Audit log ----------

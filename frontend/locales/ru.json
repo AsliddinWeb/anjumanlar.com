@@ -390,6 +390,8 @@
         "section_identity": "Основные данные",
         "section_access": "Роль и статус",
         "section_password": "Пароль",
+        "section_author_profile": "Профиль автора",
+        "author_profile_hint": "Для ролей автора/админа эти поля видны на публичном профиле. Пустые поля заменяются значениями по умолчанию.",
         "full_name": "Полное имя",
         "email": "Email",
         "role": "Роль",
@@ -397,7 +399,13 @@
         "password": "Пароль",
         "password_hint": "Минимум 8 символов, заглавная + строчная буква + цифра",
         "change_password": "Изменить пароль",
-        "cancel_password_change": "Отменить смену пароля"
+        "cancel_password_change": "Отменить смену пароля",
+        "display_name": "Отображаемое имя",
+        "academic_title": "Учёная степень",
+        "academic_title_placeholder": "Например: к.м.н., профессор",
+        "institution": "Учреждение",
+        "institution_placeholder": "Например: НУУз",
+        "bio": "Краткая биография"
       },
       "errors": {
         "missing_required": "Заполните обязательные поля"

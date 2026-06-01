@@ -390,6 +390,8 @@
         "section_identity": "Asosiy ma'lumotlar",
         "section_access": "Rol va holat",
         "section_password": "Parol",
+        "section_author_profile": "Muallif profili",
+        "author_profile_hint": "Muallif rollarida ushbu maydonlar omma uchun profilda ko'rinadi. Bo'sh qoldirilsa, default qiymatlar ishlatiladi.",
         "full_name": "To'liq ism",
         "email": "Email",
         "role": "Rol",
@@ -397,7 +399,13 @@
         "password": "Parol",
         "password_hint": "Kamida 8 belgi, katta + kichik harf + raqam",
         "change_password": "Parolni o'zgartirish",
-        "cancel_password_change": "O'zgartirishdan voz kechish"
+        "cancel_password_change": "O'zgartirishdan voz kechish",
+        "display_name": "Ko'rsatiladigan ism",
+        "academic_title": "Akademik unvon",
+        "academic_title_placeholder": "Masalan: t.f.d., professor",
+        "institution": "Muassasa",
+        "institution_placeholder": "Masalan: O'zMU",
+        "bio": "Qisqacha tarjimai hol"
       },
       "errors": {
         "missing_required": "Majburiy maydonlarni to'ldiring"

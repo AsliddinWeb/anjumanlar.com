@@ -31,6 +31,7 @@ import {
   ComputerDesktopIcon,
   CurrencyDollarIcon,
   DocumentTextIcon,
+  EllipsisVerticalIcon,
   EnvelopeIcon,
   EnvelopeOpenIcon,
   ExclamationTriangleIcon,
@@ -73,6 +74,7 @@ export const ICONS = {
   // --- generic ---
   "home": HomeIcon,
   "settings": Cog6ToothIcon,
+  "more": EllipsisVerticalIcon,
   "search": MagnifyingGlassIcon,
   "menu": Bars3Icon,
   "close": XMarkIcon,

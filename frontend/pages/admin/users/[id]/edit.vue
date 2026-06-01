@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UserPublic } from "~/types/api";
+import type { AdminUserDetail } from "~/types/api";
 import type { UserFormValue } from "~/components/admin/UserForm.vue";
 import { apiErrorMessage } from "~/composables/useAuth";
 
@@ -19,10 +19,10 @@ const userId = computed(() => route.params.id as string);
 
 const { data: userRaw, refresh } = await useAsyncData(
   `admin:users:edit:${userId.value}`,
-  () => api<UserPublic>(`/admin/users/${userId.value}`),
+  () => api<AdminUserDetail>(`/admin/users/${userId.value}`),
   { server: false },
 );
-const user = computed(() => userRaw.value as UserPublic | null);
+const user = computed(() => userRaw.value as AdminUserDetail | null);
 
 useHead({
   title: computed(() => user.value
@@ -31,13 +31,17 @@ useHead({
   ),
 });
 
-function modelFromUser(u: UserPublic): UserFormValue {
+function modelFromUser(u: AdminUserDetail): UserFormValue {
   return {
     email: u.email,
     full_name: u.full_name,
     role: u.role,
     status: u.status,
     password: "",
+    display_name: u.author_display_name ?? "",
+    academic_title: u.author_academic_title ?? "",
+    institution: u.author_institution ?? "",
+    bio: u.author_bio ?? "",
   };
 }
 
@@ -59,6 +63,7 @@ async function save() {
 
   submitting.value = true;
   try {
+    const isAuthorRole = ["author", "admin", "superadmin"].includes(form.value.role);
     const body: Record<string, unknown> = {
       email: form.value.email.trim(),
       full_name: form.value.full_name.trim(),
@@ -66,6 +71,12 @@ async function save() {
       status: form.value.status,
     };
     if (form.value.password) body.password = form.value.password;
+    if (isAuthorRole) {
+      body.display_name = form.value.display_name.trim() || form.value.full_name.trim();
+      body.academic_title = form.value.academic_title.trim() || null;
+      body.institution = form.value.institution.trim() || null;
+      body.bio = form.value.bio.trim() || null;
+    }
 
     await api(`/admin/users/${user.value.id}`, { method: "PATCH", body });
     toast.success(t("admin.users.update_success"));

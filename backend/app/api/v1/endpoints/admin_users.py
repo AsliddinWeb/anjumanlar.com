@@ -16,14 +16,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.dependencies import require_admin
 from app.models import User, UserRole, UserStatus
+from app.models import AuthorProfile
 from app.schemas.auth import (
     AdminUserCreate,
+    AdminUserDetail,
     AdminUserRoleUpdate,
     AdminUserStatusUpdate,
     AdminUserUpdate,
     UserList,
     UserPublic,
 )
+from sqlalchemy import select
 from app.services import user_service
 
 router = APIRouter(prefix="/admin/users", tags=["admin-users"])
@@ -77,16 +80,29 @@ async def admin_create_user_endpoint(
 
 @router.get(
     "/{user_id}",
-    response_model=UserPublic,
-    summary="Fetch a single user (admin+)",
+    response_model=AdminUserDetail,
+    summary="Fetch a single user with author_profile fields when present (admin+)",
 )
 async def admin_read_user(
     user_id: UUID,
     _: Annotated[User, Depends(require_admin)],
     db: AsyncSession = Depends(get_db),
-) -> UserPublic:
+) -> AdminUserDetail:
     user = await user_service.get_by_id(db, user_id)
-    return UserPublic.model_validate(user)
+    profile = (
+        await db.execute(select(AuthorProfile).where(AuthorProfile.user_id == user_id))
+    ).scalar_one_or_none()
+
+    payload = UserPublic.model_validate(user).model_dump()
+    if profile is not None:
+        bio_map = profile.bio or {}
+        payload.update(
+            author_display_name=profile.display_name,
+            author_academic_title=profile.academic_title,
+            author_institution=profile.institution,
+            author_bio=bio_map.get("uz") or bio_map.get("en") or bio_map.get("ru"),
+        )
+    return AdminUserDetail.model_validate(payload)
 
 
 @router.patch(

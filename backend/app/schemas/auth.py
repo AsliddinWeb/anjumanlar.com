@@ -79,6 +79,16 @@ class UserList(BaseModel):
     page_size: int
 
 
+class AdminUserDetail(UserPublic):
+    """Admin-only single-user view — exposes the linked AuthorProfile
+    fields (when one exists) so the edit form can pre-fill them."""
+
+    author_display_name: str | None = None
+    author_academic_title: str | None = None
+    author_institution: str | None = None
+    author_bio: str | None = None
+
+
 class AdminUserRoleUpdate(BaseModel):
     role: UserRole
 
@@ -92,6 +102,10 @@ class AdminUserCreate(BaseModel):
 
     Skips the email-verification dance: created accounts land active and
     email-verified so the admin doesn't have to chase a confirmation link.
+
+    Author-profile fields are optional. When the role implies "can publish
+    books" (author / admin / superadmin) the profile is auto-created;
+    these fields, when present, populate it instead of relying on defaults.
     """
 
     email: EmailStr
@@ -100,6 +114,12 @@ class AdminUserCreate(BaseModel):
     role: UserRole = UserRole.reader
     status: UserStatus = UserStatus.active
     preferred_locale: Literal["uz", "ru", "en"] = "uz"
+
+    # Optional AuthorProfile fields (only used when role implies authoring)
+    display_name: str | None = Field(default=None, max_length=255)
+    academic_title: str | None = Field(default=None, max_length=255)
+    institution: str | None = Field(default=None, max_length=255)
+    bio: str | None = Field(default=None, max_length=2000)
 
     @field_validator("full_name")
     @classmethod
@@ -115,6 +135,13 @@ class AdminUserUpdate(BaseModel):
     role: UserRole | None = None
     status: UserStatus | None = None
     password: PasswordStr | None = None
+
+    # Optional AuthorProfile fields (applied when the target has a profile
+    # or one is being auto-created via the role change).
+    display_name: str | None = Field(default=None, max_length=255)
+    academic_title: str | None = Field(default=None, max_length=255)
+    institution: str | None = Field(default=None, max_length=255)
+    bio: str | None = Field(default=None, max_length=2000)
 
     @field_validator("full_name")
     @classmethod

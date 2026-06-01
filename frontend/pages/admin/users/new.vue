@@ -22,6 +22,10 @@ const form = ref<UserFormValue>({
   role: "reader",
   status: "active",
   password: "",
+  display_name: "",
+  academic_title: "",
+  institution: "",
+  bio: "",
 });
 
 const submitting = ref(false);
@@ -36,6 +40,7 @@ async function submit() {
 
   submitting.value = true;
   try {
+    const isAuthorRole = ["author", "admin", "superadmin"].includes(form.value.role);
     const created = await api<UserPublic>("/admin/users", {
       method: "POST",
       body: {
@@ -44,6 +49,12 @@ async function submit() {
         role: form.value.role,
         status: form.value.status,
         password: form.value.password,
+        ...(isAuthorRole ? {
+          display_name: form.value.display_name.trim() || form.value.full_name.trim(),
+          academic_title: form.value.academic_title.trim() || null,
+          institution: form.value.institution.trim() || null,
+          bio: form.value.bio.trim() || null,
+        } : {}),
       },
     });
     toast.success(t("admin.users.create_success", { name: created.full_name }));

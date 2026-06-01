@@ -194,23 +194,50 @@ async def admin_create_user(
     # to. Without this the user shows up in /admin/users but not in
     # /authors.
     if data.role in {UserRole.author, UserRole.admin, UserRole.superadmin}:
-        await _ensure_author_profile(db, user)
+        await _ensure_author_profile(
+            db,
+            user,
+            display_name=data.display_name,
+            academic_title=data.academic_title,
+            institution=data.institution,
+            bio=data.bio,
+        )
     return user
 
 
-async def _ensure_author_profile(db: AsyncSession, user: User) -> AuthorProfile:
-    """Create a minimal AuthorProfile for ``user`` if they don't have one.
+async def _ensure_author_profile(
+    db: AsyncSession,
+    user: User,
+    *,
+    display_name: str | None = None,
+    academic_title: str | None = None,
+    institution: str | None = None,
+    bio: str | None = None,
+) -> AuthorProfile:
+    """Get-or-create an AuthorProfile for ``user``.
 
-    Slug is derived from full_name and uniqueified by appending ``-N`` —
-    matches the way book slugs deal with collisions.
+    Any optional kwargs override the existing profile's columns (when
+    present) or seed them on creation. Bio is stored under the "uz" key
+    by default — the public profile UI then renders the active locale or
+    falls back to uz.
     """
     existing = (
         await db.execute(select(AuthorProfile).where(AuthorProfile.user_id == user.id))
     ).scalar_one_or_none()
+
     if existing is not None:
+        if display_name:
+            existing.display_name = display_name
+        if academic_title is not None:
+            existing.academic_title = academic_title or None
+        if institution is not None:
+            existing.institution = institution or None
+        if bio is not None:
+            existing.bio = {"uz": bio} if bio else {}
+        await db.flush()
         return existing
 
-    base = slugify(user.full_name) or "author"
+    base = slugify(display_name or user.full_name) or "author"
     base = base[:140]
     n = 0
     while True:
@@ -225,8 +252,10 @@ async def _ensure_author_profile(db: AsyncSession, user: User) -> AuthorProfile:
     profile = AuthorProfile(
         user_id=user.id,
         slug=candidate,
-        display_name=user.full_name,
-        bio={},
+        display_name=display_name or user.full_name,
+        academic_title=academic_title or None,
+        institution=institution or None,
+        bio={"uz": bio} if bio else {},
         verified=True,
     )
     db.add(profile)
@@ -287,8 +316,17 @@ async def admin_update_user(
 
     # Same as create: a role that can publish should have a profile so
     # /authors lists them. Idempotent — skips when one already exists.
+    # When the admin supplied profile fields, those flow through too,
+    # editing the existing profile in place.
     if target.role in {UserRole.author, UserRole.admin, UserRole.superadmin}:
-        await _ensure_author_profile(db, target)
+        await _ensure_author_profile(
+            db,
+            target,
+            display_name=data.display_name,
+            academic_title=data.academic_title,
+            institution=data.institution,
+            bio=data.bio,
+        )
     return target
 
 

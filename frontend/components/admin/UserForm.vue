@@ -7,6 +7,10 @@ export interface UserFormValue {
   role: UserRole;
   status: UserStatus;
   password: string;
+  display_name: string;
+  academic_title: string;
+  institution: string;
+  bio: string;
 }
 
 const props = defineProps<{
@@ -49,6 +53,10 @@ const statusOptions = computed<{ value: UserStatus; label: string }[]>(() => [
   { value: "pending", label: t("admin.users.statuses.pending") },
   { value: "blocked", label: t("admin.users.statuses.blocked") },
 ]);
+
+const isAuthorRole = computed(() =>
+  ["author", "admin", "superadmin"].includes(props.modelValue.role),
+);
 
 const changePassword = ref(false);
 </script>
@@ -97,6 +105,50 @@ const changePassword = ref(false);
           @update:model-value="(v) => update('status', v as UserStatus)"
         />
       </div>
+    </div>
+
+    <div v-if="isAuthorRole" class="rounded-md border border-border bg-bg-card p-5 space-y-4">
+      <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+        {{ t("admin.users.form.section_author_profile") }}
+      </h2>
+      <p class="text-xs text-ink-tertiary">
+        {{ t("admin.users.form.author_profile_hint") }}
+      </p>
+
+      <UiInput
+        :model-value="modelValue.display_name"
+        :label="t('admin.users.form.display_name')"
+        :placeholder="modelValue.full_name"
+        @update:model-value="(v) => update('display_name', v)"
+      />
+
+      <div class="grid sm:grid-cols-2 gap-3">
+        <UiInput
+          :model-value="modelValue.academic_title"
+          :label="t('admin.users.form.academic_title')"
+          :placeholder="t('admin.users.form.academic_title_placeholder')"
+          @update:model-value="(v) => update('academic_title', v)"
+        />
+        <UiInput
+          :model-value="modelValue.institution"
+          :label="t('admin.users.form.institution')"
+          :placeholder="t('admin.users.form.institution_placeholder')"
+          @update:model-value="(v) => update('institution', v)"
+        />
+      </div>
+
+      <label class="block">
+        <span class="block text-sm font-medium text-ink-secondary mb-1.5">
+          {{ t("admin.users.form.bio") }}
+        </span>
+        <textarea
+          :value="modelValue.bio"
+          rows="4"
+          maxlength="2000"
+          class="w-full px-3.5 py-2.5 rounded-md border border-border bg-bg-card text-ink placeholder:text-ink-tertiary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+          @input="(e) => update('bio', (e.target as HTMLTextAreaElement).value)"
+        />
+      </label>
     </div>
 
     <div class="rounded-md border border-border bg-bg-card p-5 space-y-4">

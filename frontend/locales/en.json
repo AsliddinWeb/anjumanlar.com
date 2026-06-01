@@ -390,6 +390,8 @@
         "section_identity": "Basics",
         "section_access": "Role and status",
         "section_password": "Password",
+        "section_author_profile": "Author profile",
+        "author_profile_hint": "For author/admin roles these fields appear on the public profile. Leave blank for sensible defaults.",
         "full_name": "Full name",
         "email": "Email",
         "role": "Role",
@@ -397,7 +399,13 @@
         "password": "Password",
         "password_hint": "At least 8 characters, uppercase + lowercase + digit",
         "change_password": "Change password",
-        "cancel_password_change": "Cancel password change"
+        "cancel_password_change": "Cancel password change",
+        "display_name": "Display name",
+        "academic_title": "Academic title",
+        "academic_title_placeholder": "e.g. PhD, Professor",
+        "institution": "Institution",
+        "institution_placeholder": "e.g. NUUz",
+        "bio": "Short bio"
       },
       "errors": {
         "missing_required": "Fill in the required fields"

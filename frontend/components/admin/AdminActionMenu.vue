@@ -53,7 +53,7 @@ function select(item: ActionItem) {
       aria-label="Actions"
       @click.stop="open = !open"
     >
-      <Icon name="settings" class="h-4 w-4" />
+      <Icon name="more" class="h-5 w-5" />
     </button>
 
     <Transition
