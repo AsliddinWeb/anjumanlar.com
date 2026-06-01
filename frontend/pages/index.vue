@@ -118,23 +118,20 @@ const hasError = computed(() =>
             </UiButton>
           </div>
 
-          <dl
-            v-if="totals.books > 0 || totals.categories > 0"
-            class="grid grid-cols-3 gap-6 pt-7 border-t border-border max-w-md"
-          >
-            <div>
-              <dt class="text-[11px] uppercase tracking-wider text-ink-tertiary">{{ t("home.stats.books") }}</dt>
-              <dd class="font-serif text-2xl text-ink mt-1 tabular-nums">{{ totals.books }}+</dd>
+          <div class="pt-6 border-t border-border max-w-xl">
+            <div class="text-[11px] uppercase tracking-wider text-ink-tertiary mb-2">
+              {{ t("home.hero.languages_label") }}
             </div>
-            <div>
-              <dt class="text-[11px] uppercase tracking-wider text-ink-tertiary">{{ t("home.stats.categories") }}</dt>
-              <dd class="font-serif text-2xl text-ink mt-1 tabular-nums">{{ totals.categories }}+</dd>
+            <div class="flex flex-wrap gap-1.5">
+              <span
+                v-for="code in ['uz', 'kk', 'ky', 'tr', 'kaa', 'tk', 'tg', 'ru', 'en']"
+                :key="code"
+                class="inline-flex items-center px-2.5 py-1 rounded-full border border-border bg-bg-card/60 text-xs text-ink-secondary"
+              >
+                {{ t(`home.languages.${code}`) }}
+              </span>
             </div>
-            <div>
-              <dt class="text-[11px] uppercase tracking-wider text-ink-tertiary">{{ t("home.stats.langs") }}</dt>
-              <dd class="font-serif text-2xl text-ink mt-1 tabular-nums">3+</dd>
-            </div>
-          </dl>
+          </div>
         </div>
 
         <div class="hidden md:flex justify-center lg:justify-end relative">
@@ -184,6 +181,38 @@ const hasError = computed(() =>
             >
               <Icon name="library" class="h-20 w-20 text-primary/30" />
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="border-b border-border bg-bg-secondary/40">
+      <div class="max-w-6xl mx-auto px-4 py-10 md:py-14">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+          <div class="text-center sm:text-left">
+            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">1000+</div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.books") }}</div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">500+</div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.authors") }}</div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">9+</div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.langs") }}</div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">30+</div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.categories") }}</div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">300+</div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.monographs") }}</div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">1000+</div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.doi_works") }}</div>
           </div>
         </div>
       </div>
@@ -304,6 +333,122 @@ const hasError = computed(() =>
           {{ t("home.see_all") }}
           <Icon name="arrow-right" class="h-4 w-4" />
         </NuxtLink>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="border-b border-border">
+      <div class="max-w-6xl mx-auto px-4 py-14 md:py-20">
+        <div class="text-center max-w-2xl mx-auto mb-10 md:mb-14">
+          <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
+            {{ t("home.platform.eyebrow") }}
+          </span>
+          <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mt-3">
+            {{ t("home.platform.title") }}
+          </h2>
+          <p class="text-ink-secondary mt-3">{{ t("home.platform.subtitle") }}</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+          <div
+            v-for="(item, i) in [
+              { icon: 'sparkles', titleKey: 'home.platform.f1_title', bodyKey: 'home.platform.f1_body' },
+              { icon: 'library', titleKey: 'home.platform.f2_title', bodyKey: 'home.platform.f2_body' },
+              { icon: 'external-link', titleKey: 'home.platform.f3_title', bodyKey: 'home.platform.f3_body' },
+              { icon: 'chart', titleKey: 'home.platform.f4_title', bodyKey: 'home.platform.f4_body' },
+              { icon: 'search', titleKey: 'home.platform.f5_title', bodyKey: 'home.platform.f5_body' },
+              { icon: 'pencil', titleKey: 'home.platform.f6_title', bodyKey: 'home.platform.f6_body' },
+              { icon: 'sparkles', titleKey: 'home.platform.f7_title', bodyKey: 'home.platform.f7_body' },
+              { icon: 'academic', titleKey: 'home.platform.f8_title', bodyKey: 'home.platform.f8_body' },
+            ]"
+            :key="i"
+            class="rounded-md border border-border bg-bg-card p-5 hover:border-primary/40 transition-colors"
+          >
+            <div class="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center mb-3">
+              <Icon :name="item.icon as any" class="h-5 w-5" />
+            </div>
+            <h3 class="font-serif text-lg text-ink leading-snug mb-1.5">{{ t(item.titleKey) }}</h3>
+            <p class="text-sm text-ink-secondary leading-relaxed">{{ t(item.bodyKey) }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISSION -->
+    <section class="relative overflow-hidden border-b border-border bg-ink text-ink-inverse">
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10 opacity-20"
+        style="background-image:
+          radial-gradient(ellipse 60% 60% at 80% 20%, var(--color-accent-gold, #c9a961), transparent 65%),
+          radial-gradient(ellipse 50% 50% at 10% 80%, var(--color-primary), transparent 60%);"
+      />
+      <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 md:gap-16">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-medium uppercase tracking-wider">
+            {{ t("home.mission.eyebrow") }}
+          </span>
+          <h2 class="font-serif text-3xl md:text-5xl text-white leading-tight mt-4">
+            {{ t("home.mission.title") }}
+          </h2>
+          <p class="text-white/80 leading-relaxed mt-5">{{ t("home.mission.body_1") }}</p>
+          <p class="text-white/80 leading-relaxed mt-4">{{ t("home.mission.body_2") }}</p>
+        </div>
+        <div class="rounded-md border border-white/15 bg-white/5 backdrop-blur p-6 md:p-8">
+          <h3 class="font-serif text-xl text-white mb-5 inline-flex items-center gap-2">
+            <Icon name="sparkles" class="h-5 w-5" />
+            {{ t("home.mission.vision_title") }}
+          </h3>
+          <ul class="space-y-3">
+            <li
+              v-for="(key, i) in ['library', 'sparkles', 'external-link', 'sparkles', 'search']"
+              :key="i"
+              class="flex items-start gap-3 text-white/85"
+            >
+              <span class="h-7 w-7 rounded-full bg-white/10 text-white inline-flex items-center justify-center shrink-0 mt-0.5">
+                <Icon :name="key as any" class="h-3.5 w-3.5" />
+              </span>
+              <span class="leading-relaxed">{{ t(`home.mission.vision_${i + 1}`) }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT TYPES -->
+    <section class="border-b border-border">
+      <div class="max-w-6xl mx-auto px-4 py-14 md:py-20">
+        <div class="grid md:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-start">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
+              {{ t("home.content_types.eyebrow") }}
+            </span>
+            <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mt-3">
+              {{ t("home.content_types.title") }}
+            </h2>
+            <p class="text-ink-secondary mt-3">{{ t("home.content_types.subtitle") }}</p>
+          </div>
+          <ul class="space-y-2">
+            <li
+              v-for="(item, i) in [
+                { key: 'monographs', count: '300+', icon: 'book' },
+                { key: 'journals', count: '80+', icon: 'news' },
+                { key: 'conferences', count: '150+', icon: 'document' },
+                { key: 'textbooks', count: '200+', icon: 'library' },
+                { key: 'dissertations', count: '120+', icon: 'academic' },
+                { key: 'ebooks', count: '100+', icon: 'desktop' },
+                { key: 'articles', count: '50+', icon: 'document' },
+              ]"
+              :key="i"
+              class="flex items-center gap-3 rounded-md border border-border bg-bg-card p-3 hover:border-primary/40 transition-colors"
+            >
+              <span class="h-9 w-9 rounded-md bg-primary/10 text-primary inline-flex items-center justify-center shrink-0">
+                <Icon :name="item.icon as any" class="h-4 w-4" />
+              </span>
+              <span class="flex-1 text-ink">{{ t(`home.content_types.${item.key}`) }}</span>
+              <span class="font-serif text-lg text-primary tabular-nums">{{ item.count }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
