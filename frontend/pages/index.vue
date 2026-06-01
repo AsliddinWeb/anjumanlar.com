@@ -6,6 +6,9 @@ const localePath = useLocalePath();
 const { localised } = useLocaleText();
 const api = useApi();
 
+// Toggle .in-view on .reveal elements as they enter the viewport.
+useScrollReveal();
+
 useSiteSeo({
   title: t("home.hero.title"),
   description: t("home.hero.subtitle"),
@@ -190,29 +193,23 @@ const hasError = computed(() =>
     <section class="border-b border-border bg-bg-secondary/40">
       <div class="max-w-6xl mx-auto px-4 py-10 md:py-14">
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-          <div class="text-center sm:text-left">
-            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">1000+</div>
-            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.books") }}</div>
-          </div>
-          <div class="text-center sm:text-left">
-            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">500+</div>
-            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.authors") }}</div>
-          </div>
-          <div class="text-center sm:text-left">
-            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">9+</div>
-            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.langs") }}</div>
-          </div>
-          <div class="text-center sm:text-left">
-            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">30+</div>
-            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.categories") }}</div>
-          </div>
-          <div class="text-center sm:text-left">
-            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">300+</div>
-            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.monographs") }}</div>
-          </div>
-          <div class="text-center sm:text-left">
-            <div class="font-serif text-3xl md:text-4xl text-primary tabular-nums">1000+</div>
-            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t("home.stats.doi_works") }}</div>
+          <div
+            v-for="(s, i) in [
+              { value: 1000, key: 'home.stats.books' },
+              { value: 500,  key: 'home.stats.authors' },
+              { value: 9,    key: 'home.stats.langs' },
+              { value: 30,   key: 'home.stats.categories' },
+              { value: 300,  key: 'home.stats.monographs' },
+              { value: 1000, key: 'home.stats.doi_works' },
+            ]"
+            :key="s.key"
+            class="reveal text-center sm:text-left"
+            :class="`reveal-delay-${(i % 5) + 1}`"
+          >
+            <div class="font-serif text-3xl md:text-4xl text-primary">
+              <UiCounter :target="s.value" />
+            </div>
+            <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t(s.key) }}</div>
           </div>
         </div>
       </div>
@@ -234,7 +231,7 @@ const hasError = computed(() =>
     <!-- FEATURED -->
     <section v-if="featured.length" class="border-b border-border">
       <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
-        <div class="flex items-end justify-between gap-3 mb-6">
+        <div class="reveal flex items-end justify-between gap-3 mb-6">
           <div>
             <h2 class="font-serif text-2xl md:text-3xl text-ink leading-tight">
               {{ t("home.featured") }}
@@ -250,7 +247,14 @@ const hasError = computed(() =>
           </NuxtLink>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 md:gap-5">
-          <BookCard v-for="book in featured.slice(0, 4)" :key="book.id" :book="book" />
+          <div
+            v-for="(book, i) in featured.slice(0, 4)"
+            :key="book.id"
+            class="reveal"
+            :class="`reveal-delay-${(i % 5) + 1}`"
+          >
+            <BookCard :book="book" />
+          </div>
         </div>
         <NuxtLink
           :to="localePath('/books') + '?featured=true'"
@@ -339,7 +343,10 @@ const hasError = computed(() =>
     <!-- FEATURES -->
     <section class="border-b border-border">
       <div class="max-w-6xl mx-auto px-4 py-14 md:py-20">
-        <div class="text-center max-w-2xl mx-auto mb-10 md:mb-14">
+        <div class="flex justify-center mb-6 reveal">
+          <UiOrnamentDivider />
+        </div>
+        <div class="text-center max-w-2xl mx-auto mb-10 md:mb-14 reveal reveal-delay-1">
           <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
             {{ t("home.platform.eyebrow") }}
           </span>
@@ -361,7 +368,8 @@ const hasError = computed(() =>
               { icon: 'academic', titleKey: 'home.platform.f8_title', bodyKey: 'home.platform.f8_body' },
             ]"
             :key="i"
-            class="rounded-md border border-border bg-bg-card p-5 hover:border-primary/40 transition-colors"
+            class="reveal tilt-card rounded-md border border-border bg-bg-card p-5 hover:border-primary/40"
+            :class="`reveal-delay-${(i % 5) + 1}`"
           >
             <div class="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center mb-3">
               <Icon :name="item.icon as any" class="h-5 w-5" />
@@ -382,8 +390,10 @@ const hasError = computed(() =>
           radial-gradient(ellipse 60% 60% at 80% 20%, var(--color-accent-gold, #c9a961), transparent 65%),
           radial-gradient(ellipse 50% 50% at 10% 80%, var(--color-primary), transparent 60%);"
       />
+      <UiOrnamentCorner class="absolute top-0 left-0 opacity-30" tone="gold" />
+      <UiOrnamentCorner class="absolute bottom-0 right-0 opacity-30" tone="gold" flip />
       <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 md:gap-16">
-        <div>
+        <div class="reveal">
           <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-medium uppercase tracking-wider">
             {{ t("home.mission.eyebrow") }}
           </span>
@@ -393,7 +403,7 @@ const hasError = computed(() =>
           <p class="text-white/80 leading-relaxed mt-5">{{ t("home.mission.body_1") }}</p>
           <p class="text-white/80 leading-relaxed mt-4">{{ t("home.mission.body_2") }}</p>
         </div>
-        <div class="rounded-md border border-white/15 bg-white/5 backdrop-blur p-6 md:p-8">
+        <div class="reveal reveal-delay-2 rounded-md border border-white/15 bg-white/5 backdrop-blur p-6 md:p-8">
           <h3 class="font-serif text-xl text-white mb-5 inline-flex items-center gap-2">
             <Icon name="sparkles" class="h-5 w-5" />
             {{ t("home.mission.vision_title") }}
@@ -417,8 +427,11 @@ const hasError = computed(() =>
     <!-- CONTENT TYPES -->
     <section class="border-b border-border">
       <div class="max-w-6xl mx-auto px-4 py-14 md:py-20">
+        <div class="flex justify-center mb-8 reveal">
+          <UiOrnamentDivider tone="gold" />
+        </div>
         <div class="grid md:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-start">
-          <div>
+          <div class="reveal">
             <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
               {{ t("home.content_types.eyebrow") }}
             </span>
@@ -427,7 +440,7 @@ const hasError = computed(() =>
             </h2>
             <p class="text-ink-secondary mt-3">{{ t("home.content_types.subtitle") }}</p>
           </div>
-          <ul class="space-y-2">
+          <ul class="space-y-2 reveal reveal-delay-2">
             <li
               v-for="(item, i) in [
                 { key: 'monographs', count: '300+', icon: 'book' },
@@ -439,7 +452,7 @@ const hasError = computed(() =>
                 { key: 'articles', count: '50+', icon: 'document' },
               ]"
               :key="i"
-              class="flex items-center gap-3 rounded-md border border-border bg-bg-card p-3 hover:border-primary/40 transition-colors"
+              class="flex items-center gap-3 rounded-md border border-border bg-bg-card p-3 hover:border-primary/40 hover:translate-x-1 transition-all"
             >
               <span class="h-9 w-9 rounded-md bg-primary/10 text-primary inline-flex items-center justify-center shrink-0">
                 <Icon :name="item.icon as any" class="h-4 w-4" />

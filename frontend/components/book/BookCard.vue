@@ -13,7 +13,7 @@ const href = computed(() => localePath(`/books/${props.book.slug}`));
 <template>
   <NuxtLink
     :to="href"
-    class="group block rounded-md border border-border bg-bg-card shadow-sm transition-shadow hover:shadow-book hover:border-border-hover"
+    class="tilt-card group block rounded-md border border-border bg-bg-card shadow-sm hover:border-primary/40"
   >
     <div class="relative">
       <BookCover :src="book.cover_url" :alt="title" />

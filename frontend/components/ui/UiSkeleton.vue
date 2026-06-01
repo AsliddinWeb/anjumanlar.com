@@ -16,7 +16,7 @@ withDefaults(
 
 <template>
   <span
-    class="inline-block animate-pulse bg-bg-secondary"
+    class="shimmer inline-block bg-bg-secondary"
     :class="[rounded, block ? 'block' : '']"
     :style="{ width, height }"
     aria-hidden="true"
