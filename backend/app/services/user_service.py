@@ -15,13 +15,14 @@ from __future__ import annotations
 
 from uuid import UUID
 
+from slugify import slugify
 from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError
 from app.core.security import hash_password
-from app.models import User, UserRole, UserStatus
+from app.models import AuthorProfile, User, UserRole, UserStatus
 from app.schemas.auth import AdminUserCreate, AdminUserUpdate, UserUpdate
 from app.services import storage_service
 from app.services.auth_service import logout_all
@@ -129,6 +130,8 @@ async def admin_change_role(
         )
     target.role = new_role
     await db.flush()
+    if new_role in {UserRole.author, UserRole.admin, UserRole.superadmin}:
+        await _ensure_author_profile(db, target)
     return target
 
 
@@ -185,7 +188,50 @@ async def admin_create_user(
     )
     db.add(user)
     await db.flush()
+
+    # Author/admin/superadmin roles all imply "can publish books" — give
+    # them an AuthorProfile so the new-book picker has something to bind
+    # to. Without this the user shows up in /admin/users but not in
+    # /authors.
+    if data.role in {UserRole.author, UserRole.admin, UserRole.superadmin}:
+        await _ensure_author_profile(db, user)
     return user
+
+
+async def _ensure_author_profile(db: AsyncSession, user: User) -> AuthorProfile:
+    """Create a minimal AuthorProfile for ``user`` if they don't have one.
+
+    Slug is derived from full_name and uniqueified by appending ``-N`` —
+    matches the way book slugs deal with collisions.
+    """
+    existing = (
+        await db.execute(select(AuthorProfile).where(AuthorProfile.user_id == user.id))
+    ).scalar_one_or_none()
+    if existing is not None:
+        return existing
+
+    base = slugify(user.full_name) or "author"
+    base = base[:140]
+    n = 0
+    while True:
+        candidate = f"{base}-{n}" if n else base
+        clash = (
+            await db.execute(select(AuthorProfile.id).where(AuthorProfile.slug == candidate))
+        ).scalar_one_or_none()
+        if clash is None:
+            break
+        n += 1
+
+    profile = AuthorProfile(
+        user_id=user.id,
+        slug=candidate,
+        display_name=user.full_name,
+        bio={},
+        verified=True,
+    )
+    db.add(profile)
+    await db.flush()
+    return profile
 
 
 async def admin_update_user(
@@ -238,6 +284,11 @@ async def admin_update_user(
         await logout_all(db, target.id)
 
     await db.flush()
+
+    # Same as create: a role that can publish should have a profile so
+    # /authors lists them. Idempotent — skips when one already exists.
+    if target.role in {UserRole.author, UserRole.admin, UserRole.superadmin}:
+        await _ensure_author_profile(db, target)
     return target
 
 

@@ -85,6 +85,11 @@ class Book(UUIDMixin, TimestampMixin, Base):
         JSONB, nullable=False, default=dict, server_default="{}"
     )
 
+    # Free-text co-authors (comma-separated names). The main author lives
+    # in author_id; this is just for the book metadata — extra contributor
+    # names that don't have their own AuthorProfile row.
+    co_authors: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
     isbn: Mapped[str | None] = mapped_column(String(20), nullable=True)
     language: Mapped[BookLanguage] = mapped_column(
         SAEnum(BookLanguage, name="book_language", values_callable=lambda e: [v.value for v in e]),

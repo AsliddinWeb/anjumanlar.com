@@ -12,6 +12,7 @@ export interface BookFormValue {
   description_ru: string;
   description_en: string;
   language: BookLanguage;
+  co_authors: string;
   isbn: string;
   publication_year: string;
   publisher: string;
@@ -168,6 +169,15 @@ function isCategorySelected(id: string) {
           @update:model-value="(v) => update('publication_year', v)"
         />
       </div>
+
+      <UiInput
+        :model-value="modelValue.co_authors"
+        :label="t('account_books.form.co_authors')"
+        :hint="t('account_books.form.co_authors_hint')"
+        :placeholder="t('account_books.form.co_authors_placeholder')"
+        maxlength="500"
+        @update:model-value="(v) => update('co_authors', v)"
+      />
 
       <div>
         <span class="block text-sm text-ink-secondary mb-2">

@@ -119,6 +119,7 @@ export interface BookPublic {
   subtitle: LocalisedText;
   description: LocalisedText;
   language: BookLanguage;
+  co_authors: string | null;
   isbn: string | null;
   pages_count: number | null;
   cover_url: string | null;

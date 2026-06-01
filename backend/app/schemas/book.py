@@ -26,6 +26,7 @@ class BookCreate(BaseModel):
     subtitle: LocalisedText | None = None
     description: LocalisedText | None = None
     language: BookLanguage = BookLanguage.uz
+    co_authors: str | None = Field(default=None, max_length=500)
     isbn: str | None = Field(default=None, max_length=20)
     publication_year: int | None = Field(default=None, ge=1500, le=2100)
     publisher: str | None = Field(default=None, max_length=255)
@@ -45,6 +46,7 @@ class BookUpdate(BaseModel):
     subtitle: LocalisedText | None = None
     description: LocalisedText | None = None
     language: BookLanguage | None = None
+    co_authors: str | None = Field(default=None, max_length=500)
     isbn: str | None = Field(default=None, max_length=20)
     publication_year: int | None = Field(default=None, ge=1500, le=2100)
     publisher: str | None = Field(default=None, max_length=255)
@@ -91,6 +93,7 @@ class BookPublic(BaseModel):
     subtitle: dict[str, Any]
     description: dict[str, Any]
     language: BookLanguage
+    co_authors: str | None = None
     isbn: str | None = None
     pages_count: int | None = None
     cover_url: str | None = None
