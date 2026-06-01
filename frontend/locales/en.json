@@ -164,7 +164,8 @@
       "users": "Users",
       "withdrawals": "Withdrawals",
       "audit": "Audit log",
-      "blog": "Blog"
+      "blog": "Blog",
+      "settings": "Site settings"
     },
     "cards": {
       "books_title": "Book moderation",
@@ -513,6 +514,17 @@
       "publish_success": "Post published",
       "unpublish_success": "Post unpublished",
       "delete_confirm_body": "Delete post \"{title}\"?"
+    },
+    "settings": {
+      "title": "Site settings",
+      "subtitle": "Design, colours and site-wide options.",
+      "theme_section": "Design theme",
+      "theme_hint": "The selected theme applies instantly to every page on the site. Other admins and visitors will see the updated colours.",
+      "active_theme": "Active: {name}",
+      "active": "Active",
+      "apply_theme": "Apply",
+      "already_active": "This theme is already active",
+      "theme_applied": "\"{name}\" theme applied"
     },
     "audit": {
       "title": "Audit log",

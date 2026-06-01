@@ -164,7 +164,8 @@
       "users": "Foydalanuvchilar",
       "withdrawals": "Pul yechish",
       "audit": "Audit log",
-      "blog": "Blog"
+      "blog": "Blog",
+      "settings": "Sayt sozlamalari"
     },
     "cards": {
       "books_title": "Kitoblar moderatsiyasi",
@@ -513,6 +514,17 @@
       "publish_success": "Yozuv chop etildi",
       "unpublish_success": "Yozuv chop etilmagan holatga o'tkazildi",
       "delete_confirm_body": "\"{title}\" yozuvini o'chirishni xohlaysizmi?"
+    },
+    "settings": {
+      "title": "Sayt sozlamalari",
+      "subtitle": "Dizayn, ranglar va sayt bo'ylab umumiy parametrlar.",
+      "theme_section": "Dizayn temasi",
+      "theme_hint": "Tanlangan tema saytdagi har bir sahifaga darrov tatbiq qilinadi. Boshqa adminlar va tashrif buyuruvchilar ham yangilangan ranglarni ko'radi.",
+      "active_theme": "Aktiv: {name}",
+      "active": "Aktiv",
+      "apply_theme": "Tanlash",
+      "already_active": "Bu tema aktiv",
+      "theme_applied": "\"{name}\" temasi tatbiq qilindi"
     },
     "audit": {
       "title": "Audit log",

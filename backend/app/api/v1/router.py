@@ -18,6 +18,7 @@ from app.api.v1.endpoints import (
     payments,
     reviews,
     search,
+    site_settings,
     users,
     withdrawals,
 )
@@ -58,3 +59,5 @@ api_router.include_router(admin_stats.router)
 api_router.include_router(admin_audit.router)
 api_router.include_router(blog.router)
 api_router.include_router(blog.admin_router)
+api_router.include_router(site_settings.public_router)
+api_router.include_router(site_settings.admin_router)
