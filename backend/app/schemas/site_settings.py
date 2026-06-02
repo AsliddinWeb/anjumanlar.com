@@ -7,12 +7,13 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class SiteSettingsPublic(BaseModel):
     """Public-safe shape — what the frontend reads on every page load
-    to set the active theme + ornament. Add new public toggles here."""
+    to set the active theme + ornament + animation state."""
 
     model_config = ConfigDict(from_attributes=True)
 
     theme_name: str
     ornament_name: str
+    animations_enabled: bool
 
 
 class SiteSettingsUpdate(BaseModel):
@@ -20,3 +21,4 @@ class SiteSettingsUpdate(BaseModel):
 
     theme_name: str | None = Field(default=None, min_length=1, max_length=64)
     ornament_name: str | None = Field(default=None, min_length=1, max_length=64)
+    animations_enabled: bool | None = None

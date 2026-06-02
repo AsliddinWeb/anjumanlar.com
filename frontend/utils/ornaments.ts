@@ -20,6 +20,9 @@ export interface OrnamentDefinition {
   description: string;
   divider: string;
   corner: string;
+  /** Single repeating tile drawn inside viewBox 0 0 80 80. Used as a
+   *  hero / section background watermark via UiOrnamentPattern. */
+  pattern: string;
 }
 
 /* -------- divider SVG snippets (viewBox 0 0 42 42) -------- */
@@ -192,6 +195,101 @@ const C_MINIMAL = `
   </g>
 `;
 
+/* -------- pattern SVG snippets (viewBox 0 0 80 80, tileable) -------- */
+
+const P_CLASSIC = `
+  <g transform="translate(40 40)">
+    <rect x="-12" y="-12" width="24" height="24" />
+    <rect x="-12" y="-12" width="24" height="24" transform="rotate(45)" />
+    <circle r="3" fill="currentColor" stroke="none" />
+  </g>
+  <g transform="translate(0 0)" opacity="0.6">
+    <rect x="-6" y="-6" width="12" height="12" transform="rotate(45)" />
+  </g>
+  <g transform="translate(80 0)" opacity="0.6">
+    <rect x="-6" y="-6" width="12" height="12" transform="rotate(45)" />
+  </g>
+  <g transform="translate(0 80)" opacity="0.6">
+    <rect x="-6" y="-6" width="12" height="12" transform="rotate(45)" />
+  </g>
+  <g transform="translate(80 80)" opacity="0.6">
+    <rect x="-6" y="-6" width="12" height="12" transform="rotate(45)" />
+  </g>
+`;
+
+const P_SUZANI = `
+  <g transform="translate(40 40)">
+    <circle r="8" />
+    <path d="M0 -16 Q5 -8 0 0 Q-5 -8 0 -16 Z" />
+    <path d="M0 16 Q5 8 0 0 Q-5 8 0 16 Z" />
+    <path d="M-16 0 Q-8 5 0 0 Q-8 -5 -16 0 Z" />
+    <path d="M16 0 Q8 5 0 0 Q8 -5 16 0 Z" />
+    <circle r="2" fill="currentColor" stroke="none" />
+  </g>
+`;
+
+const P_CHEVRON = `
+  <path d="M0 30 L20 10 L40 30 L60 10 L80 30" />
+  <path d="M0 50 L20 30 L40 50 L60 30 L80 50" opacity="0.55" />
+  <path d="M0 70 L20 50 L40 70 L60 50 L80 70" opacity="0.4" />
+`;
+
+const P_MEDALLION = `
+  <g transform="translate(40 40)">
+    <circle r="22" />
+    <circle r="14" opacity="0.6" />
+    <circle r="6" />
+    <circle r="2" fill="currentColor" stroke="none" />
+  </g>
+`;
+
+const P_LATTICE = `
+  <path d="M0 40 L40 0 L80 40 L40 80 Z" />
+  <path d="M20 40 L40 20 L60 40 L40 60 Z" opacity="0.6" />
+  <line x1="0" y1="40" x2="80" y2="40" opacity="0.3" />
+  <line x1="40" y1="0" x2="40" y2="80" opacity="0.3" />
+`;
+
+const P_ARCH = `
+  <g opacity="0.7">
+    <path d="M20 60 L20 45 Q20 28 40 28 Q60 28 60 45 L60 60" />
+    <path d="M28 60 L28 48 Q28 37 40 37 Q52 37 52 48 L52 60" opacity="0.6" />
+    <line x1="14" y1="60" x2="66" y2="60" />
+    <circle cx="40" cy="22" r="2" fill="currentColor" stroke="none" />
+  </g>
+`;
+
+const P_PAISLEY = `
+  <g transform="translate(40 40)">
+    <path d="M-12 16 Q-22 6 -12 -6 Q-2 -16 8 -6 Q14 6 4 12 Q-6 16 -2 6 Q4 -2 -4 0 Q-12 4 -8 12 Q-4 18 -12 16 Z" />
+    <circle cx="-4" cy="4" r="1.6" fill="currentColor" stroke="none" />
+  </g>
+`;
+
+const P_CRESCENT = `
+  <g transform="translate(40 40)">
+    <path d="M-14 -16 A22 22 0 1 0 -14 16 A16 16 0 1 1 -14 -16 Z" opacity="0.7" />
+    <circle cx="14" cy="-4" r="2" fill="currentColor" stroke="none" />
+    <circle cx="18" cy="6" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="14" cy="14" r="2" fill="currentColor" stroke="none" />
+  </g>
+`;
+
+const P_TILE = `
+  <rect x="10" y="10" width="60" height="60" />
+  <path d="M10 40 L40 10 L70 40 L40 70 Z" opacity="0.55" />
+  <circle cx="40" cy="40" r="4" />
+  <circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none" />
+  <circle cx="70" cy="10" r="1.6" fill="currentColor" stroke="none" />
+  <circle cx="10" cy="70" r="1.6" fill="currentColor" stroke="none" />
+  <circle cx="70" cy="70" r="1.6" fill="currentColor" stroke="none" />
+`;
+
+const P_MINIMAL = `
+  <circle cx="40" cy="40" r="3" />
+  <circle cx="40" cy="40" r="10" opacity="0.5" />
+`;
+
 export const ORNAMENTS: Record<string, OrnamentDefinition> = {
   classic: {
     name: "classic",
@@ -199,6 +297,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Turkiy 8-burchakli yulduz + olmos — kutubxonaning standart bezagi",
     divider: D_CLASSIC,
     corner: C_CLASSIC,
+    pattern: P_CLASSIC,
   },
   suzani: {
     name: "suzani",
@@ -206,6 +305,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "O'zbek suzani gulli motivi — markaziy gul va atrof barglar",
     divider: D_SUZANI,
     corner: C_SUZANI,
+    pattern: P_SUZANI,
   },
   chevron: {
     name: "chevron",
@@ -213,6 +313,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Zigzag chiziq — chegara va arxitektura motivi",
     divider: D_CHEVRON,
     corner: C_CHEVRON,
+    pattern: P_CHEVRON,
   },
   medallion: {
     name: "medallion",
@@ -220,6 +321,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Markazlashgan doiraviy medalyon — Buxoro va Hirot uslubi",
     divider: D_MEDALLION,
     corner: C_MEDALLION,
+    pattern: P_MEDALLION,
   },
   lattice: {
     name: "lattice",
@@ -227,6 +329,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Karkas panjara — Samarqand naqshi",
     divider: D_LATTICE,
     corner: C_LATTICE,
+    pattern: P_LATTICE,
   },
   arch: {
     name: "arch",
@@ -234,6 +337,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Islom me'morchiligi tokchasi — masjid va madrasa shakli",
     divider: D_ARCH,
     corner: C_ARCH,
+    pattern: P_ARCH,
   },
   paisley: {
     name: "paisley",
@@ -241,6 +345,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Bodom shaklidagi paisley — fors-turkiy motivi",
     divider: D_PAISLEY,
     corner: C_PAISLEY,
+    pattern: P_PAISLEY,
   },
   crescent: {
     name: "crescent",
@@ -248,6 +353,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Yarim oy + yulduzli nuqtalar — sharq romantikasi",
     divider: D_CRESCENT,
     corner: C_CRESCENT,
+    pattern: P_CRESCENT,
   },
   tile: {
     name: "tile",
@@ -255,6 +361,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Geometrik kafel — Termiz va Xiva uslubi",
     divider: D_TILE,
     corner: C_TILE,
+    pattern: P_TILE,
   },
   minimal: {
     name: "minimal",
@@ -262,6 +369,7 @@ export const ORNAMENTS: Record<string, OrnamentDefinition> = {
     description: "Sodda halqalar — minimalist temalar uchun",
     divider: D_MINIMAL,
     corner: C_MINIMAL,
+    pattern: P_MINIMAL,
   },
 };
 

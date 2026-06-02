@@ -75,6 +75,11 @@ const hasError = computed(() =>
   <div class="bg-bg">
     <!-- HERO -->
     <section class="relative overflow-hidden border-b border-border">
+      <UiOrnamentPattern
+        class="absolute inset-0 -z-10"
+        :tile-size="140"
+        :opacity="0.08"
+      />
       <div
         aria-hidden="true"
         class="absolute inset-0 -z-10"
@@ -389,6 +394,12 @@ const hasError = computed(() =>
         style="background-image:
           radial-gradient(ellipse 60% 60% at 80% 20%, var(--color-accent-gold, #c9a961), transparent 65%),
           radial-gradient(ellipse 50% 50% at 10% 80%, var(--color-primary), transparent 60%);"
+      />
+      <UiOrnamentPattern
+        class="absolute inset-0 -z-10"
+        tone="gold"
+        :tile-size="120"
+        :opacity="0.1"
       />
       <UiOrnamentCorner class="absolute top-0 left-0 opacity-30" tone="gold" />
       <UiOrnamentCorner class="absolute bottom-0 right-0 opacity-30" tone="gold" flip />

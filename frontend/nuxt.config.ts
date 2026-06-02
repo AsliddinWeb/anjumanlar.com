@@ -30,7 +30,11 @@ export default defineNuxtConfig({
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "format-detection", content: "telephone=no" },
       ],
-      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+      link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "alternate icon", type: "image/x-icon", href: "/favicon.ico" },
+        { rel: "apple-touch-icon", href: "/favicon.svg" },
+      ],
     },
   },
 

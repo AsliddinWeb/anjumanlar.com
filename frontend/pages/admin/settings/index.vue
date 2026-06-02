@@ -17,9 +17,25 @@ useHead({ title: t("admin.settings.title") });
 
 const applying = ref<string | null>(null);
 const applyingOrnament = ref<string | null>(null);
+const togglingAnimations = ref(false);
 
 const themeList = computed(() => Object.values(THEMES));
 const ornamentList = computed(() => Object.values(ORNAMENTS));
+
+async function toggleAnimations() {
+  if (togglingAnimations.value) return;
+  togglingAnimations.value = true;
+  try {
+    await theme.setAnimations(!theme.animationsEnabled.value);
+    toast.success(t("admin.settings.animations_applied"));
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    togglingAnimations.value = false;
+  }
+}
 
 async function applyTheme(name: string) {
   if (applying.value || theme.current.value === name) return;
@@ -71,6 +87,36 @@ async function applyOrnament(name: string) {
         />
       </template>
     </AdminPageHeader>
+
+    <!-- ANIMATIONS -->
+    <section class="space-y-3">
+      <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+        {{ t("admin.settings.animations_section") }}
+      </h2>
+      <div class="rounded-md border border-border bg-bg-card p-5 flex items-start gap-4">
+        <div class="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+          <Icon name="sparkles" class="h-5 w-5" />
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-medium text-ink">{{ t("admin.settings.animations_title") }}</h3>
+          <p class="text-xs text-ink-secondary mt-0.5">{{ t("admin.settings.animations_hint") }}</p>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          :aria-checked="theme.animationsEnabled.value"
+          class="relative h-7 w-12 rounded-full transition-colors shrink-0"
+          :class="theme.animationsEnabled.value ? 'bg-primary' : 'bg-border'"
+          :disabled="togglingAnimations"
+          @click="toggleAnimations"
+        >
+          <span
+            class="absolute top-0.5 h-6 w-6 rounded-full bg-bg-card shadow transition-transform"
+            :class="theme.animationsEnabled.value ? 'translate-x-5' : 'translate-x-0.5'"
+          />
+        </button>
+      </div>
+    </section>
 
     <!-- THEME -->
     <section class="space-y-3">

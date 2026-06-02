@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background rounded square in primary brand colour -->
+  <rect width="64" height="64" rx="14" fill="#8b4513"/>
+
+  <!-- Open book silhouette -->
+  <path d="M14 18 Q22 16 32 19 Q42 16 50 18 L50 46 Q42 44 32 47 Q22 44 14 46 Z"
+        fill="#faf7f2" opacity="0.96"/>
+  <!-- Centre crease -->
+  <path d="M32 19 L32 47" stroke="#8b4513" stroke-width="1.6" opacity="0.6"/>
+  <!-- Two reading lines on each page -->
+  <path d="M19 26 L29 26 M19 32 L27 32" stroke="#8b4513" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M35 26 L45 26 M35 32 L43 32" stroke="#8b4513" stroke-width="1.4" stroke-linecap="round"/>
+
+  <!-- 8-point Turkic star above the book, in gold -->
+  <g transform="translate(32 11) rotate(0)" fill="#c9a961">
+    <rect x="-4.5" y="-4.5" width="9" height="9"/>
+    <rect x="-4.5" y="-4.5" width="9" height="9" transform="rotate(45)"/>
+  </g>
+</svg>

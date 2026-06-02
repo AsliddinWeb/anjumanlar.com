@@ -34,3 +34,10 @@ async def update_ornament(db: AsyncSession, ornament_name: str) -> SiteSettings:
     row.ornament_name = ornament_name
     await db.flush()
     return row
+
+
+async def update_animations(db: AsyncSession, enabled: bool) -> SiteSettings:
+    row = await get(db)
+    row.animations_enabled = enabled
+    await db.flush()
+    return row

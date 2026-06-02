@@ -193,3 +193,26 @@ body {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
+
+/* ============================================================
+   Admin master switch — when `<html data-animations="off">` we
+   neutralise every reveal/tilt/shimmer rule, just like the OS-
+   level prefers-reduced-motion media query does.
+   ============================================================ */
+
+html[data-animations="off"] .reveal,
+html[data-animations="off"] .reveal.in-view {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+html[data-animations="off"] .tilt-card {
+  transition: none;
+}
+html[data-animations="off"] .tilt-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+html[data-animations="off"] .shimmer {
+  animation: none;
+}

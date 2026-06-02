@@ -63,6 +63,8 @@ async def admin_update_settings(
         await site_settings_service.update_theme(db, data.theme_name)
     if data.ornament_name is not None:
         await site_settings_service.update_ornament(db, data.ornament_name)
+    if data.animations_enabled is not None:
+        await site_settings_service.update_animations(db, data.animations_enabled)
     row = await site_settings_service.get(db)
     await db.commit()
     return SiteSettingsPublic.model_validate(row)
