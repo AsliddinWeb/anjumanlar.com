@@ -31,6 +31,13 @@ class SiteSettings(UUIDMixin, TimestampMixin, Base):
         String(64), nullable=False, default="classic", server_default="classic"
     )
 
+    # Decorative SVG motif picked from the ornament registry on the
+    # frontend (utils/ornaments.ts). 10 named variants ship today;
+    # adding more is a frontend-only change.
+    ornament_name: Mapped[str] = mapped_column(
+        String(64), nullable=False, default="classic", server_default="classic"
+    )
+
     __table_args__ = (
         CheckConstraint("singleton = TRUE", name="site_settings_singleton_check"),
     )

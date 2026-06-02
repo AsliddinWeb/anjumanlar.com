@@ -518,14 +518,18 @@
     },
     "settings": {
       "title": "Site settings",
-      "subtitle": "Design, colours and site-wide options.",
+      "subtitle": "Design, colours, ornaments and site-wide options.",
       "theme_section": "Design theme",
       "theme_hint": "The selected theme applies instantly to every page on the site. Other admins and visitors will see the updated colours.",
+      "ornament_section": "National ornament",
+      "ornament_hint": "Ornaments separate page sections (dividers) and decorate block corners. Applied instantly across the site.",
       "active_theme": "Active: {name}",
       "active": "Active",
       "apply_theme": "Apply",
-      "already_active": "This theme is already active",
-      "theme_applied": "\"{name}\" theme applied"
+      "apply_ornament": "Apply",
+      "already_active": "Already active",
+      "theme_applied": "\"{name}\" theme applied",
+      "ornament_applied": "\"{name}\" ornament applied"
     },
     "audit": {
       "title": "Audit log",

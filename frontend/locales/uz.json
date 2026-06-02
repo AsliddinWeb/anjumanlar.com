@@ -518,14 +518,18 @@
     },
     "settings": {
       "title": "Sayt sozlamalari",
-      "subtitle": "Dizayn, ranglar va sayt bo'ylab umumiy parametrlar.",
+      "subtitle": "Dizayn, ranglar, bezaklar va sayt bo'ylab umumiy parametrlar.",
       "theme_section": "Dizayn temasi",
       "theme_hint": "Tanlangan tema saytdagi har bir sahifaga darrov tatbiq qilinadi. Boshqa adminlar va tashrif buyuruvchilar ham yangilangan ranglarni ko'radi.",
+      "ornament_section": "Milliy bezak naqshi",
+      "ornament_hint": "Bezak motivi sahifa bo'limlarini ajratib turadi (divider) va missiya kabi joylarning burchaklarida ko'rinadi. Darrov saytda yangilanadi.",
       "active_theme": "Aktiv: {name}",
       "active": "Aktiv",
       "apply_theme": "Tanlash",
-      "already_active": "Bu tema aktiv",
-      "theme_applied": "\"{name}\" temasi tatbiq qilindi"
+      "apply_ornament": "Tanlash",
+      "already_active": "Bu allaqachon aktiv",
+      "theme_applied": "\"{name}\" temasi tatbiq qilindi",
+      "ornament_applied": "\"{name}\" bezagi tatbiq qilindi"
     },
     "audit": {
       "title": "Audit log",

@@ -1,69 +1,79 @@
 /**
- * Active site theme — singleton state shared across the app.
+ * Site-wide presentation state — color theme + ornament motif, both
+ * controlled from /admin/settings.
  *
- * The plugin (`plugins/01.theme.client.ts`) fetches the value from
- * `/settings` once on app start and applies it. The admin theme picker
- * calls `setTheme(name)` to change it, which:
- *   - PATCHes /admin/settings on the backend
- *   - re-applies the CSS variables locally
- *   - mirrors to localStorage so a refresh doesn't flash the old palette
+ * On app boot the client plugin loads the cached values from
+ * localStorage for an instant paint, then refreshes from /settings in
+ * the background. Admins call `setTheme(name)` / `setOrnament(name)`
+ * which PATCHes the backend and updates local state.
  */
 import { applyTheme, DEFAULT_THEME, THEMES } from "~/utils/themes";
+import { DEFAULT_ORNAMENT, ORNAMENTS } from "~/utils/ornaments";
 
-const STORAGE_KEY = "monografiya:theme";
+const THEME_KEY = "monografiya:theme";
+const ORNAMENT_KEY = "monografiya:ornament";
 
 export function useTheme() {
-  const state = useState<string>("site:theme", () => DEFAULT_THEME);
+  const themeState = useState<string>("site:theme", () => DEFAULT_THEME);
+  const ornamentState = useState<string>("site:ornament", () => DEFAULT_ORNAMENT);
   const api = useApi();
 
-  function setLocal(name: string) {
+  function setLocalTheme(name: string) {
     if (!THEMES[name]) return;
-    state.value = name;
+    themeState.value = name;
     applyTheme(name);
     if (import.meta.client) {
-      try {
-        localStorage.setItem(STORAGE_KEY, name);
-      }
-      catch {
-        // localStorage blocked — no-op
-      }
+      try { localStorage.setItem(THEME_KEY, name); }
+      catch { /* ignore */ }
+    }
+  }
+
+  function setLocalOrnament(name: string) {
+    if (!ORNAMENTS[name]) return;
+    ornamentState.value = name;
+    if (import.meta.client) {
+      try { localStorage.setItem(ORNAMENT_KEY, name); }
+      catch { /* ignore */ }
     }
   }
 
   async function setTheme(name: string): Promise<void> {
-    setLocal(name);
+    setLocalTheme(name);
     await api("/admin/settings", { method: "PATCH", body: { theme_name: name } });
+  }
+
+  async function setOrnament(name: string): Promise<void> {
+    setLocalOrnament(name);
+    await api("/admin/settings", { method: "PATCH", body: { ornament_name: name } });
   }
 
   async function loadFromServer(): Promise<void> {
     try {
-      const data = await api<{ theme_name: string }>("/settings");
-      if (data?.theme_name && THEMES[data.theme_name]) {
-        setLocal(data.theme_name);
-      }
+      const data = await api<{ theme_name: string; ornament_name: string }>("/settings");
+      if (data?.theme_name && THEMES[data.theme_name]) setLocalTheme(data.theme_name);
+      if (data?.ornament_name && ORNAMENTS[data.ornament_name]) setLocalOrnament(data.ornament_name);
     }
-    catch {
-      // Fall back to whatever localStorage / default already gave us.
-    }
+    catch { /* keep cached / defaults */ }
   }
 
   function loadFromCache(): void {
     if (!import.meta.client) return;
     try {
-      const cached = localStorage.getItem(STORAGE_KEY);
-      if (cached && THEMES[cached]) {
-        setLocal(cached);
-      }
+      const t = localStorage.getItem(THEME_KEY);
+      if (t && THEMES[t]) setLocalTheme(t);
+      const o = localStorage.getItem(ORNAMENT_KEY);
+      if (o && ORNAMENTS[o]) setLocalOrnament(o);
     }
-    catch {
-      // ignore
-    }
+    catch { /* ignore */ }
   }
 
   return {
-    current: computed(() => state.value),
+    current: computed(() => themeState.value),
+    currentOrnament: computed(() => ornamentState.value),
     setTheme,
-    setLocal,
+    setOrnament,
+    setLocal: setLocalTheme,
+    setLocalOrnament,
     loadFromServer,
     loadFromCache,
   };
