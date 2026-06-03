@@ -105,14 +105,14 @@ async function applyOrnament(name: string) {
           type="button"
           role="switch"
           :aria-checked="theme.animationsEnabled.value"
-          class="relative h-7 w-12 rounded-full transition-colors shrink-0"
+          class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
           :class="theme.animationsEnabled.value ? 'bg-primary' : 'bg-border'"
           :disabled="togglingAnimations"
           @click="toggleAnimations"
         >
           <span
-            class="absolute top-0.5 h-6 w-6 rounded-full bg-bg-card shadow transition-transform"
-            :class="theme.animationsEnabled.value ? 'translate-x-5' : 'translate-x-0.5'"
+            class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform"
+            :class="theme.animationsEnabled.value ? 'translate-x-[22px]' : 'translate-x-0.5'"
           />
         </button>
       </div>
