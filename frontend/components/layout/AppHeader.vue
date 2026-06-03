@@ -11,6 +11,7 @@ const nav = computed(() => [
   { to: "/", label: t("nav.home") },
   { to: "/books", label: t("nav.books") },
   { to: "/authors", label: t("nav.authors") },
+  { to: "/review-request/new", label: t("nav.review_request"), highlight: true },
   { to: "/blog", label: t("nav.blog") },
   { to: "/about", label: t("nav.about") },
 ]);
@@ -117,8 +118,12 @@ async function onLogout() {
           v-for="item in nav"
           :key="item.to"
           :to="localePath(item.to)"
-          class="text-ink-secondary hover:text-primary transition-colors"
+          class="transition-colors"
+          :class="item.highlight
+            ? 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/15 font-medium'
+            : 'text-ink-secondary hover:text-primary'"
         >
+          <Icon v-if="item.highlight" name="chat" class="h-3.5 w-3.5" />
           {{ item.label }}
         </NuxtLink>
       </nav>
@@ -402,8 +407,12 @@ async function onLogout() {
             <li v-for="item in nav" :key="item.to">
               <NuxtLink
                 :to="localePath(item.to)"
-                class="block px-3 py-2 rounded text-ink-secondary hover:bg-bg-secondary hover:text-primary"
+                class="flex items-center gap-2 px-3 py-2 rounded transition-colors"
+                :class="item.highlight
+                  ? 'bg-primary/10 text-primary font-medium hover:bg-primary/15'
+                  : 'text-ink-secondary hover:bg-bg-secondary hover:text-primary'"
               >
+                <Icon v-if="item.highlight" name="chat" class="h-4 w-4" />
                 {{ item.label }}
               </NuxtLink>
             </li>

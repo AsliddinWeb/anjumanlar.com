@@ -7,6 +7,7 @@
     "home": "Home",
     "books": "Books",
     "authors": "Authors",
+    "review_request": "Request a review",
     "blog": "Blog",
     "about": "About",
     "account": "Account",
@@ -763,6 +764,15 @@
       "f7_body": "Free access on open-science principles. Spreading knowledge without borders is the heart of our mission.",
       "f8_title": "Electronic certification",
       "f8_body": "Official electronic certificates for authors and researchers, publication confirmation and academic documentation services."
+    },
+    "review_cta": {
+      "eyebrow": "New service",
+      "title": "Get a review of your manuscript",
+      "body": "Send the PDF of your article, monograph or dissertation to a relevant author. They read it and write you a professional review.",
+      "step_1": "Upload the manuscript and pick an author",
+      "step_2": "The author sets a price, you pay",
+      "step_3": "Review is ready — download it",
+      "button": "Submit a request"
     },
     "content_types": {
       "eyebrow": "Publication types",

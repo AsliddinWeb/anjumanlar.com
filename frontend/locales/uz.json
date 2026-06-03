@@ -7,6 +7,7 @@
     "home": "Asosiy",
     "books": "Kitoblar",
     "authors": "Mualliflar",
+    "review_request": "Taqriz olish",
     "blog": "Blog",
     "about": "Biz haqimizda",
     "account": "Kabinet",
@@ -763,6 +764,15 @@
       "f7_body": "Ochiq ilm-fan tamoyillari asosida erkin foydalanish. Bilimni chegarasiz tarqatish missiyamiz asosi hisoblanadi.",
       "f8_title": "Elektron sertifikatlash",
       "f8_body": "Muallif va tadqiqotchilar uchun rasmiy elektron sertifikatlar, nashri tasdiqlash va akademik hujjatlashtirish xizmatlari."
+    },
+    "review_cta": {
+      "eyebrow": "Yangi xizmat",
+      "title": "Ilmiy ishingizga taqriz oling",
+      "body": "PDF holidagi maqola, monografiya yoki dissertatsiyangizni mos sohadagi muallifga yuboring. U sizning ishingizni o'qib, professional taqriz yozib beradi.",
+      "step_1": "Ilmiy ishni yuklang va muallifni tanlang",
+      "step_2": "Muallif narx belgilaydi va siz to'laysiz",
+      "step_3": "Taqriz tayyor — yuklab oling",
+      "button": "Taqriz so'rovi yuborish"
     },
     "content_types": {
       "eyebrow": "Nashr turlari",

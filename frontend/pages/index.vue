@@ -82,14 +82,28 @@ const hasError = computed(() =>
   <div class="bg-bg">
     <!-- HERO -->
     <section class="relative overflow-hidden border-b border-border isolate">
-      <!-- Single soft gradient wash. No grid, no pattern — the hero
-           breathes; ornaments still anchor the deeper sections. -->
+      <!-- Layer 1: soft brand gradient -->
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-30"
+        style="background-image:
+          radial-gradient(ellipse 60% 60% at 18% -10%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 70%),
+          radial-gradient(ellipse 40% 50% at 100% 110%, color-mix(in oklab, var(--color-accent-gold, var(--color-primary)) 10%, transparent), transparent 70%);"
+      />
+      <!-- Layer 2: very faint ornament watermark — texture without
+           shouting. tile-size + 0.05 opacity keeps it elegant. -->
+      <UiOrnamentPattern
+        class="absolute inset-0 -z-20"
+        :tile-size="100"
+        :opacity="0.05"
+      />
+      <!-- Layer 3: gradient fade so the pattern only shows at the
+           edges, leaving the centre clean for the headline copy. -->
       <div
         aria-hidden="true"
         class="absolute inset-0 -z-10"
         style="background-image:
-          radial-gradient(ellipse 60% 60% at 18% -10%, color-mix(in oklab, var(--color-primary) 10%, transparent), transparent 70%),
-          radial-gradient(ellipse 40% 50% at 100% 110%, color-mix(in oklab, var(--color-accent-gold, var(--color-primary)) 8%, transparent), transparent 70%);"
+          radial-gradient(ellipse 60% 70% at 50% 50%, var(--color-bg) 30%, transparent 80%);"
       />
 
       <div class="max-w-6xl mx-auto px-4 py-16 sm:py-20 md:py-28 lg:py-32 grid md:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
@@ -443,6 +457,46 @@ const hasError = computed(() =>
               <span class="leading-relaxed">{{ t(`home.mission.vision_${i + 1}`) }}</span>
             </li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEW REQUEST CTA -->
+    <section class="border-b border-border">
+      <div class="max-w-6xl mx-auto px-4 py-14 md:py-20">
+        <div class="grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center rounded-md border border-primary/20 bg-primary/5 p-6 md:p-10 reveal">
+          <div class="space-y-3 min-w-0">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
+              <Icon name="chat" class="h-3.5 w-3.5" />
+              {{ t("home.review_cta.eyebrow") }}
+            </span>
+            <h2 class="font-serif text-2xl md:text-3xl text-ink leading-tight">
+              {{ t("home.review_cta.title") }}
+            </h2>
+            <p class="text-ink-secondary leading-relaxed max-w-xl">
+              {{ t("home.review_cta.body") }}
+            </p>
+            <ul class="grid sm:grid-cols-3 gap-3 pt-2">
+              <li class="flex items-start gap-2 text-sm text-ink">
+                <Icon name="upload" class="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <span>{{ t("home.review_cta.step_1") }}</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-ink">
+                <Icon name="currency" class="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <span>{{ t("home.review_cta.step_2") }}</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-ink">
+                <Icon name="check-circle-solid" class="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <span>{{ t("home.review_cta.step_3") }}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="flex md:flex-col gap-3 shrink-0">
+            <UiButton :to="localePath('/review-request/new')" size="lg">
+              <Icon name="chat" class="h-4 w-4" />
+              {{ t("home.review_cta.button") }}
+            </UiButton>
+          </div>
         </div>
       </div>
     </section>
