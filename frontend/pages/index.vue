@@ -74,26 +74,29 @@ const hasError = computed(() =>
 <template>
   <div class="bg-bg">
     <!-- HERO -->
-    <section class="relative overflow-hidden border-b border-border">
-      <UiOrnamentPattern
-        class="absolute inset-0 -z-10"
-        :tile-size="140"
-        :opacity="0.08"
-      />
+    <section class="relative overflow-hidden border-b border-border isolate">
+      <!-- Layer 1 (deepest): radial gradient wash -->
       <div
         aria-hidden="true"
-        class="absolute inset-0 -z-10"
+        class="absolute inset-0 -z-30"
         style="background-image:
           radial-gradient(ellipse 70% 60% at 20% 0%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 65%),
           radial-gradient(ellipse 50% 50% at 90% 100%, color-mix(in oklab, var(--color-accent-burgundy, var(--color-primary)) 10%, transparent), transparent 65%);"
       />
+      <!-- Layer 2: 1px grid -->
       <div
         aria-hidden="true"
-        class="absolute inset-0 -z-10 opacity-[0.025]"
+        class="absolute inset-0 -z-20 opacity-[0.025]"
         style="background-image:
           linear-gradient(to right, currentColor 1px, transparent 1px),
           linear-gradient(to bottom, currentColor 1px, transparent 1px);
           background-size: 40px 40px; color: var(--color-ink);"
+      />
+      <!-- Layer 3 (top of background stack): the active national motif -->
+      <UiOrnamentPattern
+        class="absolute inset-0 -z-10"
+        :tile-size="140"
+        :opacity="0.15"
       />
 
       <div class="max-w-6xl mx-auto px-4 py-16 sm:py-20 md:py-28 lg:py-32 grid md:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
