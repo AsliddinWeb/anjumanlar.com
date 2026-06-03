@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { BookList, CategoryList } from "~/types/api";
+import { getOrnament } from "~/utils/ornaments";
 
 const { t } = useI18n();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
 const api = useApi();
+const theme = useTheme();
 
 // Toggle .in-view on .reveal elements as they enter the viewport.
 useScrollReveal();
+
+// The hero's single tiny ornament accent — divider body of the
+// currently-selected motif. Reactive: switching the ornament in
+// /admin/settings updates this without a refresh.
+const heroOrnament = computed(() => getOrnament(theme.currentOrnament.value).divider);
 
 useSiteSeo({
   title: t("home.hero.title"),
@@ -75,39 +82,41 @@ const hasError = computed(() =>
   <div class="bg-bg">
     <!-- HERO -->
     <section class="relative overflow-hidden border-b border-border isolate">
-      <!-- Layer 1 (deepest): radial gradient wash -->
+      <!-- Single soft gradient wash. No grid, no pattern — the hero
+           breathes; ornaments still anchor the deeper sections. -->
       <div
         aria-hidden="true"
-        class="absolute inset-0 -z-30"
-        style="background-image:
-          radial-gradient(ellipse 70% 60% at 20% 0%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 65%),
-          radial-gradient(ellipse 50% 50% at 90% 100%, color-mix(in oklab, var(--color-accent-burgundy, var(--color-primary)) 10%, transparent), transparent 65%);"
-      />
-      <!-- Layer 2: 1px grid -->
-      <div
-        aria-hidden="true"
-        class="absolute inset-0 -z-20 opacity-[0.025]"
-        style="background-image:
-          linear-gradient(to right, currentColor 1px, transparent 1px),
-          linear-gradient(to bottom, currentColor 1px, transparent 1px);
-          background-size: 40px 40px; color: var(--color-ink);"
-      />
-      <!-- Layer 3 (top of background stack): the active national motif -->
-      <UiOrnamentPattern
         class="absolute inset-0 -z-10"
-        :tile-size="140"
-        :opacity="0.15"
+        style="background-image:
+          radial-gradient(ellipse 60% 60% at 18% -10%, color-mix(in oklab, var(--color-primary) 10%, transparent), transparent 70%),
+          radial-gradient(ellipse 40% 50% at 100% 110%, color-mix(in oklab, var(--color-accent-gold, var(--color-primary)) 8%, transparent), transparent 70%);"
       />
 
       <div class="max-w-6xl mx-auto px-4 py-16 sm:py-20 md:py-28 lg:py-32 grid md:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
-        <div class="space-y-7">
-          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card/80 backdrop-blur text-xs text-ink-secondary shadow-sm">
-            <span class="relative inline-flex h-2 w-2">
-              <span class="absolute inset-0 rounded-full bg-success opacity-75 animate-ping" />
-              <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card/80 backdrop-blur text-xs text-ink-secondary shadow-sm">
+              <span class="relative inline-flex h-2 w-2">
+                <span class="absolute inset-0 rounded-full bg-success opacity-75 animate-ping" />
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
+              </span>
+              {{ t("home.hero.tagline") }}
             </span>
-            {{ t("home.hero.tagline") }}
-          </span>
+            <!-- One small ornament accent — uses the active motif but
+                 stays tiny and decorative, not a wallpaper. -->
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 42 42"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+              class="text-primary opacity-50 hidden sm:block shrink-0"
+              aria-hidden="true"
+            >
+              <g v-html="heroOrnament" />
+            </svg>
+          </div>
 
           <h1 class="font-serif text-[2.5rem] leading-[1.05] sm:text-5xl md:text-[3.5rem] lg:text-[4rem] text-ink tracking-tight">
             {{ t("home.hero.title") }}
