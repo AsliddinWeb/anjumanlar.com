@@ -242,8 +242,8 @@ const hasError = computed(() =>
     <!-- STATS — real counters from the DB (falls back to 0 + when
          the public stats endpoint is unreachable). -->
     <section class="border-b border-border bg-bg-secondary/40">
-      <div class="max-w-6xl mx-auto px-4 py-10 md:py-14">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div class="max-w-4xl mx-auto px-4 py-10 md:py-14">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 place-items-center">
           <div
             v-for="(s, i) in [
               { value: publicStats?.books ?? 0,      key: 'home.stats.books' },
@@ -252,7 +252,7 @@ const hasError = computed(() =>
               { value: publicStats?.languages ?? 9,  key: 'home.stats.langs' },
             ]"
             :key="s.key"
-            class="reveal text-center sm:text-left"
+            class="reveal text-center"
             :class="`reveal-delay-${(i % 5) + 1}`"
           >
             <div class="font-serif text-3xl md:text-4xl text-primary">
