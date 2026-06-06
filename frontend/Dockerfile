@@ -2,7 +2,7 @@
 # Development image for Nuxt 3. Source is mounted via docker-compose volume;
 # node_modules is preserved in a named volume so the host doesn't shadow it.
 
-FROM node:20-alpine AS base
+FROM node:26-alpine AS base
 
 ENV PNPM_HOME="/pnpm" \
     PATH="$PNPM_HOME:$PATH" \
