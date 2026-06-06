@@ -29,6 +29,45 @@ from app.models import (
 )
 
 
+async def public_snapshot(db: AsyncSession) -> dict[str, int]:
+    """Compact public KPIs for the homepage hero strip.
+
+    Returns only the counts we can vouch for: approved books,
+    AuthorProfile rows, active categories, approved reviews. Languages
+    is the constant the platform claims to support (9 Turkic + RU/EN).
+    """
+    from app.models import AuthorProfile, Category, ReviewStatus
+
+    books = (
+        await db.execute(
+            select(func.count()).select_from(Book).where(Book.status == BookStatus.approved)
+        )
+    ).scalar_one()
+    authors = (
+        await db.execute(select(func.count()).select_from(AuthorProfile))
+    ).scalar_one()
+    categories = (
+        await db.execute(
+            select(func.count()).select_from(Category).where(Category.is_active.is_(True))
+        )
+    ).scalar_one()
+    reviews = (
+        await db.execute(
+            select(func.count())
+            .select_from(Review)
+            .where(Review.status == ReviewStatus.approved)
+        )
+    ).scalar_one()
+
+    return {
+        "books": int(books or 0),
+        "authors": int(authors or 0),
+        "categories": int(categories or 0),
+        "reviews": int(reviews or 0),
+        "languages": 9,
+    }
+
+
 async def snapshot(db: AsyncSession) -> dict[str, Any]:
     """Return every KPI the admin dashboard currently renders."""
 

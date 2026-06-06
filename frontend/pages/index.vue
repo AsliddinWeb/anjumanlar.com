@@ -44,6 +44,19 @@ const { data: catData, error: catErr } = await useAsyncData(
   () => api<CategoryList>("/categories", { query: { active_only: true } }),
 );
 
+interface PublicStats {
+  books: number;
+  authors: number;
+  categories: number;
+  reviews: number;
+  languages: number;
+}
+const { data: publicStatsRaw } = await useAsyncData(
+  "home:public-stats",
+  () => api<PublicStats>("/stats/public").catch(() => null),
+);
+const publicStats = computed(() => publicStatsRaw.value as PublicStats | null);
+
 const featured = computed(() => (featuredData.value as BookList | null)?.items ?? []);
 const recent = computed(() => (recentData.value as BookList | null)?.items ?? []);
 const topCategories = computed(() =>
@@ -226,25 +239,24 @@ const hasError = computed(() =>
       </div>
     </section>
 
-    <!-- STATS -->
+    <!-- STATS — real counters from the DB (falls back to 0 + when
+         the public stats endpoint is unreachable). -->
     <section class="border-b border-border bg-bg-secondary/40">
       <div class="max-w-6xl mx-auto px-4 py-10 md:py-14">
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <div
             v-for="(s, i) in [
-              { value: 1000, key: 'home.stats.books' },
-              { value: 500,  key: 'home.stats.authors' },
-              { value: 9,    key: 'home.stats.langs' },
-              { value: 30,   key: 'home.stats.categories' },
-              { value: 300,  key: 'home.stats.monographs' },
-              { value: 1000, key: 'home.stats.doi_works' },
+              { value: publicStats?.books ?? 0,      key: 'home.stats.books' },
+              { value: publicStats?.authors ?? 0,    key: 'home.stats.authors' },
+              { value: publicStats?.categories ?? 0, key: 'home.stats.categories' },
+              { value: publicStats?.languages ?? 9,  key: 'home.stats.langs' },
             ]"
             :key="s.key"
             class="reveal text-center sm:text-left"
             :class="`reveal-delay-${(i % 5) + 1}`"
           >
             <div class="font-serif text-3xl md:text-4xl text-primary">
-              <UiCounter :target="s.value" />
+              <UiCounter :target="s.value" :suffix="s.value > 0 ? '+' : ''" />
             </div>
             <div class="text-xs uppercase tracking-wider text-ink-tertiary mt-1">{{ t(s.key) }}</div>
           </div>

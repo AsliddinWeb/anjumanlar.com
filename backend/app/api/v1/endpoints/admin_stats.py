@@ -18,6 +18,7 @@ from app.models import User
 from app.services import stats_service
 
 router = APIRouter(prefix="/admin", tags=["admin-stats"])
+public_router = APIRouter(prefix="/stats", tags=["stats"])
 
 
 @router.get(
@@ -29,3 +30,11 @@ async def admin_stats(
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
     return await stats_service.snapshot(db)
+
+
+@public_router.get(
+    "/public",
+    summary="Public-safe counters for the homepage hero strip",
+)
+async def public_stats(db: AsyncSession = Depends(get_db)) -> dict[str, int]:
+    return await stats_service.public_snapshot(db)
