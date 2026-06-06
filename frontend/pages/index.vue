@@ -132,8 +132,14 @@ const hasError = computed(() =>
             </svg>
           </div>
 
-          <h1 class="font-serif text-[2.5rem] leading-[1.05] sm:text-5xl md:text-[3.5rem] lg:text-[4rem] text-ink tracking-tight">
-            {{ t("home.hero.title") }}
+          <h1
+            class="font-serif font-black leading-[1.1] tracking-[-0.02em] text-ink"
+            style="font-size: clamp(2.125rem, 4.5vw, 3.625rem);"
+          >
+            {{ t("home.hero.title_line_1") }}<br>
+            <em class="italic font-bold" style="color: #1d6a5a;">{{ t("home.hero.title_line_2") }}</em><br>
+            {{ t("home.hero.title_line_3_prefix") }}
+            <span style="color: var(--color-accent-gold);">{{ t("home.hero.title_line_3_accent") }}</span>
           </h1>
 
           <p class="text-base sm:text-lg text-ink-secondary leading-relaxed max-w-[42ch]">

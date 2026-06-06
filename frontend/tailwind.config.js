@@ -56,8 +56,8 @@ export default {
         book: "var(--shadow-book)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        serif: ["Lora", "Georgia", "serif"],
+        sans: ["'DM Sans'", "Inter", "system-ui", "sans-serif"],
+        serif: ["'Playfair Display'", "Lora", "Georgia", "serif"],
       },
     },
   },

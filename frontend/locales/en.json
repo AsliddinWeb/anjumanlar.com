@@ -707,6 +707,10 @@
     "hero": {
       "tagline": "For the Turkic and international academic community",
       "title": "Digital hub of Turkic-world scholarship",
+      "title_line_1": "Turkic-world",
+      "title_line_2": "scholarship's",
+      "title_line_3_prefix": "digital",
+      "title_line_3_accent": "hub",
       "subtitle": "A modern platform bringing together monographs, textbooks, journals and academic publications in Uzbek, Kazakh, Kyrgyz, Turkish, Karakalpak, Turkmen, Tajik, Russian and English.",
       "cta_browse": "Browse catalogue",
       "cta_become_author": "Join as an author",

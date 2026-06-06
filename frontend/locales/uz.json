@@ -707,6 +707,10 @@
     "hero": {
       "tagline": "Turkiy va xalqaro akademik hamjamiyat uchun",
       "title": "Turkiy dunyo ilm-fanining raqamli markazi",
+      "title_line_1": "Turkiy dunyo",
+      "title_line_2": "ilm-fanining",
+      "title_line_3_prefix": "raqamli",
+      "title_line_3_accent": "markazi",
       "subtitle": "Monografiyalar, darsliklar, ilmiy jurnallar va akademik nashrlarni o'zbek, qozoq, qirg'iz, turk, qoraqalpoq, turkman, tojik, rus va ingliz tillarida birlashtiruvchi zamonaviy platforma.",
       "cta_browse": "Katalogni ko'rish",
       "cta_become_author": "Muallif sifatida qo'shilish",
