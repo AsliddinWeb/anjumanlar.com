@@ -20,6 +20,7 @@ export interface BookFormValue {
   discount_price: string;
   category_ids: string[];
   keywords: string;
+  featured: boolean;
 }
 
 const props = defineProps<{
@@ -31,6 +32,7 @@ const props = defineProps<{
   cancelTo: string;
   showDelete?: boolean;
   deleting?: boolean;
+  showFeatured?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -241,6 +243,30 @@ function isCategorySelected(id: string) {
         :placeholder="t('account_books.form.keywords_placeholder')"
         @update:model-value="(v) => update('keywords', v)"
       />
+    </div>
+
+    <!-- Admin-only flags -->
+    <div v-if="showFeatured" class="rounded-md border border-border bg-bg-card p-5 space-y-4">
+      <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+        {{ t("account_books.section_flags") }}
+      </h2>
+      <label class="flex items-start gap-3 cursor-pointer">
+        <button
+          type="button"
+          class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 mt-0.5"
+          :class="modelValue.featured ? 'bg-primary' : 'bg-border'"
+          @click="update('featured', !modelValue.featured)"
+        >
+          <span
+            class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform"
+            :class="modelValue.featured ? 'translate-x-[22px]' : 'translate-x-0.5'"
+          />
+        </button>
+        <span class="min-w-0">
+          <span class="block text-sm font-medium text-ink">{{ t("account_books.form.featured") }}</span>
+          <span class="block text-xs text-ink-tertiary mt-0.5">{{ t("account_books.form.featured_hint") }}</span>
+        </span>
+      </label>
     </div>
 
     <p v-if="error" class="flex items-center gap-2 text-sm text-error">

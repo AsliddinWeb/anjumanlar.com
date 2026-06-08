@@ -63,6 +63,7 @@ function modelFromBook(b: BookOwnerView): BookFormValue {
     discount_price: b.discount_price != null ? String(b.discount_price) : "",
     category_ids: b.categories.map((c) => c.id),
     keywords: b.keywords.join(", "),
+    featured: b.featured,
   };
 }
 
@@ -106,6 +107,7 @@ async function save() {
       discount_price: form.value.discount_price ? Number(form.value.discount_price) : null,
       category_ids: form.value.category_ids,
       keywords: form.value.keywords.split(",").map((k) => k.trim()).filter(Boolean),
+      featured: form.value.featured,
     };
     await api(`/books/admin/${book.value.id}`, { method: "PATCH", body: payload });
     toast.success(t("admin.books.update_success"));
@@ -227,6 +229,9 @@ function onCoverUploaded(url: string) {
 }
 function onFileUploaded(url: string) {
   if (book.value) book.value.file_url = url;
+}
+function onDemoUploaded(url: string) {
+  if (book.value) book.value.demo_url = url;
 }
 
 const STATUS_TONE: Record<BookStatus, "success" | "warning" | "neutral" | "error"> = {
@@ -380,6 +385,16 @@ const formatDate = (iso: string) =>
           :endpoint="`/books/${book.id}/file`"
           @uploaded="onFileUploaded"
         />
+        <BookFileUpload
+          :title="t('account_books.upload.demo_title')"
+          :hint="t('account_books.upload.demo_hint_manual')"
+          :url="book.demo_url"
+          variant="pdf"
+          accept="application/pdf"
+          :max-size-mb="50"
+          :endpoint="`/books/${book.id}/demo`"
+          @uploaded="onDemoUploaded"
+        />
       </div>
     </section>
 
@@ -393,6 +408,7 @@ const formatDate = (iso: string) =>
       :submit-label="t('admin.actions.save')"
       :cancel-to="localePath('/admin/books')"
       show-delete
+      show-featured
       :deleting="deleting"
       @submit="save"
       @delete="deleteOpen = true"

@@ -243,6 +243,17 @@ def upload_review_response_file(
     )
 
 
+def upload_book_demo(book_id: UUID, raw: bytes, content_type: str) -> str:
+    """Drop a manually-supplied demo PDF into the public ``demos`` bucket."""
+    _validate_pdf(raw, content_type)
+    return put_bytes(
+        settings.MINIO_BUCKET_DEMOS,
+        f"{book_id}.pdf",
+        raw,
+        "application/pdf",
+    )
+
+
 def upload_book_file(book_id: UUID, raw: bytes, content_type: str) -> BookFileUpload:
     """Validate the PDF, drop the original into the *private* ``books`` bucket.
 

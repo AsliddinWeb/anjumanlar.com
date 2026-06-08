@@ -34,6 +34,7 @@ function emptyForm(): BookFormValue {
     discount_price: "",
     category_ids: [],
     keywords: "",
+    featured: false,
   };
 }
 

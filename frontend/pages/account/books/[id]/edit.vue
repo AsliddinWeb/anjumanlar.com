@@ -59,6 +59,7 @@ function modelFromBook(b: BookOwnerView): BookFormValue {
     discount_price: b.discount_price != null ? String(b.discount_price) : "",
     category_ids: b.categories.map((c) => c.id),
     keywords: b.keywords.join(", "),
+    featured: b.featured,
   };
 }
 
@@ -170,6 +171,9 @@ function onCoverUploaded(url: string) {
 function onFileUploaded(url: string) {
   if (book.value) book.value.file_url = url;
 }
+function onDemoUploaded(url: string) {
+  if (book.value) book.value.demo_url = url;
+}
 
 const STATUS_BANNER: Record<BookStatus, { tone: string; iconBg: string; title: string; body: string } | null> = {
   draft: null,
@@ -264,6 +268,17 @@ const STATUS_BANNER: Record<BookStatus, { tone: string; iconBg: string; title: s
             :endpoint="`/books/${book.id}/file`"
             :read-only="!isEditable"
             @uploaded="onFileUploaded"
+          />
+          <BookFileUpload
+            :title="t('account_books.upload.demo_title')"
+            :hint="t('account_books.upload.demo_hint_manual')"
+            :url="book.demo_url"
+            variant="pdf"
+            accept="application/pdf"
+            :max-size-mb="50"
+            :endpoint="`/books/${book.id}/demo`"
+            :read-only="!isEditable"
+            @uploaded="onDemoUploaded"
           />
         </div>
       </section>

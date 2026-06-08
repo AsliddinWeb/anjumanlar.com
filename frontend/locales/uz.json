@@ -1509,6 +1509,7 @@
     "section_pricing": "Narxlash",
     "section_keywords": "Kalit so'zlar",
     "section_files": "Fayllar",
+    "section_flags": "Admin sozlamalari",
     "form": {
       "title_field": "Sarlavha ({lang})",
       "title_required_hint": "Kamida bitta tilda sarlavha bo'lishi shart.",
@@ -1538,7 +1539,9 @@
       "keywords": "Kalit so'zlar",
       "keywords_hint": "Vergul bilan ajrating. SEO va qidiruv uchun.",
       "keywords_placeholder": "tibbiyot, kardiologiya, ...",
-      "lang_hint": "Til tablari orasida o'ting"
+      "lang_hint": "Til tablari orasida o'ting",
+      "featured": "Tanlangan kitob",
+      "featured_hint": "Bosh sahifa va katalog yuqorisida ko'rsatiladi"
     },
     "errors": {
       "title_required": "Kamida bitta tilda sarlavha kiriting",
@@ -1551,6 +1554,7 @@
       "file_hint": "Faqat PDF, max 100 MB. Yuklangach demo avto yaratiladi.",
       "demo_title": "Demo PDF",
       "demo_hint": "Avto yaratiladi — qo'lda yuklash shart emas",
+      "demo_hint_manual": "PDF, max 50 MB. O'rnatilsa, avto-demo o'rniga shu fayl ko'rsatiladi.",
       "no_file": "Hali yuklanmagan",
       "uploaded": "Yuklangan",
       "uploading": "Yuklanmoqda…",

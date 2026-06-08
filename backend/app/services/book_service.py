@@ -42,8 +42,33 @@ from app.models import (
     User,
     UserRole,
 )
-from app.schemas.book import BookCreate, BookUpdate
+from app.schemas.book import BookAdminUpdate, BookCreate, BookUpdate
 from app.services import storage_service
+
+# SEO description excerpt length — Google starts truncating around 160.
+_SEO_DESCRIPTION_LIMIT = 160
+
+
+def _derive_seo(
+    title_map: dict[str, str] | None,
+    description_map: dict[str, str] | None,
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Auto-build seo_title / seo_description from title + description.
+
+    Keeps the same locale keys present in the source maps so SEO degrades
+    gracefully when only one locale is filled in.
+    """
+    seo_title: dict[str, str] = {}
+    for locale, value in (title_map or {}).items():
+        if isinstance(value, str) and value.strip():
+            seo_title[locale] = value.strip()[:160]
+
+    seo_description: dict[str, str] = {}
+    for locale, value in (description_map or {}).items():
+        if isinstance(value, str) and value.strip():
+            text = " ".join(value.split())
+            seo_description[locale] = text[:_SEO_DESCRIPTION_LIMIT]
+    return seo_title, seo_description
 
 # ---------- Helpers ----------
 
@@ -129,6 +154,7 @@ async def create_book(
 
     slug = await _unique_slug(db, _primary_title(data.title))
     categories = await _load_categories(db, data.category_ids)
+    seo_title, seo_description = _derive_seo(data.title, data.description)
 
     book = Book(
         author_id=author_profile.id,
@@ -145,6 +171,8 @@ async def create_book(
         price=data.price,
         discount_price=data.discount_price,
         keywords=data.keywords,
+        seo_title=seo_title,
+        seo_description=seo_description,
         status=BookStatus.draft,
     )
     book.categories = categories
@@ -166,6 +194,9 @@ async def update_book(db: AsyncSession, user: User, book_id: UUID, data: BookUpd
 
     if data.category_ids is not None:
         book.categories = await _load_categories(db, data.category_ids)
+
+    if "title" in updates or "description" in updates:
+        book.seo_title, book.seo_description = _derive_seo(book.title, book.description)
 
     await db.flush()
     return await _get_loaded(db, book.id)
@@ -197,6 +228,8 @@ async def admin_create_book(
 
     slug = await _unique_slug(db, _primary_title(data.title))
     categories = await _load_categories(db, data.category_ids)
+    seo_title, seo_description = _derive_seo(data.title, data.description)
+    featured = bool(getattr(data, "featured", False))
 
     book = Book(
         author_id=profile.id,
@@ -213,6 +246,9 @@ async def admin_create_book(
         price=data.price,
         discount_price=data.discount_price,
         keywords=data.keywords,
+        seo_title=seo_title,
+        seo_description=seo_description,
+        featured=featured,
         status=BookStatus.draft,
     )
     book.categories = categories
@@ -225,7 +261,7 @@ async def admin_create_book(
 
 
 async def admin_update_book(
-    db: AsyncSession, admin: User, book_id: UUID, data: BookUpdate
+    db: AsyncSession, admin: User, book_id: UUID, data: BookAdminUpdate
 ) -> Book:
     """Admin edit path — no status guard. Lets admins fix typos in
     already-approved books without having to bounce them through the
@@ -240,6 +276,9 @@ async def admin_update_book(
         setattr(book, key, value)
     if data.category_ids is not None:
         book.categories = await _load_categories(db, data.category_ids)
+
+    if "title" in updates or "description" in updates:
+        book.seo_title, book.seo_description = _derive_seo(book.title, book.description)
 
     await db.flush()
     # Re-index after admin tweaks so the search results catch up.
@@ -604,6 +643,25 @@ async def set_cover(
     book = await _get_loaded(db, book_id)
     _assert_can_upload(book, user)
     book.cover_url = storage_service.upload_book_cover(book.id, raw, content_type)
+    await db.flush()
+    return await _get_loaded(db, book.id)
+
+
+async def set_demo(
+    db: AsyncSession,
+    user: User,
+    book_id: UUID,
+    raw: bytes,
+    content_type: str,
+) -> Book:
+    """Replace the auto-generated demo PDF with one the admin/author uploads.
+
+    Useful when the Celery-generated excerpt isn't the chapter the author
+    wants to expose, or when demo generation fails.
+    """
+    book = await _get_loaded(db, book_id)
+    _assert_can_upload(book, user)
+    book.demo_url = storage_service.upload_book_demo(book.id, raw, content_type)
     await db.flush()
     return await _get_loaded(db, book.id)
 

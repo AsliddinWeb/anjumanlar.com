@@ -44,6 +44,7 @@ function emptyForm(): BookFormValue {
     discount_price: "",
     category_ids: [],
     keywords: "",
+    featured: false,
   };
 }
 
@@ -96,6 +97,7 @@ async function submit() {
       discount_price: form.value.discount_price ? Number(form.value.discount_price) : null,
       category_ids: form.value.category_ids,
       keywords: form.value.keywords.split(",").map((k) => k.trim()).filter(Boolean),
+      featured: form.value.featured,
     };
     const created = await api<BookOwnerView>("/books/admin", { method: "POST", body: payload });
     toast.success(t("admin.books.create_success"));
@@ -152,6 +154,7 @@ async function submit() {
         :error="error"
         :submit-label="t('admin.actions.create')"
         :cancel-to="localePath('/admin/books')"
+        show-featured
         @submit="submit"
       />
     </template>

@@ -1509,6 +1509,7 @@
     "section_pricing": "Pricing",
     "section_keywords": "Keywords",
     "section_files": "Files",
+    "section_flags": "Admin flags",
     "form": {
       "title_field": "Title ({lang})",
       "title_required_hint": "At least one language is required.",
@@ -1538,7 +1539,9 @@
       "keywords": "Keywords",
       "keywords_hint": "Comma-separated. Helps SEO and search.",
       "keywords_placeholder": "medicine, cardiology, ...",
-      "lang_hint": "Switch between language tabs"
+      "lang_hint": "Switch between language tabs",
+      "featured": "Featured book",
+      "featured_hint": "Highlighted on the homepage and catalogue top"
     },
     "errors": {
       "title_required": "Enter the title in at least one language",
@@ -1551,6 +1554,7 @@
       "file_hint": "PDF only, max 100 MB. The demo is generated automatically.",
       "demo_title": "Demo PDF",
       "demo_hint": "Generated automatically — no upload needed",
+      "demo_hint_manual": "PDF, max 50 MB. Overrides the auto-generated demo.",
       "no_file": "Not uploaded",
       "uploaded": "Uploaded",
       "uploading": "Uploading…",

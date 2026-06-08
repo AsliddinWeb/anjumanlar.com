@@ -19,6 +19,7 @@ from app.dependencies import require_admin, require_author
 from app.models import BookStatus, User
 from app.schemas.book import (
     BookAdminCreate,
+    BookAdminUpdate,
     BookCreate,
     BookList,
     BookOwnerList,
@@ -222,6 +223,25 @@ async def upload_cover(
 
 
 @router.post(
+    "/{book_id}/demo",
+    response_model=BookOwnerView,
+    summary="Upload a custom demo PDF (overrides the auto-generated excerpt)",
+)
+async def upload_book_demo(
+    book_id: UUID,
+    user: Annotated[User, Depends(require_author)],
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+) -> BookOwnerView:
+    raw = await file.read()
+    book = await book_service.set_demo(
+        db, user, book_id, raw, file.content_type or "application/octet-stream"
+    )
+    await db.commit()
+    return BookOwnerView.model_validate(book)
+
+
+@router.post(
     "/{book_id}/file",
     response_model=BookOwnerView,
     summary="Upload the canonical PDF (extracts page count + file size)",
@@ -299,7 +319,7 @@ async def admin_create_book(
 )
 async def admin_patch_book(
     book_id: UUID,
-    data: BookUpdate,
+    data: BookAdminUpdate,
     admin: Annotated[User, Depends(require_admin)],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:

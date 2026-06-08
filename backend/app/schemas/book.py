@@ -63,6 +63,14 @@ class BookAdminCreate(BookCreate):
     caller, which admins typically don't have)."""
 
     author_id: UUID
+    featured: bool = False
+
+
+class BookAdminUpdate(BookUpdate):
+    """Admin PATCH payload — adds admin-only fields that authors are not
+    allowed to flip (currently ``featured``)."""
+
+    featured: bool | None = None
 
 
 # ----- Read paths -----
