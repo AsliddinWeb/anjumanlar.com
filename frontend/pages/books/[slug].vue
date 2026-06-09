@@ -246,10 +246,9 @@ const similarBooks = computed<BookPublic[]>(() => {
             />
 
             <div class="flex flex-col gap-2">
-              <CartButton
+              <BookBuyButton
                 v-if="!book.is_free"
                 :book="book"
-                variant="button"
                 size="lg"
               />
               <UiButton

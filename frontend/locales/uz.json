@@ -1283,7 +1283,12 @@
     "cta": {
       "read": "O'qish",
       "coming_soon": "To'lov tizimi keyingi bosqichda ulanadi",
-      "get_free": "Bepul olish"
+      "get_free": "Bepul olish",
+      "buy_now": "Sotib olish"
+    },
+    "errors": {
+      "already_owned": "Bu kitob allaqachon kutubxonangizda",
+      "buy_failed": "Sotib olib bo'lmadi. Iltimos qaytadan urinib ko'ring."
     },
     "demo_title": "Demo varaqlar",
     "demo_subtitle": "Sotib olishdan oldin bir nechta sahifani ko'rib chiqing",

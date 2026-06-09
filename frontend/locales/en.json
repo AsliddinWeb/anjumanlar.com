@@ -1283,7 +1283,12 @@
     "cta": {
       "read": "Read",
       "coming_soon": "Payment integration arrives in the next phase",
-      "get_free": "Get for free"
+      "get_free": "Get for free",
+      "buy_now": "Buy now"
+    },
+    "errors": {
+      "already_owned": "This book is already in your library",
+      "buy_failed": "Purchase failed. Please try again."
     },
     "demo_title": "Demo pages",
     "demo_subtitle": "Preview a few pages before purchase",
