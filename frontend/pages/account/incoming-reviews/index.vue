@@ -5,13 +5,14 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const toast = useToast();
 const { hasRole } = useAuth();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("review_requests.incoming_title") });
 
@@ -41,11 +42,6 @@ const STATUS_TONE: Record<ReviewRequestStatus, string> = {
   completed: "bg-success/10 text-success",
   cancelled: "bg-error/10 text-error",
 };
-
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric", month: "short", day: "numeric",
-  }).format(new Date(iso));
 
 function setStatus(s: string) {
   const next: Record<string, string> = {};
@@ -183,7 +179,7 @@ async function confirmSubmit() {
             <header class="flex items-start justify-between gap-3 flex-wrap">
               <div class="min-w-0">
                 <div class="text-sm font-medium text-ink">{{ r.requester.full_name }}</div>
-                <div class="text-xs text-ink-tertiary">{{ formatDate(r.created_at) }}</div>
+                <div class="text-xs text-ink-tertiary">{{ formatDate(r.created_at, { withTime: false }) }}</div>
               </div>
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"

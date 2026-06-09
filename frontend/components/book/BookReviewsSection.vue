@@ -6,10 +6,11 @@ const props = defineProps<{
   bookId: string;
 }>();
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const api = useApi();
 const { isAuthenticated } = useAuth();
+const { formatDate } = useFormatDate();
 
 const { data: reviewsRaw, pending, refresh } = await useAsyncData(
   `book:${props.bookId}:reviews`,
@@ -72,9 +73,7 @@ async function submitReview() {
   }
 }
 
-const dateFmt = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, { year: "numeric", month: "short", day: "numeric" })
-    .format(new Date(iso));
+const dateFmt = (iso: string) => formatDate(iso, { withTime: false });
 </script>
 
 <template>

@@ -1,17 +1,14 @@
 <script setup lang="ts">
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
+const { formatDate } = useFormatDate();
 
 useSiteSeo({
   title: t("footer.privacy"),
   description: t("legal.privacy.intro"),
 });
 
-const lastUpdated = new Intl.DateTimeFormat(locale.value, {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-}).format(new Date("2026-05-24"));
+const lastUpdated = formatDate("2026-05-24", { withTime: false });
 
 const sections = computed(() => [
   { id: "intro", label: t("legal.privacy.s_intro") },

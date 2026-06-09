@@ -9,13 +9,14 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const toast = useToast();
 const { user: me } = useAuth();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("admin.users.title") });
 
@@ -151,13 +152,6 @@ const ROLE_ICON: Record<UserRole, IconName> = {
   superadmin: "key",
 };
 
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(iso));
-
 function initials(name: string) {
   return name
     .trim()
@@ -289,7 +283,7 @@ const columns: Column<UserPublic>[] = [
         />
       </template>
       <template #cell-created_at="{ row }">
-        <span class="text-xs text-ink-tertiary">{{ formatDate(row.created_at) }}</span>
+        <span class="text-xs text-ink-tertiary">{{ formatDate(row.created_at, { withTime: false }) }}</span>
       </template>
       <template #actions="{ row }">
         <AdminActionMenu

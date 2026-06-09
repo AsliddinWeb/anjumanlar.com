@@ -6,11 +6,12 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const api = useApi();
 const toast = useToast();
 
@@ -50,16 +51,6 @@ function setQuery(updates: Record<string, string | number | undefined>) {
   }
   if (!("page" in updates)) delete next.page;
   router.push({ query: next });
-}
-
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(iso));
 }
 
 const STATUS_META: Record<OrderPublic["status"], { tone: "success" | "warning" | "info" | "neutral" | "error"; icon: IconName }> = {

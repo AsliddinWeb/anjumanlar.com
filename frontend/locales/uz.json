@@ -73,7 +73,7 @@
     "order_number": "Buyurtma raqami",
     "created_at": "Yaratildi: {date}",
     "pending_hint_title": "To'lov tasdiqlanmoqda",
-    "pending_hint_body": "Banktan tasdiq kelishi 1–5 daqiqa olishi mumkin. Sahifani yangilab turing yoki \"Buyurtmalar\" bo'limidan tekshiring.",
+    "pending_hint_body": "Bankdan tasdiq kelishi 1–5 daqiqa olishi mumkin. Sahifani yangilab turing yoki \"Buyurtmalarim\" bo'limidan holatni tekshiring.",
     "failure_label": "Xatolik tafsiloti",
     "common_reasons": "Mumkin bo'lgan sabablar",
     "reason_insufficient": "Kartada mablag' yetarli emas",
@@ -1288,7 +1288,8 @@
     },
     "errors": {
       "already_owned": "Bu kitob allaqachon kutubxonangizda",
-      "buy_failed": "Sotib olib bo'lmadi. Iltimos qaytadan urinib ko'ring."
+      "buy_failed": "Sotib olib bo'lmadi. Iltimos qaytadan urinib ko'ring.",
+      "payment_unavailable": "To'lov tizimi hozircha ulanmagan. Buyurtma saqlandi — admin sozlagandan keyin to'lashingiz mumkin."
     },
     "demo_title": "Demo varaqlar",
     "demo_subtitle": "Sotib olishdan oldin bir nechta sahifani ko'rib chiqing",

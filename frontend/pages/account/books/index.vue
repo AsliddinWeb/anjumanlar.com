@@ -5,13 +5,14 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const toast = useToast();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("account_books.title") });
 
@@ -76,11 +77,6 @@ const STATUS_TONE: Record<BookStatus, "success" | "warning" | "neutral" | "error
   rejected: "error",
   archived: "neutral",
 };
-
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric", month: "short", day: "numeric",
-  }).format(new Date(iso));
 
 // ---- Delete ----
 const deleteTarget = ref<BookOwnerView | null>(null);
@@ -236,7 +232,7 @@ async function confirmDelete() {
                 </span>
                 <span class="inline-flex items-center gap-1">
                   <Icon name="arrow-path" class="h-3 w-3" />
-                  {{ formatDate(book.created_at) }}
+                  {{ formatDate(book.created_at, { withTime: false }) }}
                 </span>
               </div>
             </div>

@@ -4,11 +4,12 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("review_requests.my_requests_title") });
 
@@ -45,10 +46,6 @@ function setStatus(s: string) {
   router.push({ query: next });
 }
 
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric", month: "short", day: "numeric",
-  }).format(new Date(iso));
 </script>
 
 <template>
@@ -106,7 +103,7 @@ const formatDate = (iso: string) =>
                 <div class="text-sm font-medium text-ink">
                   {{ r.author.display_name }}
                 </div>
-                <div class="text-xs text-ink-tertiary">{{ formatDate(r.created_at) }}</div>
+                <div class="text-xs text-ink-tertiary">{{ formatDate(r.created_at, { withTime: false }) }}</div>
               </div>
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"

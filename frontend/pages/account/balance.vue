@@ -10,6 +10,7 @@ const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const api = useApi();
 const toast = useToast();
+const { formatDate } = useFormatDate();
 
 useSiteSeo({ title: t("balance.title"), noindex: true });
 
@@ -99,16 +100,6 @@ async function submitWithdrawal() {
   finally {
     formSubmitting.value = false;
   }
-}
-
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(iso));
 }
 
 const STATUS_META: Record<WithdrawalPublic["status"], { tone: string; icon: IconName; label: string }> = {

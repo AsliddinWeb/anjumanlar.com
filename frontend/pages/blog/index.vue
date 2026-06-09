@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { BlogPostList, BlogPostPublic } from "~/types/api";
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
@@ -35,15 +36,6 @@ const heroPost = computed<BlogPostPublic | null>(() =>
 const gridPosts = computed<BlogPostPublic[]>(() =>
   heroPost.value ? posts.value.slice(1) : posts.value,
 );
-
-function formatDate(iso: string | null) {
-  if (!iso) return "";
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(iso));
-}
 
 // Rough reading time (200 wpm) — empty body → 1 min.
 function readingMinutes(post: BlogPostPublic): number {
@@ -150,7 +142,7 @@ function changePage(page: number) {
             <div class="flex items-center gap-3 pt-1 text-xs text-ink-tertiary">
               <span class="inline-flex items-center gap-1">
                 <Icon name="sparkles" class="h-3.5 w-3.5" />
-                {{ formatDate(heroPost.published_at) }}
+                {{ formatDate(heroPost.published_at, { withTime: false }) }}
               </span>
               <span>·</span>
               <span class="inline-flex items-center gap-1">
@@ -200,7 +192,7 @@ function changePage(page: number) {
                     {{ localised(post.excerpt) }}
                   </p>
                   <div class="flex items-center gap-2 pt-1 text-xs text-ink-tertiary">
-                    <span>{{ formatDate(post.published_at) }}</span>
+                    <span>{{ formatDate(post.published_at, { withTime: false }) }}</span>
                     <span>·</span>
                     <span>{{ t("blog.reading_minutes", { n: readingMinutes(post) }) }}</span>
                   </div>

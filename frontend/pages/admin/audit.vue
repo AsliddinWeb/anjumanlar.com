@@ -8,11 +8,12 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("admin.audit.title") });
 
@@ -72,16 +73,6 @@ function resetFilters() {
 }
 
 const filtersDirty = computed(() => Boolean(actionFilter.value || searchQuery.value));
-
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).format(new Date(iso));
 
 const actionOptions: AuditAction[] = [
   "register",

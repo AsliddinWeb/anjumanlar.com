@@ -4,9 +4,10 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const route = useRoute();
 const api = useApi();
 
@@ -31,15 +32,6 @@ useSiteSeo({
   noindex: true,
 });
 
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(iso));
-}
 </script>
 
 <template>

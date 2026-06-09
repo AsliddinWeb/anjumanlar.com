@@ -42,7 +42,16 @@ async function onBuy() {
       window.location.href = response.payment_url;
       return;
     }
-    await navigateTo(localePath(`/checkout/success?order=${response.order.id}`));
+    // payment_url is null for free books or when Payme keys are missing.
+    // Free books → land in the library directly. Paid orders → keep the
+    // order in pending state and surface a clear error, then send the
+    // user to /orders where they can retry once payment is configured.
+    if (props.book.is_free || Number(response.order.total) === 0) {
+      await navigateTo(localePath(`/checkout/success?order=${response.order.id}`));
+      return;
+    }
+    toast.error(t("book.errors.payment_unavailable"));
+    await navigateTo(localePath("/account/orders"));
   }
   catch (err: unknown) {
     const code = (err as { data?: { details?: { code?: string } } })?.data?.details?.code;

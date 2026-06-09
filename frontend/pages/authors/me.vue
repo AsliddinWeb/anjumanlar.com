@@ -13,9 +13,10 @@ interface AuthorPrivate extends AuthorPublic {
   pending_balance: number;
 }
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const { user, refresh: refreshAuth } = useAuth();
 const api = useApi();
 const toast = useToast();
@@ -188,8 +189,7 @@ const initials = computed(() => {
 
 const joinedAt = computed(() => {
   if (!profile.value) return "";
-  return new Intl.DateTimeFormat(locale.value, { year: "numeric", month: "long" })
-    .format(new Date(profile.value.created_at));
+  return formatDate(profile.value.created_at, { withTime: false });
 });
 </script>
 

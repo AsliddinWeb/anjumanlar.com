@@ -9,12 +9,13 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const toast = useToast();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("admin.withdrawals.title") });
 
@@ -79,17 +80,6 @@ const STATUS_ICON: Record<WithdrawalStatus, IconName> = {
   completed: "check-circle-solid",
   rejected: "close",
   cancelled: "close",
-};
-
-const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(iso));
 };
 
 const processingBusy = ref<Set<string>>(new Set());

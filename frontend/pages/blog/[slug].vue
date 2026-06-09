@@ -4,6 +4,7 @@ import type { BlogPostList, BlogPostPublic } from "~/types/api";
 const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const route = useRoute();
 const api = useApi();
 
@@ -55,15 +56,6 @@ useStructuredData([
     { name: title.value, url: `${siteUrl}/${locale.value}/blog/${post.value.slug}` },
   ]),
 ]);
-
-function formatDate(iso: string | null) {
-  if (!iso) return "";
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(iso));
-}
 
 const readingMinutes = computed(() => {
   const text = body.value + " " + excerpt.value;
@@ -121,7 +113,7 @@ async function copyLink() {
       <div class="flex flex-wrap items-center gap-4 text-sm text-ink-tertiary">
         <span class="inline-flex items-center gap-1.5">
           <Icon name="sparkles" class="h-4 w-4" />
-          {{ formatDate(post.published_at) }}
+          {{ formatDate(post.published_at, { withTime: false }) }}
         </span>
         <span>·</span>
         <span class="inline-flex items-center gap-1.5">
@@ -226,7 +218,7 @@ async function copyLink() {
                 <h3 class="font-serif text-base text-ink leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {{ localised(p.title, p.slug) }}
                 </h3>
-                <p class="text-xs text-ink-tertiary">{{ formatDate(p.published_at) }}</p>
+                <p class="text-xs text-ink-tertiary">{{ formatDate(p.published_at, { withTime: false }) }}</p>
               </div>
             </NuxtLink>
           </li>

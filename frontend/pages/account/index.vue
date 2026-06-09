@@ -4,11 +4,12 @@ import type { IconName } from "~/utils/icons";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const { user, isVerified, hasRole } = useAuth();
 const api = useApi();
 const cart = useCartStore();
+const { formatDate } = useFormatDate();
 
 useSiteSeo({ title: t("account.title"), noindex: true });
 
@@ -103,14 +104,6 @@ const tiles = computed<Tile[]>(() => {
   return list;
 });
 
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(iso));
-}
-
 const roleLabel = computed(() => t(`account.roles.${user.value?.role ?? "reader"}`));
 </script>
 
@@ -202,7 +195,7 @@ const roleLabel = computed(() => t(`account.roles.${user.value?.role ?? "reader"
                 {{ entry.book.title?.uz ?? entry.book.slug }}
               </h3>
               <p class="text-[10px] text-ink-tertiary">
-                {{ formatDate(entry.acquired_at) }}
+                {{ formatDate(entry.acquired_at, { withTime: false }) }}
               </p>
             </div>
           </NuxtLink>

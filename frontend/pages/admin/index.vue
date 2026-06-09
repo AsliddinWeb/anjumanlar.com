@@ -17,10 +17,11 @@ interface StatsSnapshot {
   generated_at: string;
 }
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const { user } = useAuth();
 const api = useApi();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("admin.title") });
 
@@ -72,13 +73,7 @@ const greeting = computed(() => {
 
 const generatedAt = computed(() => {
   if (!stats.value) return "";
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(stats.value.generated_at));
+  return formatDate(stats.value.generated_at);
 });
 </script>
 

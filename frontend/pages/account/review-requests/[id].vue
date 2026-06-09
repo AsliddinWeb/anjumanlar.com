@@ -5,13 +5,14 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const toast = useToast();
 const { user } = useAuth();
+const { formatDate } = useFormatDate();
 
 const requestId = computed(() => route.params.id as string);
 
@@ -37,11 +38,6 @@ const STATUS_TONE: Record<ReviewRequestStatus, string> = {
   completed: "bg-success/10 text-success",
   cancelled: "bg-error/10 text-error",
 };
-
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
-  }).format(new Date(iso));
 
 // ---- Manuscript upload (requester only) ----
 const fileInput = ref<HTMLInputElement | null>(null);

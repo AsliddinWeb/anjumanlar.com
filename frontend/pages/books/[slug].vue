@@ -5,6 +5,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const api = useApi();
 
 const slug = computed(() => route.params.slug as string);
@@ -88,15 +89,6 @@ const languageLabel = computed(() => {
   };
   return map[book.value.language] ?? book.value.language;
 });
-
-const formatDate = (iso: string | null) => {
-  if (!iso) return "";
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(iso));
-};
 
 const authorInitials = computed(() => {
   const parts = book.value.author.display_name.trim().split(/\s+/).slice(0, 2);
@@ -374,7 +366,7 @@ const similarBooks = computed<BookPublic[]>(() => {
                 <Icon name="sparkles" class="h-3.5 w-3.5" />
                 {{ t("book.released_on") }}
               </dt>
-              <dd class="text-ink text-right">{{ formatDate(book.published_at) }}</dd>
+              <dd class="text-ink text-right">{{ formatDate(book.published_at, { withTime: false }) }}</dd>
             </div>
           </dl>
         </div>

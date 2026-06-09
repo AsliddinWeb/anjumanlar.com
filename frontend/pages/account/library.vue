@@ -4,11 +4,12 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({ middleware: "auth" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const api = useApi();
 const toast = useToast();
 
@@ -57,14 +58,6 @@ function setQuery(updates: Record<string, string | undefined>) {
     else next[k] = v;
   }
   router.push({ query: next });
-}
-
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(iso));
 }
 
 const downloading = ref<Set<string>>(new Set());
@@ -198,7 +191,7 @@ async function downloadBook(bookId: string, bookTitle: string) {
           </p>
           <p class="inline-flex items-center gap-1 text-[10px] text-ink-tertiary">
             <Icon name="sparkles" class="h-3 w-3" />
-            {{ t("library.acquired", { date: formatDate(entry.acquired_at) }) }}
+            {{ t("library.acquired", { date: formatDate(entry.acquired_at, { withTime: false }) }) }}
           </p>
           <div class="mt-auto pt-2">
             <UiButton

@@ -1288,7 +1288,8 @@
     },
     "errors": {
       "already_owned": "This book is already in your library",
-      "buy_failed": "Purchase failed. Please try again."
+      "buy_failed": "Purchase failed. Please try again.",
+      "payment_unavailable": "Payment is not connected yet. Your order is saved — you'll be able to pay once an admin configures it."
     },
     "demo_title": "Demo pages",
     "demo_subtitle": "Preview a few pages before purchase",

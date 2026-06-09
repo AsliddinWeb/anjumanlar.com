@@ -6,6 +6,7 @@ const route = useRoute();
 const router = useRouter();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const api = useApi();
 
 const slug = computed(() => route.params.slug as string);
@@ -89,10 +90,7 @@ const initials = computed(() =>
     .join(""),
 );
 
-const joinedAt = computed(() =>
-  new Intl.DateTimeFormat(locale.value, { year: "numeric", month: "long" })
-    .format(new Date(author.value.created_at)),
-);
+const joinedAt = computed(() => formatDate(author.value.created_at, { withTime: false }));
 
 const socialEntries = computed(() => Object.entries(author.value.social_links ?? {}));
 

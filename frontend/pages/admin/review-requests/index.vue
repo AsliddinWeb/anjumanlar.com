@@ -7,11 +7,12 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
+const { formatDate } = useFormatDate();
 
 useHead({ title: t("review_requests.title") });
 
@@ -38,11 +39,6 @@ const STATUS_TONE: Record<ReviewRequestStatus, string> = {
   completed: "bg-success/10 text-success",
   cancelled: "bg-error/10 text-error",
 };
-
-const formatDate = (iso: string) =>
-  new Intl.DateTimeFormat(locale.value, {
-    year: "numeric", month: "short", day: "numeric",
-  }).format(new Date(iso));
 
 function setStatus(s: string) {
   const next: Record<string, string> = {};
@@ -128,7 +124,7 @@ function setStatus(s: string) {
             </div>
             <p v-if="r.notes" class="text-xs text-ink-secondary line-clamp-2 whitespace-pre-line">{{ r.notes }}</p>
             <div class="flex items-center gap-4 text-xs text-ink-tertiary">
-              <span>{{ formatDate(r.created_at) }}</span>
+              <span>{{ formatDate(r.created_at, { withTime: false }) }}</span>
               <span v-if="r.final_price != null" class="text-primary tabular-nums">
                 {{ formatPrice(r.final_price) }}
               </span>

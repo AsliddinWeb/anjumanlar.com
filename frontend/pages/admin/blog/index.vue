@@ -8,9 +8,10 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
 const { localised } = useLocaleText();
+const { formatDate } = useFormatDate();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
@@ -73,15 +74,6 @@ function resetFilters() {
 }
 
 const filtersDirty = computed(() => Boolean(statusFilter.value || searchQuery.value));
-
-const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
-  return new Intl.DateTimeFormat(locale.value, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(iso));
-};
 
 const STATUS_TONE: Record<BlogPostStatus, "success" | "neutral" | "warning"> = {
   draft: "neutral",
@@ -227,7 +219,7 @@ const columns: Column<BlogPostAdminView>[] = [
         />
       </template>
       <template #cell-published_at="{ row }">
-        <span class="text-xs text-ink-tertiary">{{ formatDate(row.published_at) }}</span>
+        <span class="text-xs text-ink-tertiary">{{ formatDate(row.published_at, { withTime: false }) || "—" }}</span>
       </template>
       <template #actions="{ row }">
         <AdminActionMenu
