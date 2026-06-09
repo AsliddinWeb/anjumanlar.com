@@ -195,7 +195,9 @@ class PaymeMerchant:
             raise PaymeError(-31051)
 
         # Only one open payment per order — Paycom won't double-charge
-        # an order, but our own client could trigger two checkouts.
+        # an order, but our own client could trigger two checkouts. Paycom's
+        # CreateTransaction sandbox specifically asserts this scenario maps
+        # into the -31099…-31050 range, so the catch-all is the right pick.
         other_open = (
             await self.db.execute(
                 select(Payment).where(
@@ -205,7 +207,7 @@ class PaymeMerchant:
             )
         ).scalar_one_or_none()
         if other_open is not None:
-            raise PaymeError(-31008)
+            raise PaymeError(-31099)
 
         payment = Payment(
             order_id=order.id,
