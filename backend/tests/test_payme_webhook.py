@@ -38,7 +38,7 @@ from app.services import order_service
 
 PW = "Hunter22!"
 TEST_KEY = "test-payme-key-hunter22"
-WEBHOOK_PATH = "/api/v1/payments/payme/webhook"
+WEBHOOK_PATH = "/api/v1/payments/payme/callback"
 
 
 @pytest.fixture(autouse=True)

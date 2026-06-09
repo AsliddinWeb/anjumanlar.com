@@ -1,6 +1,6 @@
 """Payme Merchant API JSON-RPC handler.
 
-Six methods land on ``POST /api/v1/payments/payme/webhook`` and we route
+Six methods land on ``POST /api/v1/payments/payme/callback`` and we route
 them via a dispatch table to keep the per-method logic small.
 
 Idempotency is the trickiest piece: Paycom retries on network blips,

@@ -1,6 +1,6 @@
 """Payment endpoints.
 
-- ``POST /payments/payme/webhook`` — Paycom Merchant API JSON-RPC.
+- ``POST /payments/payme/callback`` — Paycom Merchant API JSON-RPC.
   Authenticated with HTTP Basic (``Paycom:<PAYME_SECRET_KEY>``).
   Auth failures must return the JSON-RPC error envelope rather than an
   HTTP 401 so the Paycom side can ingest the response per spec.
@@ -66,7 +66,7 @@ def _basic_auth_ok(authorization: str | None) -> bool:
 
 
 @router.post(
-    "/payme/webhook",
+    "/payme/callback",
     summary="Paycom Merchant API JSON-RPC endpoint",
     include_in_schema=False,
 )
