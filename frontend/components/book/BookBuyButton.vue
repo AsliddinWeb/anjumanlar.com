@@ -76,7 +76,7 @@ async function onBuy() {
     :disabled="pending"
     @click="onBuy"
   >
-    <Icon name="lock" class="h-4 w-4" />
+    <Icon name="cart" class="h-4 w-4" />
     {{ pending ? t("checkout.redirecting") : t("book.cta.buy_now") }}
   </UiButton>
 </template>
