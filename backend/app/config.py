@@ -74,10 +74,12 @@ class Settings(BaseSettings):
     EMAIL_FROM_NAME: str = "Monografiya.com"
 
     # ----- Payme -----
+    # Defaults are production; override in .env to point at the sandbox
+    # (https://checkout.test.paycom.uz) when running merchant-API tests.
     PAYME_MERCHANT_ID: str = ""
     PAYME_SECRET_KEY: str = ""
-    PAYME_ENDPOINT: str = "https://checkout.test.paycom.uz/api"
-    PAYME_CHECKOUT_URL: str = "https://checkout.test.paycom.uz"
+    PAYME_ENDPOINT: str = "https://checkout.paycom.uz/api"
+    PAYME_CHECKOUT_URL: str = "https://checkout.paycom.uz"
 
     # ----- CORS -----
     CORS_ORIGINS: str = "http://localhost:8308,http://127.0.0.1:8308"
