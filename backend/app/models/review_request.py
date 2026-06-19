@@ -31,7 +31,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, String, Text
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -40,6 +40,7 @@ from app.db.base import Base, TimestampMixin, UUIDMixin
 
 if TYPE_CHECKING:
     from app.models.author_profile import AuthorProfile
+    from app.models.review_category import ReviewCategory
     from app.models.user import User
 
 
@@ -60,11 +61,25 @@ class ReviewRequest(UUIDMixin, TimestampMixin, Base):
         nullable=False,
         index=True,
     )
-    author_id: Mapped[UUID] = mapped_column(
+    # ``author_id`` is now nullable — the redesigned admin-driven flow no
+    # longer asks the requester to pick a target author. Existing rows keep
+    # their pointer; new ones can be assigned by an admin later if needed.
+    author_id: Mapped[UUID | None] = mapped_column(
         PG_UUID(as_uuid=True),
         ForeignKey("author_profiles.id", ondelete="RESTRICT"),
-        nullable=False,
+        nullable=True,
         index=True,
+    )
+
+    category_id: Mapped[UUID | None] = mapped_column(
+        PG_UUID(as_uuid=True),
+        ForeignKey("review_categories.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    is_international: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
     )
 
     # Manuscript (the work being reviewed) — uploaded after row creation.
@@ -107,7 +122,8 @@ class ReviewRequest(UUIDMixin, TimestampMixin, Base):
 
     # Relationships
     requester: Mapped[User] = relationship(foreign_keys=[requester_id])
-    author: Mapped[AuthorProfile] = relationship(foreign_keys=[author_id])
+    author: Mapped[AuthorProfile | None] = relationship(foreign_keys=[author_id])
+    category: Mapped[ReviewCategory | None] = relationship(back_populates="requests")
 
     def __repr__(self) -> str:
         return f"<ReviewRequest {self.id} status={self.status.value}>"

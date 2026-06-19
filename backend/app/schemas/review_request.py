@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -16,23 +16,27 @@ PriceField = Annotated[float, Field(ge=0, le=1_000_000_000)]
 # ----- Write paths -----
 
 class ReviewRequestCreate(BaseModel):
-    """Reader creates a request — picks the author, optionally adds notes
-    and a proposed price. The manuscript file lands via a separate
-    upload endpoint after the row exists."""
+    """Reader creates a request.
 
-    author_id: UUID
+    Author is no longer chosen by the requester — admin sees the request,
+    picks the price, optionally assigns a reviewer. The requester supplies
+    a category (kind of work) and flags whether the review should be
+    international. Notes are optional.
+    """
+
+    category_id: UUID
+    is_international: bool = False
     notes: str | None = Field(default=None, max_length=4000)
-    proposed_price: PriceField | None = None
 
 
 class ReviewRequestQuote(BaseModel):
-    """Author sets the final price."""
+    """Admin sets the final price."""
 
     final_price: PriceField
 
 
 class ReviewRequestSubmit(BaseModel):
-    """Author submits the review."""
+    """Admin submits the review."""
 
     review_text: str = Field(..., min_length=1, max_length=20_000)
 
@@ -59,6 +63,13 @@ class ReviewRequestRequesterRef(BaseModel):
     email: str
 
 
+class ReviewRequestCategoryRef(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    slug: str
+    name: dict[str, Any]
+
+
 class ReviewRequestPublic(BaseModel):
     """Full row payload shared by both sides + admin."""
 
@@ -66,7 +77,9 @@ class ReviewRequestPublic(BaseModel):
 
     id: UUID
     requester: ReviewRequestRequesterRef
-    author: ReviewRequestAuthorRef
+    author: ReviewRequestAuthorRef | None = None
+    category: ReviewRequestCategoryRef | None = None
+    is_international: bool = False
     manuscript_url: str | None
     manuscript_filename: str | None
     notes: str | None

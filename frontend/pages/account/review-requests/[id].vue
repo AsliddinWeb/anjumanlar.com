@@ -13,6 +13,7 @@ const api = useApi();
 const toast = useToast();
 const { user } = useAuth();
 const { formatDate } = useFormatDate();
+const { localised } = useLocaleText();
 
 const requestId = computed(() => route.params.id as string);
 
@@ -25,7 +26,7 @@ const r = computed(() => rRaw.value as ReviewRequestPublic | null);
 
 useHead({
   title: computed(() => r.value
-    ? `${t("review_requests.detail_title")} — ${r.value.author.display_name}`
+    ? `${t("review_requests.detail_title")} — ${r.value.category ? localised(r.value.category.name, r.value.category.slug) : t("review_requests.no_category")}`
     : t("review_requests.detail_title"),
   ),
 });
@@ -137,8 +138,12 @@ const canCancel = computed(() =>
             {{ t("review_requests.detail_title") }}
           </h1>
           <p class="text-sm text-ink-secondary mt-1">
-            <Icon name="user-circle" class="inline h-4 w-4 align-text-bottom mr-1" />
-            {{ r.author.display_name }}
+            <Icon name="folder" class="inline h-4 w-4 align-text-bottom mr-1" />
+            {{ r.category ? localised(r.category.name, r.category.slug) : t("review_requests.no_category") }}
+            <span v-if="r.is_international" class="inline-flex items-center gap-1 ml-2 px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium align-middle">
+              <Icon name="sparkles" class="h-3 w-3" />
+              {{ t("review_requests.international_badge") }}
+            </span>
             <span class="text-ink-tertiary mx-1">·</span>
             {{ formatDate(r.created_at) }}
           </p>

@@ -167,6 +167,7 @@
       "audit": "Audit log",
       "blog": "Blog",
       "review_requests": "Review requests",
+      "review_categories": "Review categories",
       "settings": "Site settings"
     },
     "cards": {
@@ -535,6 +536,76 @@
       "already_active": "Already active",
       "theme_applied": "\"{name}\" theme applied",
       "ornament_applied": "\"{name}\" ornament applied"
+    },
+    "review_categories": {
+      "title": "Review categories",
+      "subtitle": "Manage the categories users pick from on the request form",
+      "add_button": "New category",
+      "new_page_title": "New review category",
+      "edit_page_title": "Edit category",
+      "empty_title": "No categories",
+      "empty_body": "Add the first review category.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "create_success": "Category created",
+      "update_success": "Category updated",
+      "delete_success": "Category \"{name}\" deleted",
+      "delete_confirm_body": "Delete \"{name}\"? Existing requests linked to it will lose their category.",
+      "section_identity": "Identity",
+      "table": {
+        "name": "Name",
+        "slug": "Slug",
+        "sort": "Order",
+        "active": "Status"
+      },
+      "form": {
+        "slug": "Slug",
+        "slug_hint": "URL-safe identifier — lowercase + dashes (article, dissertation, …)",
+        "sort_order": "Sort order",
+        "is_active": "Active",
+        "is_active_hint": "When off, users can't pick this category",
+        "name_field": "Name ({lang})",
+        "description_field": "Description ({lang})"
+      },
+      "errors": {
+        "slug_required": "Enter a slug",
+        "name_required": "Enter a name in at least one language"
+      }
+    },
+    "review_requests": {
+      "section_quote": "Price",
+      "section_paid": "Payment",
+      "section_review": "Review",
+      "not_quoted_yet": "Price not set yet",
+      "not_paid_yet": "Not paid yet",
+      "no_review_yet": "Review not written yet",
+      "actions": {
+        "set_quote": "Set price",
+        "update_quote": "Update price",
+        "mark_paid": "Mark as paid",
+        "submit_review": "Submit review",
+        "cancel": "Cancel"
+      },
+      "quote_modal_title": "Set the price",
+      "quote_price_field": "Price (UZS)",
+      "quote_price_hint": "The amount the user will pay",
+      "submit_modal_title": "Submit the review",
+      "review_text_field": "Review text",
+      "review_file_field": "Supporting file (optional)",
+      "review_file_hint": "PDF only, max 50 MB",
+      "cancel_modal_title": "Cancel request",
+      "cancel_modal_body": "This action can't be undone. The user will be notified.",
+      "cancel_reason_field": "Reason (optional)",
+      "success": {
+        "quoted": "Price set",
+        "paid": "Payment confirmed",
+        "submitted": "Review submitted",
+        "cancelled": "Request cancelled"
+      },
+      "errors": {
+        "invalid_price": "Invalid price — enter a non-negative number",
+        "review_required": "Enter the review text"
+      }
     },
     "audit": {
       "title": "Audit log",
@@ -1379,8 +1450,20 @@
     "title": "Peer-review requests",
     "subtitle": "Commission a review of your manuscript from an author",
     "new_title": "New review request",
-    "new_subtitle": "Upload your manuscript and pick an author. The author sets a price, you pay, then receive the review.",
+    "new_subtitle": "Pick a category and add a note. The admin sets a price, you pay, then download the finished review.",
     "section_author": "Choose an author",
+    "section_category": "Review type",
+    "category_field": "Category",
+    "category_hint": "What kind of work needs reviewing",
+    "category_required": "Pick a category",
+    "category_select_placeholder": "Choose a category…",
+    "international_field": "International review",
+    "international_hint": "For international publication / expert assessment",
+    "international_badge": "International",
+    "manuscript_upload_after_create_hint": "Once the request is created you can upload the manuscript PDF.",
+    "no_category": "No category",
+    "no_categories_title": "No categories set up",
+    "no_categories_body": "No review categories configured yet. Contact admin.",
     "author_field": "Author",
     "author_required": "Pick an author",
     "author_select_placeholder": "Choose an author…",
@@ -1434,6 +1517,10 @@
     "detail_title": "Review request",
     "detail_back": "Back to list",
     "fields": {
+      "requester": "Requester",
+      "category": "Category",
+      "international": "International",
+      "created_at": "Created",
       "notes": "Requester notes",
       "proposed_price": "Proposed price",
       "final_price": "Final price",

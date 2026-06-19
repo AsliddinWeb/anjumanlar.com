@@ -257,10 +257,18 @@ export interface ReviewRequestRequesterRef {
   email: string;
 }
 
+export interface ReviewRequestCategoryRef {
+  id: string;
+  slug: string;
+  name: LocalisedText;
+}
+
 export interface ReviewRequestPublic {
   id: string;
   requester: ReviewRequestRequesterRef;
-  author: ReviewRequestAuthorRef;
+  author: ReviewRequestAuthorRef | null;
+  category: ReviewRequestCategoryRef | null;
+  is_international: boolean;
   manuscript_url: string | null;
   manuscript_filename: string | null;
   notes: string | null;
@@ -282,6 +290,21 @@ export interface ReviewRequestList {
   total: number;
   page: number;
   page_size: number;
+}
+
+export interface ReviewCategoryPublic {
+  id: string;
+  slug: string;
+  name: LocalisedText;
+  description: LocalisedText;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ReviewCategoryList {
+  items: ReviewCategoryPublic[];
+  total: number;
 }
 
 export interface AdminUserUpdate {

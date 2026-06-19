@@ -167,6 +167,7 @@
       "audit": "Аудит-журнал",
       "blog": "Блог",
       "review_requests": "Заявки на рецензию",
+      "review_categories": "Категории рецензий",
       "settings": "Настройки сайта"
     },
     "cards": {
@@ -535,6 +536,76 @@
       "already_active": "Уже активно",
       "theme_applied": "Тема \"{name}\" применена",
       "ornament_applied": "Орнамент \"{name}\" применён"
+    },
+    "review_categories": {
+      "title": "Категории рецензий",
+      "subtitle": "Управление типами рецензий, доступных в форме заявки",
+      "add_button": "Новая категория",
+      "new_page_title": "Новая категория рецензий",
+      "edit_page_title": "Редактировать категорию",
+      "empty_title": "Категорий нет",
+      "empty_body": "Добавьте первую категорию рецензий.",
+      "active": "Активна",
+      "inactive": "Неактивна",
+      "create_success": "Категория создана",
+      "update_success": "Категория обновлена",
+      "delete_success": "Категория \"{name}\" удалена",
+      "delete_confirm_body": "Удалить категорию \"{name}\"? Связь в существующих заявках обнулится.",
+      "section_identity": "Основные данные",
+      "table": {
+        "name": "Название",
+        "slug": "Slug",
+        "sort": "Порядок",
+        "active": "Статус"
+      },
+      "form": {
+        "slug": "Slug",
+        "slug_hint": "Для URL — латиница и дефисы (article, dissertation, …)",
+        "sort_order": "Порядок сортировки",
+        "is_active": "Активна",
+        "is_active_hint": "Если выключена — пользователи её не увидят",
+        "name_field": "Название ({lang})",
+        "description_field": "Описание ({lang})"
+      },
+      "errors": {
+        "slug_required": "Введите slug",
+        "name_required": "Введите название хотя бы на одном языке"
+      }
+    },
+    "review_requests": {
+      "section_quote": "Цена",
+      "section_paid": "Оплата",
+      "section_review": "Рецензия",
+      "not_quoted_yet": "Цена не назначена",
+      "not_paid_yet": "Не оплачена",
+      "no_review_yet": "Рецензия не написана",
+      "actions": {
+        "set_quote": "Назначить цену",
+        "update_quote": "Изменить цену",
+        "mark_paid": "Отметить оплаченной",
+        "submit_review": "Отправить рецензию",
+        "cancel": "Отменить"
+      },
+      "quote_modal_title": "Назначить цену",
+      "quote_price_field": "Цена (UZS)",
+      "quote_price_hint": "Эту сумму оплатит пользователь",
+      "submit_modal_title": "Отправить рецензию",
+      "review_text_field": "Текст рецензии",
+      "review_file_field": "Дополнительный файл (необязательно)",
+      "review_file_hint": "Только PDF, макс. 50 МБ",
+      "cancel_modal_title": "Отменить заявку",
+      "cancel_modal_body": "Это действие необратимо. Пользователь получит уведомление.",
+      "cancel_reason_field": "Причина (необязательно)",
+      "success": {
+        "quoted": "Цена назначена",
+        "paid": "Оплата подтверждена",
+        "submitted": "Рецензия отправлена",
+        "cancelled": "Заявка отменена"
+      },
+      "errors": {
+        "invalid_price": "Неверная цена — введите неотрицательное число",
+        "review_required": "Введите текст рецензии"
+      }
     },
     "audit": {
       "title": "Аудит-журнал",
@@ -1379,8 +1450,20 @@
     "title": "Заявки на рецензию",
     "subtitle": "Получите рецензию от автора на свою научную работу",
     "new_title": "Новая заявка на рецензию",
-    "new_subtitle": "Загрузите рукопись и выберите автора. Автор назначит цену, вы оплачиваете, затем получаете рецензию.",
+    "new_subtitle": "Выберите категорию и добавьте комментарий. Админ назначит цену, вы оплатите, затем сможете скачать готовую рецензию.",
     "section_author": "Выбор автора",
+    "section_category": "Тип рецензии",
+    "category_field": "Категория",
+    "category_hint": "Для какого вида работы нужна рецензия",
+    "category_required": "Выберите категорию",
+    "category_select_placeholder": "Выберите категорию…",
+    "international_field": "Международная рецензия",
+    "international_hint": "Для международной публикации/экспертизы",
+    "international_badge": "Международная",
+    "manuscript_upload_after_create_hint": "После создания заявки вы сможете загрузить PDF рукописи.",
+    "no_category": "Без категории",
+    "no_categories_title": "Категории не настроены",
+    "no_categories_body": "Пока нет ни одной категории рецензий. Свяжитесь с админом.",
     "author_field": "Автор",
     "author_required": "Выберите автора",
     "author_select_placeholder": "Выберите автора…",
@@ -1434,6 +1517,10 @@
     "detail_title": "Заявка на рецензию",
     "detail_back": "Назад к списку",
     "fields": {
+      "requester": "Пользователь",
+      "category": "Категория",
+      "international": "Международная",
+      "created_at": "Создана",
       "notes": "Комментарий пользователя",
       "proposed_price": "Предложенная цена",
       "final_price": "Финальная цена",

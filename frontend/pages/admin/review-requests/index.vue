@@ -13,6 +13,7 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const { formatDate } = useFormatDate();
+const { localised } = useLocaleText();
 
 useHead({ title: t("review_requests.title") });
 
@@ -112,9 +113,15 @@ function setStatus(s: string) {
         <div class="grid sm:grid-cols-[1fr_auto] gap-3 items-start">
           <div class="space-y-2 min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-sm text-ink-secondary">{{ r.requester.full_name }}</span>
-              <Icon name="arrow-right" class="h-3 w-3 text-ink-tertiary" />
-              <span class="text-sm font-medium text-ink">{{ r.author.display_name }}</span>
+              <span class="text-sm font-medium text-ink">{{ r.requester.full_name }}</span>
+              <Icon name="folder" class="h-3 w-3 text-ink-tertiary" />
+              <span class="text-sm text-ink-secondary">
+                {{ r.category ? localised(r.category.name, r.category.slug) : t("review_requests.no_category") }}
+              </span>
+              <span v-if="r.is_international" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
+                <Icon name="sparkles" class="h-3 w-3" />
+                {{ t("review_requests.international_badge") }}
+              </span>
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"
                 :class="STATUS_TONE[r.status]"
@@ -153,7 +160,7 @@ function setStatus(s: string) {
           <UiButton
             variant="ghost"
             size="sm"
-            :to="localePath(`/account/review-requests/${r.id}`)"
+            :to="localePath(`/admin/review-requests/${r.id}`)"
           >
             <Icon name="external" class="h-3.5 w-3.5" />
             {{ t("review_requests.actions.view") }}

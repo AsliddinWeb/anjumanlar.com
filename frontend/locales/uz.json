@@ -167,6 +167,7 @@
       "audit": "Audit log",
       "blog": "Blog",
       "review_requests": "Taqriz so'rovlari",
+      "review_categories": "Taqriz kategoriyalari",
       "settings": "Sayt sozlamalari"
     },
     "cards": {
@@ -535,6 +536,76 @@
       "already_active": "Bu allaqachon aktiv",
       "theme_applied": "\"{name}\" temasi tatbiq qilindi",
       "ornament_applied": "\"{name}\" bezagi tatbiq qilindi"
+    },
+    "review_categories": {
+      "title": "Taqriz kategoriyalari",
+      "subtitle": "Foydalanuvchi taqriz so'roviga tanlaydigan turlarni boshqarish",
+      "add_button": "Yangi kategoriya",
+      "new_page_title": "Yangi taqriz kategoriyasi",
+      "edit_page_title": "Kategoriyani tahrirlash",
+      "empty_title": "Kategoriya yo'q",
+      "empty_body": "Birinchi taqriz kategoriyasini qo'shing.",
+      "active": "Faol",
+      "inactive": "Faol emas",
+      "create_success": "Kategoriya yaratildi",
+      "update_success": "Kategoriya yangilandi",
+      "delete_success": "\"{name}\" kategoriyasi o'chirildi",
+      "delete_confirm_body": "\"{name}\" kategoriyasini o'chirmoqchimisiz? Mavjud so'rovlardagi bog'lanish bo'shaydi.",
+      "section_identity": "Asosiy ma'lumotlar",
+      "table": {
+        "name": "Nomi",
+        "slug": "Slug",
+        "sort": "Tartib",
+        "active": "Holat"
+      },
+      "form": {
+        "slug": "Slug",
+        "slug_hint": "URL uchun — kichik harflar va tire (article, dissertation, …)",
+        "sort_order": "Tartib raqami",
+        "is_active": "Faol",
+        "is_active_hint": "O'chirilsa, foydalanuvchilar bu kategoriyani tanlay olmaydi",
+        "name_field": "Nomi ({lang})",
+        "description_field": "Tavsif ({lang})"
+      },
+      "errors": {
+        "slug_required": "Slug kiriting",
+        "name_required": "Kamida bitta tilda nom kiriting"
+      }
+    },
+    "review_requests": {
+      "section_quote": "Narx",
+      "section_paid": "To'lov",
+      "section_review": "Taqriz",
+      "not_quoted_yet": "Hali narx belgilanmagan",
+      "not_paid_yet": "Hali to'lanmagan",
+      "no_review_yet": "Taqriz hali yozilmagan",
+      "actions": {
+        "set_quote": "Narx belgilash",
+        "update_quote": "Narxni yangilash",
+        "mark_paid": "To'langan deb belgilash",
+        "submit_review": "Taqriz yuborish",
+        "cancel": "Bekor qilish"
+      },
+      "quote_modal_title": "Narxni belgilash",
+      "quote_price_field": "Narx (UZS)",
+      "quote_price_hint": "Foydalanuvchi shu summani to'laydi",
+      "submit_modal_title": "Taqriz yuborish",
+      "review_text_field": "Taqriz matni",
+      "review_file_field": "Qo'shimcha fayl (ixtiyoriy)",
+      "review_file_hint": "Faqat PDF, max 50 MB",
+      "cancel_modal_title": "So'rovni bekor qilish",
+      "cancel_modal_body": "Bu amal qaytarilmaydi. Foydalanuvchi xabardor bo'ladi.",
+      "cancel_reason_field": "Sabab (ixtiyoriy)",
+      "success": {
+        "quoted": "Narx belgilandi",
+        "paid": "To'lov tasdiqlandi",
+        "submitted": "Taqriz yuborildi",
+        "cancelled": "So'rov bekor qilindi"
+      },
+      "errors": {
+        "invalid_price": "Noto'g'ri narx — manfiy bo'lmagan son kiriting",
+        "review_required": "Taqriz matnini yozing"
+      }
     },
     "audit": {
       "title": "Audit log",
@@ -1379,8 +1450,20 @@
     "title": "Taqriz so'rovi",
     "subtitle": "Mualliflardan ilmiy ishingizga taqriz oling",
     "new_title": "Yangi taqriz so'rovi",
-    "new_subtitle": "Ilmiy ishingizni yuklang va mos muallifni tanlang. Muallif narx belgilaydi, siz to'laysiz, keyin taqriz keladi.",
+    "new_subtitle": "Kategoriyani tanlang, qo'shimcha izoh yozing. Admin narx belgilaydi, siz to'laysiz, taqriz tayyor bo'lganda yuklab olasiz.",
     "section_author": "Muallifni tanlash",
+    "section_category": "Taqriz turi",
+    "category_field": "Kategoriya",
+    "category_hint": "Qanday ish uchun taqriz kerak",
+    "category_required": "Kategoriyani tanlang",
+    "category_select_placeholder": "Kategoriyani tanlang…",
+    "international_field": "Xalqaro taqriz",
+    "international_hint": "Xalqaro nashr/ekspertiza uchun mo'ljallangan taqriz",
+    "international_badge": "Xalqaro",
+    "manuscript_upload_after_create_hint": "So'rov yaratilgandan keyin ilmiy ishingizni PDF formatida yuklaysiz.",
+    "no_category": "Kategoriya yo'q",
+    "no_categories_title": "Kategoriyalar topilmadi",
+    "no_categories_body": "Hozircha taqriz kategoriyalari sozlanmagan. Admin bilan bog'laning.",
     "author_field": "Muallif",
     "author_required": "Muallifni tanlang",
     "author_select_placeholder": "Muallifni tanlang…",
@@ -1434,6 +1517,10 @@
     "detail_title": "Taqriz so'rovi",
     "detail_back": "Ro'yxatga qaytish",
     "fields": {
+      "requester": "Foydalanuvchi",
+      "category": "Kategoriya",
+      "international": "Xalqaro",
+      "created_at": "Yaratilgan",
       "notes": "Foydalanuvchi izohi",
       "proposed_price": "Taklif qilingan narx",
       "final_price": "Yakuniy narx",

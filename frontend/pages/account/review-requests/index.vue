@@ -10,6 +10,7 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const { formatDate } = useFormatDate();
+const { localised } = useLocaleText();
 
 useHead({ title: t("review_requests.my_requests_title") });
 
@@ -101,9 +102,15 @@ function setStatus(s: string) {
             <header class="flex items-start justify-between gap-3 flex-wrap">
               <div class="min-w-0">
                 <div class="text-sm font-medium text-ink">
-                  {{ r.author.display_name }}
+                  {{ r.category ? localised(r.category.name, r.category.slug) : t("review_requests.no_category") }}
                 </div>
-                <div class="text-xs text-ink-tertiary">{{ formatDate(r.created_at, { withTime: false }) }}</div>
+                <div class="text-xs text-ink-tertiary inline-flex items-center gap-2">
+                  <span>{{ formatDate(r.created_at, { withTime: false }) }}</span>
+                  <span v-if="r.is_international" class="inline-flex items-center gap-1 text-primary">
+                    <Icon name="sparkles" class="h-3 w-3" />
+                    {{ t("review_requests.international_badge") }}
+                  </span>
+                </div>
               </div>
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"

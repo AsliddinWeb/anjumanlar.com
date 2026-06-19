@@ -228,3 +228,86 @@ async def admin_list_requests(
         page=page,
         page_size=page_size,
     )
+
+
+@admin_router.get(
+    "/{request_id}",
+    response_model=ReviewRequestPublic,
+    summary="Single review request (admin+)",
+)
+async def admin_read_request(
+    request_id: UUID,
+    user: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> ReviewRequestPublic:
+    row = await review_request_service.get_for_user(db, user, request_id)
+    return ReviewRequestPublic.model_validate(row)
+
+
+@admin_router.post(
+    "/{request_id}/quote",
+    response_model=ReviewRequestPublic,
+    summary="Admin sets the final price (status → quoted)",
+)
+async def admin_quote_request(
+    request_id: UUID,
+    data: ReviewRequestQuote,
+    user: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> ReviewRequestPublic:
+    row = await review_request_service.quote(db, user, request_id, data)
+    await db.commit()
+    return ReviewRequestPublic.model_validate(row)
+
+
+@admin_router.post(
+    "/{request_id}/submit-review",
+    response_model=ReviewRequestPublic,
+    summary="Admin submits the review (text + optional file). Status → completed.",
+)
+async def admin_submit_review(
+    request_id: UUID,
+    user: Annotated[User, Depends(require_admin)],
+    review_text: str = Form(..., min_length=1, max_length=20_000),
+    file: UploadFile | None = File(default=None),
+    db: AsyncSession = Depends(get_db),
+) -> ReviewRequestPublic:
+    payload = ReviewRequestSubmit(review_text=review_text)
+    file_tuple: tuple[bytes, str] | None = None
+    if file is not None:
+        raw = await file.read()
+        file_tuple = (raw, file.content_type or "application/pdf")
+    row = await review_request_service.submit_review(db, user, request_id, payload, file_tuple)
+    await db.commit()
+    return ReviewRequestPublic.model_validate(row)
+
+
+@admin_router.post(
+    "/{request_id}/mark-paid",
+    response_model=ReviewRequestPublic,
+    summary="Admin marks a quoted request as paid (manual stub)",
+)
+async def admin_mark_paid(
+    request_id: UUID,
+    user: Annotated[User, Depends(require_admin)],
+    db: AsyncSession = Depends(get_db),
+) -> ReviewRequestPublic:
+    row = await review_request_service.mark_paid(db, user, request_id)
+    await db.commit()
+    return ReviewRequestPublic.model_validate(row)
+
+
+@admin_router.post(
+    "/{request_id}/cancel",
+    response_model=ReviewRequestPublic,
+    summary="Admin force-cancels a request",
+)
+async def admin_cancel_request(
+    request_id: UUID,
+    user: Annotated[User, Depends(require_admin)],
+    data: ReviewRequestCancel = Body(default_factory=ReviewRequestCancel),
+    db: AsyncSession = Depends(get_db),
+) -> ReviewRequestPublic:
+    row = await review_request_service.cancel(db, user, request_id, data.reason)
+    await db.commit()
+    return ReviewRequestPublic.model_validate(row)
