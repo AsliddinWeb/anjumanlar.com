@@ -95,3 +95,27 @@ def get_bytes(bucket: str, object_key: str) -> bytes:
     finally:
         response.close()
         response.release_conn()
+
+
+def stream_object(bucket: str, object_key: str, chunk_size: int = 64 * 1024):
+    """Yield ``object_key`` in chunks for a streaming HTTP response.
+
+    The caller is responsible for closing the underlying connection — we
+    handle it inside the generator's ``finally`` so a disconnect mid-
+    stream still releases the pool slot.
+    """
+    response = minio_client.get_object(bucket, object_key)
+    try:
+        while True:
+            chunk = response.read(chunk_size)
+            if not chunk:
+                break
+            yield chunk
+    finally:
+        response.close()
+        response.release_conn()
+
+
+def stat_object(bucket: str, object_key: str):
+    """Lightweight HEAD — returns content length, last-modified, etag."""
+    return minio_client.stat_object(bucket, object_key)

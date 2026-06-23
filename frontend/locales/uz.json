@@ -763,7 +763,17 @@
     "no_match_body": "Boshqa kalit so'z bilan urinib ko'ring.",
     "clear_search": "Qidiruvni tozalash",
     "download_started": "\"{title}\" yuklanmoqda",
-    "download_failed": "Yuklab bo'lmadi"
+    "download_failed": "Yuklab bo'lmadi",
+    "read_online": "Onlayn o'qish",
+    "read_online_hint": "Yuklab olish o'chirib qo'yilgan",
+    "reader": {
+      "title": "O'qish",
+      "back": "Kutubxonaga qaytish",
+      "loading": "Kitob yuklanmoqda…",
+      "load_failed": "Kitobni yuklab bo'lmadi. Qaytadan urinib ko'ring.",
+      "retry": "Qayta urinish",
+      "legal_notice": "Bu nusxa shaxsiy foydalanish uchun. Har sahifada email manzilingiz vatermark sifatida joylashtirilgan — fayl tarqalsa, javobgarlik sizda bo'ladi."
+    }
   },
   "theme": {
     "label": "Rejim",

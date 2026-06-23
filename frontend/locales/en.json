@@ -763,7 +763,17 @@
     "no_match_body": "Try a different keyword.",
     "clear_search": "Clear search",
     "download_started": "\"{title}\" is downloading",
-    "download_failed": "Download failed"
+    "download_failed": "Download failed",
+    "read_online": "Read online",
+    "read_online_hint": "Downloading is disabled",
+    "reader": {
+      "title": "Reader",
+      "back": "Back to library",
+      "loading": "Loading book…",
+      "load_failed": "Couldn't load the book. Please try again.",
+      "retry": "Retry",
+      "legal_notice": "This copy is for your personal use. Every page is watermarked with your email — if the file leaks, you'll be the one held responsible."
+    }
   },
   "theme": {
     "label": "Theme",

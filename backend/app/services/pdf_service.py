@@ -40,16 +40,41 @@ def extract_first_n_pages(raw: bytes, n: int = 10) -> bytes:
 
 
 def _build_watermark_overlay(text: str, page_width: float, page_height: float) -> bytes:
-    """Single-page PDF that we'll merge over every page of the original."""
+    """Single-page PDF that we'll merge over every page of the original.
+
+    We tile a small, faint text repeatedly across the page rather than one
+    big diagonal stamp — the goal is to make cropping/redaction more
+    annoying without obscuring the underlying content. Anyone who really
+    wants to remove it still can; the watermark is a deterrent + a chain
+    of custody when a leaked PDF surfaces, not DRM.
+    """
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=(page_width, page_height))
     c.saveState()
-    # ~30% opacity grey, diagonal across the page.
-    c.setFillColorRGB(0.5, 0.5, 0.5, alpha=0.25)
-    c.setFont("Helvetica", 40)
+    c.setFillColorRGB(0.5, 0.5, 0.5, alpha=0.18)
+    c.setFont("Helvetica", 11)
+
+    # 45° diagonal tiling. Spacing is tuned so the typical A4 page gets
+    # ~12–16 stamps; smaller pages get proportionally fewer.
+    step_x = 180.0
+    step_y = 110.0
+    diag = (page_width ** 2 + page_height ** 2) ** 0.5
+    half = diag / 2.0
+
     c.translate(page_width / 2, page_height / 2)
     c.rotate(45)
-    c.drawCentredString(0, 0, text)
+
+    y = -half
+    while y <= half:
+        x = -half
+        # Stagger every other row so the columns don't form an obvious
+        # grid the eye can lock onto.
+        offset = (step_x / 2.0) if int((y - -half) / step_y) % 2 else 0.0
+        while x <= half:
+            c.drawCentredString(x + offset, y, text)
+            x += step_x
+        y += step_y
+
     c.restoreState()
     c.save()
     return buf.getvalue()

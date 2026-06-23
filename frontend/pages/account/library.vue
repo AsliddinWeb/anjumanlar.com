@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { DownloadResponse, UserLibraryList } from "~/types/api";
-import { apiErrorMessage } from "~/composables/useAuth";
+import type { UserLibraryList } from "~/types/api";
 
 definePageMeta({ middleware: "auth" });
 
@@ -11,7 +10,6 @@ const router = useRouter();
 const { localised } = useLocaleText();
 const { formatDate } = useFormatDate();
 const api = useApi();
-const toast = useToast();
 
 useSiteSeo({ title: t("library.title"), noindex: true });
 
@@ -60,22 +58,6 @@ function setQuery(updates: Record<string, string | undefined>) {
   router.push({ query: next });
 }
 
-const downloading = ref<Set<string>>(new Set());
-async function downloadBook(bookId: string, bookTitle: string) {
-  if (downloading.value.has(bookId)) return;
-  downloading.value.add(bookId);
-  try {
-    const resp = await api<DownloadResponse>(`/libraries/me/${bookId}/download`);
-    window.open(resp.url, "_blank", "noopener,noreferrer");
-    toast.success(t("library.download_started", { title: bookTitle }));
-  }
-  catch (err) {
-    toast.error(apiErrorMessage(err, t("library.download_failed")));
-  }
-  finally {
-    downloading.value.delete(bookId);
-  }
-}
 </script>
 
 <template>
@@ -197,18 +179,13 @@ async function downloadBook(bookId: string, bookTitle: string) {
             <UiButton
               size="sm"
               block
-              :loading="downloading.has(entry.book.id)"
-              :disabled="downloading.has(entry.book.id)"
-              @click="downloadBook(entry.book.id, localised(entry.book.title, entry.book.slug))"
+              :to="localePath(`/account/library/${entry.book.id}`)"
             >
-              <Icon name="document" class="h-4 w-4" />
-              {{ t("library.download") }}
+              <Icon name="book" class="h-4 w-4" />
+              {{ t("library.read_online") }}
             </UiButton>
-            <p
-              v-if="entry.downloaded_count > 0"
-              class="text-[10px] text-ink-tertiary mt-1.5 text-center"
-            >
-              {{ t("library.downloaded", { n: entry.downloaded_count }) }}
+            <p class="text-[10px] text-ink-tertiary mt-1.5 text-center">
+              {{ t("library.read_online_hint") }}
             </p>
           </div>
         </div>
