@@ -26,6 +26,7 @@ const items = computed<Item[]>(() => [
   { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories") },
   { to: "/admin/users", icon: "users", label: t("admin.nav.users") },
   { to: "/admin/withdrawals", icon: "money", label: t("admin.nav.withdrawals") },
+  { to: "/admin/finance", icon: "chart", label: t("admin.nav.finance") },
   { to: "/admin/audit", icon: "clipboard-list", label: t("admin.nav.audit") },
   { to: "/admin/settings", icon: "settings", label: t("admin.nav.settings") },
 ]);

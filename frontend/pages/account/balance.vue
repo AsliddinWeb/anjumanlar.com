@@ -228,10 +228,13 @@ const presets = computed(() => {
         </div>
       </section>
 
-      <p class="text-xs text-ink-tertiary mb-8 inline-flex items-center gap-1.5">
+      <p class="text-xs text-ink-tertiary mb-6 inline-flex items-center gap-1.5">
         <Icon name="scale" class="h-3.5 w-3.5" />
         {{ t("balance.commission_rate") }}: <span class="tabular-nums">{{ balance.commission_rate }}%</span>
       </p>
+
+      <!-- Sales chart -->
+      <AuthorSalesChart class="mb-8" />
 
       <!-- Withdrawal request -->
       <section class="rounded-md border border-border bg-bg-card overflow-hidden mb-8">

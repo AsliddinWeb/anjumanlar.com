@@ -168,6 +168,7 @@
       "blog": "Blog",
       "review_requests": "Review requests",
       "review_categories": "Review categories",
+      "finance": "Finance",
       "settings": "Site settings"
     },
     "cards": {
@@ -536,6 +537,32 @@
       "already_active": "Already active",
       "theme_applied": "\"{name}\" theme applied",
       "ornament_applied": "\"{name}\" ornament applied"
+    },
+    "finance": {
+      "title": "Finance",
+      "subtitle": "Revenue, commission, top books and authors",
+      "range_7d": "Last 7 days",
+      "range_30d": "Last 30 days",
+      "range_90d": "Last 90 days",
+      "range_180d": "Last 180 days",
+      "export_csv": "Export CSV",
+      "chart_title": "Daily revenue",
+      "last_n_days": "Last {n} days",
+      "top_books": "Top-selling books",
+      "top_authors": "Top earning authors",
+      "status_breakdown": "Order statuses (period)",
+      "empty_top_books": "No sales yet",
+      "empty_top_authors": "No author earnings yet",
+      "empty_top_body": "Data appears here after the first paid order.",
+      "kpi": {
+        "today": "Today",
+        "week": "Last 7 days",
+        "month": "This month",
+        "platform_fee": "Commission",
+        "all_time": "All-time",
+        "this_month": "This month",
+        "orders_count": "{n} orders"
+      }
     },
     "review_categories": {
       "title": "Review categories",
@@ -1008,6 +1035,16 @@
     "dashboard_empty_title": "Your library is empty",
     "dashboard_empty_body": "Pick your first book — it'll show up here.",
     "dashboard_empty_cta": "Browse catalogue",
+    "sales": {
+      "title": "Sales analytics",
+      "subtitle": "Daily revenue and your top-earning books",
+      "lifetime_units": "Total sold",
+      "lifetime_earning": "Total earnings",
+      "lifetime_gross": "Gross sales",
+      "top_books": "Top-earning books",
+      "empty_title": "No sales yet",
+      "empty_body": "The chart appears here after your first sale."
+    },
     "nav": {
       "menu": "Menu",
       "dashboard": "Dashboard",

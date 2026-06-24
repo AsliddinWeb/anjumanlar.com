@@ -13,6 +13,7 @@ from app.api.v1.endpoints import (
     blog,
     books,
     categories,
+    finance,
     libraries,
     orders,
     payments,
@@ -68,3 +69,5 @@ api_router.include_router(review_requests.router)
 api_router.include_router(review_requests.admin_router)
 api_router.include_router(review_categories.public_router)
 api_router.include_router(review_categories.admin_router)
+api_router.include_router(finance.router)
+api_router.include_router(finance.author_router)

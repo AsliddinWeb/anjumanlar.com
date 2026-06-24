@@ -168,6 +168,7 @@
       "blog": "Блог",
       "review_requests": "Заявки на рецензию",
       "review_categories": "Категории рецензий",
+      "finance": "Финансовая аналитика",
       "settings": "Настройки сайта"
     },
     "cards": {
@@ -536,6 +537,32 @@
       "already_active": "Уже активно",
       "theme_applied": "Тема \"{name}\" применена",
       "ornament_applied": "Орнамент \"{name}\" применён"
+    },
+    "finance": {
+      "title": "Финансовая аналитика",
+      "subtitle": "Доход, комиссия, топ книги и авторы",
+      "range_7d": "За 7 дней",
+      "range_30d": "За 30 дней",
+      "range_90d": "За 90 дней",
+      "range_180d": "За 180 дней",
+      "export_csv": "Скачать CSV",
+      "chart_title": "Дневной доход",
+      "last_n_days": "За последние {n} дней",
+      "top_books": "Самые продаваемые книги",
+      "top_authors": "Топ авторы по доходу",
+      "status_breakdown": "Статусы заказов (за период)",
+      "empty_top_books": "Пока нет продаж",
+      "empty_top_authors": "Пока нет дохода у авторов",
+      "empty_top_body": "После первой оплаты данные появятся здесь.",
+      "kpi": {
+        "today": "Сегодня",
+        "week": "За 7 дней",
+        "month": "Текущий месяц",
+        "platform_fee": "Комиссия",
+        "all_time": "Всего",
+        "this_month": "Текущий месяц",
+        "orders_count": "{n} заказов"
+      }
     },
     "review_categories": {
       "title": "Категории рецензий",
@@ -1008,6 +1035,16 @@
     "dashboard_empty_title": "Ваша библиотека пока пуста",
     "dashboard_empty_body": "Выберите первую книгу — она появится здесь.",
     "dashboard_empty_cta": "В каталог",
+    "sales": {
+      "title": "Аналитика продаж",
+      "subtitle": "Ежедневный доход и ваши топовые книги",
+      "lifetime_units": "Всего продано",
+      "lifetime_earning": "Всего доход",
+      "lifetime_gross": "Всего брутто",
+      "top_books": "Книги с самым высоким доходом",
+      "empty_title": "Продаж пока нет",
+      "empty_body": "После первой продажи здесь появится график."
+    },
     "nav": {
       "menu": "Меню",
       "dashboard": "Главная",

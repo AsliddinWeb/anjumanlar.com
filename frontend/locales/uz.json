@@ -168,6 +168,7 @@
       "blog": "Blog",
       "review_requests": "Taqriz so'rovlari",
       "review_categories": "Taqriz kategoriyalari",
+      "finance": "Moliyaviy tahlil",
       "settings": "Sayt sozlamalari"
     },
     "cards": {
@@ -536,6 +537,32 @@
       "already_active": "Bu allaqachon aktiv",
       "theme_applied": "\"{name}\" temasi tatbiq qilindi",
       "ornament_applied": "\"{name}\" bezagi tatbiq qilindi"
+    },
+    "finance": {
+      "title": "Moliyaviy tahlil",
+      "subtitle": "Daromad, komissiya, eng yaxshi kitoblar va mualliflar",
+      "range_7d": "So'nggi 7 kun",
+      "range_30d": "So'nggi 30 kun",
+      "range_90d": "So'nggi 90 kun",
+      "range_180d": "So'nggi 180 kun",
+      "export_csv": "CSV yuklab olish",
+      "chart_title": "Kunlik daromad",
+      "last_n_days": "So'nggi {n} kun",
+      "top_books": "Eng ko'p sotilgan kitoblar",
+      "top_authors": "Eng ko'p daromad olgan mualliflar",
+      "status_breakdown": "Buyurtma holatlari (so'nggi davr)",
+      "empty_top_books": "Hozircha sotilgan kitob yo'q",
+      "empty_top_authors": "Hozircha mualliflarda daromad yo'q",
+      "empty_top_body": "Birinchi to'lov bo'lganda bu yerda paydo bo'ladi.",
+      "kpi": {
+        "today": "Bugun",
+        "week": "So'nggi 7 kun",
+        "month": "Joriy oy",
+        "platform_fee": "Komissiya",
+        "all_time": "Jami",
+        "this_month": "Joriy oy",
+        "orders_count": "{n} ta buyurtma"
+      }
     },
     "review_categories": {
       "title": "Taqriz kategoriyalari",
@@ -1008,6 +1035,16 @@
     "dashboard_empty_title": "Kutubxonangiz hali bo'sh",
     "dashboard_empty_body": "Birinchi kitobingizni tanlang — keyin shu yerda paydo bo'ladi.",
     "dashboard_empty_cta": "Katalogga o'tish",
+    "sales": {
+      "title": "Sotuv tahlili",
+      "subtitle": "Sizning kitoblaringiz bo'yicha kunlik daromad va eng yaxshi nashrlar",
+      "lifetime_units": "Jami sotilgan",
+      "lifetime_earning": "Jami daromad",
+      "lifetime_gross": "Jami brutto",
+      "top_books": "Eng ko'p daromad olib kelgan kitoblar",
+      "empty_title": "Hali sotuv yo'q",
+      "empty_body": "Birinchi kitobingiz sotilganda bu yerda grafik paydo bo'ladi."
+    },
     "nav": {
       "menu": "Menyu",
       "dashboard": "Bosh sahifa",
