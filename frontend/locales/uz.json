@@ -1035,6 +1035,11 @@
     "dashboard_empty_title": "Kutubxonangiz hali bo'sh",
     "dashboard_empty_body": "Birinchi kitobingizni tanlang — keyin shu yerda paydo bo'ladi.",
     "dashboard_empty_cta": "Katalogga o'tish",
+    "quick": {
+      "browse": "Kitoblarni ko'rish",
+      "request_review": "Taqriz so'rovi",
+      "new_book": "Yangi kitob qo'shish"
+    },
     "sales": {
       "title": "Sotuv tahlili",
       "subtitle": "Sizning kitoblaringiz bo'yicha kunlik daromad va eng yaxshi nashrlar",
@@ -1719,6 +1724,12 @@
     }
   },
   "errors": {
+    "not_found_title": "Sahifa topilmadi",
+    "not_found_body": "Siz qidirayotgan sahifa o'chirilgan, ko'chirilgan yoki manzili noto'g'ri kiritilgan bo'lishi mumkin.",
+    "server_title": "Server xatoligi",
+    "server_body": "Ichkarida nimadir noto'g'ri ketdi. Bir necha daqiqadan keyin qayta urinib ko'ring.",
+    "go_home": "Bosh sahifaga",
+    "browse_books": "Katalogga o'tish",
     "invalid_credentials": "Email yoki parol noto'g'ri",
     "email_taken": "Bu email allaqachon ro'yxatdan o'tgan",
     "invalid_token": "Havola yaroqsiz",

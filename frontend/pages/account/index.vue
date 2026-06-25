@@ -10,6 +10,7 @@ const { user, isVerified, hasRole } = useAuth();
 const api = useApi();
 const cart = useCartStore();
 const { formatDate } = useFormatDate();
+const { localised } = useLocaleText();
 
 useSiteSeo({ title: t("account.title"), noindex: true });
 
@@ -109,25 +110,62 @@ const roleLabel = computed(() => t(`account.roles.${user.value?.role ?? "reader"
 
 <template>
   <AccountShell>
-    <!-- Welcome header -->
-    <header class="space-y-1 mb-6">
-      <p class="text-sm text-ink-tertiary">{{ greeting }}</p>
-      <h1 class="font-serif text-3xl md:text-4xl text-ink leading-tight tracking-tight">
-        {{ user!.full_name }}
-      </h1>
-      <div class="flex flex-wrap items-center gap-2 text-sm text-ink-secondary mt-1">
-        <span>{{ user!.email }}</span>
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-medium">
-          <Icon name="user-circle" class="h-3 w-3" />
-          {{ roleLabel }}
-        </span>
-        <span
-          v-if="isVerified"
-          class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[11px] font-medium"
-        >
-          <Icon name="check-circle-solid" class="h-3 w-3" />
-          {{ t("account.verified") }}
-        </span>
+    <!-- Welcome card -->
+    <header
+      class="relative overflow-hidden rounded-lg border border-border bg-bg-card p-5 md:p-7 mb-6"
+    >
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10 opacity-60"
+        style="background-image:
+          radial-gradient(ellipse 60% 80% at 0% 0%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 60%),
+          radial-gradient(ellipse 50% 70% at 100% 100%, color-mix(in oklab, var(--color-accent-gold, var(--color-primary)) 10%, transparent), transparent 60%);"
+      />
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="min-w-0 flex-1">
+          <p class="text-sm text-ink-tertiary">{{ greeting }}</p>
+          <h1 class="font-serif text-3xl md:text-4xl text-ink leading-tight tracking-tight mt-0.5">
+            {{ user!.full_name }}
+          </h1>
+          <div class="flex flex-wrap items-center gap-2 text-sm text-ink-secondary mt-2">
+            <span>{{ user!.email }}</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-medium">
+              <Icon name="user-circle" class="h-3 w-3" />
+              {{ roleLabel }}
+            </span>
+            <span
+              v-if="isVerified"
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[11px] font-medium"
+            >
+              <Icon name="check-circle-solid" class="h-3 w-3" />
+              {{ t("account.verified") }}
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <NuxtLink
+            :to="localePath('/books')"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-bg-card hover:border-primary hover:text-primary text-xs font-medium transition-colors"
+          >
+            <Icon name="book" class="h-3.5 w-3.5" />
+            {{ t("account.quick.browse") }}
+          </NuxtLink>
+          <NuxtLink
+            :to="localePath('/review-request/new')"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 text-xs font-medium transition-colors"
+          >
+            <Icon name="chat" class="h-3.5 w-3.5" />
+            {{ t("account.quick.request_review") }}
+          </NuxtLink>
+          <NuxtLink
+            v-if="isAuthor"
+            :to="localePath('/account/books/new')"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-bg-card hover:border-primary hover:text-primary text-xs font-medium transition-colors"
+          >
+            <Icon name="plus" class="h-3.5 w-3.5" />
+            {{ t("account.quick.new_book") }}
+          </NuxtLink>
+        </div>
       </div>
     </header>
 
@@ -186,16 +224,17 @@ const roleLabel = computed(() => t(`account.roles.${user.value?.role ?? "reader"
       <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         <li v-for="entry in recentLibrary" :key="entry.id">
           <NuxtLink
-            :to="localePath(`/books/${entry.book.slug}`)"
+            :to="localePath(`/account/library/${entry.book.id}`)"
             class="group block rounded-md border border-border bg-bg-card overflow-hidden hover:border-primary transition-colors"
           >
             <BookCover :src="entry.book.cover_url" :alt="entry.book.slug" />
             <div class="p-2.5 space-y-1">
               <h3 class="font-serif text-sm text-ink leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                {{ entry.book.title?.uz ?? entry.book.slug }}
+                {{ localised(entry.book.title, entry.book.slug) }}
               </h3>
-              <p class="text-[10px] text-ink-tertiary">
-                {{ formatDate(entry.acquired_at, { withTime: false }) }}
+              <p class="text-[10px] text-ink-tertiary inline-flex items-center gap-1">
+                <Icon name="book" class="h-3 w-3" />
+                {{ t("library.read_online") }}
               </p>
             </div>
           </NuxtLink>

@@ -1035,6 +1035,11 @@
     "dashboard_empty_title": "Your library is empty",
     "dashboard_empty_body": "Pick your first book — it'll show up here.",
     "dashboard_empty_cta": "Browse catalogue",
+    "quick": {
+      "browse": "Browse books",
+      "request_review": "Request a review",
+      "new_book": "Add a book"
+    },
     "sales": {
       "title": "Sales analytics",
       "subtitle": "Daily revenue and your top-earning books",
@@ -1719,6 +1724,12 @@
     }
   },
   "errors": {
+    "not_found_title": "Page not found",
+    "not_found_body": "The page you're looking for may have been removed, renamed, or never existed.",
+    "server_title": "Server error",
+    "server_body": "Something broke on our end. Please try again in a moment.",
+    "go_home": "Back home",
+    "browse_books": "Browse books",
     "invalid_credentials": "Invalid email or password",
     "email_taken": "This email is already registered",
     "invalid_token": "Invalid link",
