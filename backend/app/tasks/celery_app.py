@@ -21,6 +21,7 @@ celery_app = Celery(
         "app.tasks.email_tasks",
         "app.tasks.order_tasks",
         "app.tasks.pdf_tasks",
+        "app.tasks.review_tasks",
         "app.tasks.search_tasks",
     ],
 )
@@ -41,6 +42,13 @@ celery_app.conf.update(
             "task": "orders.expire_pending",
             # Every minute — worst-case lag past the 30-min TTL is 60s.
             "schedule": crontab(minute="*"),
+        },
+        "reviews.send_reminders": {
+            "task": "reviews.send_reminders",
+            # Once a day at 09:00 UTC (14:00 Tashkent). Late enough that
+            # day-of-buy people aren't pinged mid-night, early enough that
+            # the reminder lands during business hours.
+            "schedule": crontab(hour=9, minute=0),
         },
     },
 )

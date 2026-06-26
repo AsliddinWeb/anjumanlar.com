@@ -1,0 +1,19 @@
+{% extends "_layout.html" %}
+{% set locale = "uz" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">"{{ book_title }}" haqida nima fikrdasiz?</h1>
+<p style="margin:0 0 16px;">
+  Salom, {{ full_name }}. Bir necha kun oldin "{{ book_title }}" ni sotib olgansiz.
+  Kitobni o'qib bo'lgan bo'lsangiz — qisqacha sharh qoldiring. Sizning fikringiz
+  boshqa o'quvchilarga to'g'ri tanlov qilishda yordam beradi.
+</p>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/uz/books/{{ book_slug }}#reviews" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Sharh yozish
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  Agar kitobni hali o'qimagan bo'lsangiz, bu xatni e'tiborsiz qoldiring — bu
+  eslatma bir martagina yuboriladi.
+</p>
+{% endblock %}

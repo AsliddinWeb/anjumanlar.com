@@ -11,7 +11,7 @@
 # Designed to be idempotent + cron-safe (no interactive prompts, safe stderr).
 set -euo pipefail
 
-PROJECT_DIR="${PROJECT_DIR:-/opt/monografiya.com}"
+PROJECT_DIR="${PROJECT_DIR:-/home/monografiya.com}"
 BACKUP_DIR="${BACKUP_DIR:-/var/backups/monografiya}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 COMPOSE="docker compose -f docker-compose.prod.yml"

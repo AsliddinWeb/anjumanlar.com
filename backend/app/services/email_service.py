@@ -78,6 +78,11 @@ SUBJECTS: dict[str, dict[str, str]] = {
         "ru": "Заявка на выплату отклонена",
         "en": "Withdrawal request rejected",
     },
+    "review_reminder": {
+        "uz": "Sotib olgan kitobingiz haqida sharh qoldiring",
+        "ru": "Оставьте отзыв о купленной книге",
+        "en": "Share your thoughts on the book you bought",
+    },
 }
 
 

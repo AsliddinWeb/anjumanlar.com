@@ -1,0 +1,19 @@
+{% extends "_layout.html" %}
+{% set locale = "en" %}
+{% block content %}
+<h1 style="margin:0 0 16px;font-size:22px;color:#1a1410;">How was "{{ book_title }}"?</h1>
+<p style="margin:0 0 16px;">
+  Hi {{ full_name }} — a few days ago you bought "{{ book_title }}". If you've
+  read it, take a moment to leave a short review. Your take helps other
+  readers pick what to read next.
+</p>
+<p style="margin:0 0 24px;">
+  <a href="{{ site_url }}/en/books/{{ book_slug }}#reviews" style="display:inline-block;padding:10px 18px;background:#8b4513;color:#faf7f2;border-radius:4px;text-decoration:none;font-weight:600;">
+    Write a review
+  </a>
+</p>
+<p style="margin:24px 0 0;color:#8b7e70;font-size:13px;">
+  If you haven't finished it yet, just ignore this email — we only send the
+  reminder once.
+</p>
+{% endblock %}
