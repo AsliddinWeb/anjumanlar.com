@@ -17,7 +17,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies import require_admin
+from app.dependencies import require_admin_scope
 from app.models import User
 from app.schemas.site_settings import SiteSettingsPublic, SiteSettingsUpdate
 from app.services import site_settings_service
@@ -42,7 +42,7 @@ async def read_settings(db: AsyncSession = Depends(get_db)) -> SiteSettingsPubli
     summary="Same payload as /settings — convenience for the admin panel",
 )
 async def admin_read_settings(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("settings"))],
     db: AsyncSession = Depends(get_db),
 ) -> SiteSettingsPublic:
     row = await site_settings_service.get(db)
@@ -56,7 +56,7 @@ async def admin_read_settings(
 )
 async def admin_update_settings(
     data: SiteSettingsUpdate,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("settings"))],
     db: AsyncSession = Depends(get_db),
 ) -> SiteSettingsPublic:
     if data.theme_name is not None:

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UserRole, UserStatus } from "~/types/api";
+import type { AdminScope, UserRole, UserStatus } from "~/types/api";
 
 export interface UserFormValue {
   email: string;
@@ -11,7 +11,23 @@ export interface UserFormValue {
   academic_title: string;
   institution: string;
   bio: string;
+  /** Only meaningful when role === "admin". null = every admin section. */
+  admin_scopes: AdminScope[] | null;
 }
+
+const ADMIN_SCOPE_LIST: { value: AdminScope; navKey: string }[] = [
+  { value: "books", navKey: "admin.nav.books" },
+  { value: "reviews", navKey: "admin.nav.reviews" },
+  { value: "review_requests", navKey: "admin.nav.review_requests" },
+  { value: "review_categories", navKey: "admin.nav.review_categories" },
+  { value: "blog", navKey: "admin.nav.blog" },
+  { value: "categories", navKey: "admin.nav.categories" },
+  { value: "users", navKey: "admin.nav.users" },
+  { value: "withdrawals", navKey: "admin.nav.withdrawals" },
+  { value: "finance", navKey: "admin.nav.finance" },
+  { value: "audit", navKey: "admin.nav.audit" },
+  { value: "settings", navKey: "admin.nav.settings" },
+];
 
 const props = defineProps<{
   modelValue: UserFormValue;
@@ -22,6 +38,9 @@ const props = defineProps<{
   error?: string | null;
   submitLabel: string;
   cancelTo: string;
+  /** Hides the scopes section — used when the target is the acting admin
+   *  themselves, since scope self-edits are rejected server-side. */
+  hideScopes?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -59,6 +78,20 @@ const isAuthorRole = computed(() =>
 );
 
 const changePassword = ref(false);
+
+const isScopesRestricted = computed(() => props.modelValue.admin_scopes !== null);
+
+function setScopesRestricted(restricted: boolean) {
+  update("admin_scopes", restricted ? [] : null);
+}
+
+function toggleScope(scope: AdminScope) {
+  const current = props.modelValue.admin_scopes ?? [];
+  const next = current.includes(scope)
+    ? current.filter((s) => s !== scope)
+    : [...current, scope];
+  update("admin_scopes", next);
+}
 </script>
 
 <template>
@@ -104,6 +137,41 @@ const changePassword = ref(false);
           :options="statusOptions"
           @update:model-value="(v) => update('status', v as UserStatus)"
         />
+      </div>
+    </div>
+
+    <div v-if="modelValue.role === 'admin' && !hideScopes" class="rounded-md border border-border bg-bg-card p-5 space-y-4">
+      <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+        {{ t("admin.users.form.section_scopes") }}
+      </h2>
+      <p class="text-xs text-ink-tertiary">
+        {{ t("admin.users.form.scopes_hint") }}
+      </p>
+
+      <label class="flex items-center gap-2 text-sm text-ink">
+        <input
+          type="checkbox"
+          class="h-4 w-4 rounded border-border accent-primary"
+          :checked="isScopesRestricted"
+          @change="setScopesRestricted(!isScopesRestricted)"
+        />
+        {{ t("admin.users.form.scopes_restrict") }}
+      </label>
+
+      <div v-if="isScopesRestricted" class="grid sm:grid-cols-2 gap-2 pt-2 border-t border-border">
+        <label
+          v-for="s in ADMIN_SCOPE_LIST"
+          :key="s.value"
+          class="flex items-center gap-2 text-sm text-ink-secondary"
+        >
+          <input
+            type="checkbox"
+            class="h-4 w-4 rounded border-border accent-primary"
+            :checked="(modelValue.admin_scopes ?? []).includes(s.value)"
+            @change="toggleScope(s.value)"
+          />
+          {{ t(s.navKey) }}
+        </label>
       </div>
     </div>
 

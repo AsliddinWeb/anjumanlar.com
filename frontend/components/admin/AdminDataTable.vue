@@ -12,9 +12,11 @@ export interface Column<R> {
   truncate?: boolean;
   /** Hide this column from the mobile card layout (it's already shown in the header column). */
   mobileHidden?: boolean;
+  /** Backend sort key for this column (no `-` prefix — pair with `sort`/`@update:sort`). */
+  sortKey?: string;
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     columns: Column<T>[];
     rows: readonly T[];
@@ -23,16 +25,72 @@ withDefaults(
     empty?: { icon?: IconName; title: string; description?: string };
     /** Number of skeleton rows to show while loading. */
     skeletonRows?: number;
+    /** Enables the checkbox column + select-all when set. */
+    selectable?: boolean;
+    /** Currently selected row keys — pair with `@update:selected`. */
+    selected?: readonly (string | number)[];
+    /** Rows failing this predicate render without a checkbox and can't be selected. */
+    isSelectable?: (row: T) => boolean;
+    /** Active backend sort value, e.g. `"price"` or `"-price"` — pair with `@update:sort`. */
+    sort?: string;
   }>(),
-  { skeletonRows: 5 },
+  { skeletonRows: 5, selected: () => [] },
 );
 
+const emit = defineEmits<{
+  "update:selected": [(string | number)[]];
+  "update:sort": [string];
+}>();
+
+const { t } = useI18n();
 const slots = useSlots();
 
 function alignClass(a?: "left" | "right" | "center") {
   if (a === "right") return "text-right";
   if (a === "center") return "text-center";
   return "text-left";
+}
+
+function rowSelectable(row: T) {
+  return props.isSelectable ? props.isSelectable(row) : true;
+}
+
+const selectableRows = computed(() => props.rows.filter(rowSelectable));
+const selectedSet = computed(() => new Set(props.selected));
+const allSelected = computed(
+  () => selectableRows.value.length > 0 && selectableRows.value.every((r) => selectedSet.value.has(props.rowKey(r))),
+);
+const someSelected = computed(
+  () => selectedSet.value.size > 0 && !allSelected.value,
+);
+
+function toggleAll() {
+  if (allSelected.value) {
+    emit("update:selected", []);
+  }
+  else {
+    emit("update:selected", selectableRows.value.map((r) => props.rowKey(r)));
+  }
+}
+
+function toggleRow(row: T) {
+  const key = props.rowKey(row);
+  const next = new Set(selectedSet.value);
+  if (next.has(key)) next.delete(key);
+  else next.add(key);
+  emit("update:selected", Array.from(next));
+}
+
+function sortDirection(col: Column<T>): "asc" | "desc" | null {
+  if (!col.sortKey || !props.sort) return null;
+  if (props.sort === col.sortKey) return "asc";
+  if (props.sort === `-${col.sortKey}`) return "desc";
+  return null;
+}
+
+function toggleSort(col: Column<T>) {
+  if (!col.sortKey) return;
+  emit("update:sort", sortDirection(col) === "asc" ? `-${col.sortKey}` : col.sortKey);
 }
 </script>
 
@@ -43,13 +101,37 @@ function alignClass(a?: "left" | "right" | "center") {
       <table class="w-full text-sm">
         <thead class="bg-bg-secondary text-xs uppercase tracking-wider text-ink-tertiary">
           <tr>
+            <th v-if="selectable" class="px-3 py-2.5 w-px">
+              <input
+                type="checkbox"
+                class="h-4 w-4 rounded border-border accent-primary"
+                :checked="allSelected"
+                :indeterminate="someSelected"
+                :aria-label="t('admin.bulk.select_all')"
+                @change="toggleAll"
+              />
+            </th>
             <th
               v-for="col in columns"
               :key="col.key"
               class="px-3 py-2.5 font-medium"
               :class="[alignClass(col.align), col.width]"
             >
-              {{ col.label }}
+              <button
+                v-if="col.sortKey"
+                type="button"
+                class="inline-flex items-center gap-1 hover:text-ink transition-colors"
+                :class="col.align === 'right' ? 'flex-row-reverse' : ''"
+                @click="toggleSort(col)"
+              >
+                {{ col.label }}
+                <Icon
+                  :name="sortDirection(col) === 'desc' ? 'chevron-down' : sortDirection(col) === 'asc' ? 'chevron-up' : 'chevron-up-down'"
+                  class="h-3 w-3 shrink-0"
+                  :class="sortDirection(col) ? 'text-primary' : 'text-ink-tertiary/60'"
+                />
+              </button>
+              <template v-else>{{ col.label }}</template>
             </th>
             <th v-if="slots.actions" class="px-3 py-2.5 text-right font-medium w-px">
               <span class="sr-only">Actions</span>
@@ -59,6 +141,9 @@ function alignClass(a?: "left" | "right" | "center") {
         <tbody>
           <template v-if="loading && rows.length === 0">
             <tr v-for="i in skeletonRows" :key="`sk-${i}`" class="border-t border-border">
+              <td v-if="selectable" class="px-3 py-3">
+                <UiSkeleton class="h-3 w-4" />
+              </td>
               <td v-for="col in columns" :key="col.key" class="px-3 py-3">
                 <UiSkeleton class="h-3 w-24" />
               </td>
@@ -69,7 +154,7 @@ function alignClass(a?: "left" | "right" | "center") {
           </template>
           <template v-else-if="rows.length === 0">
             <tr>
-              <td :colspan="columns.length + (slots.actions ? 1 : 0)" class="p-0">
+              <td :colspan="columns.length + (slots.actions ? 1 : 0) + (selectable ? 1 : 0)" class="p-0">
                 <UiEmptyState
                   :icon="empty?.icon"
                   :title="empty?.title"
@@ -83,7 +168,18 @@ function alignClass(a?: "left" | "right" | "center") {
               v-for="row in rows"
               :key="rowKey(row)"
               class="border-t border-border hover:bg-bg-secondary/50 transition-colors"
+              :class="{ 'bg-primary/5': selectable && selectedSet.has(rowKey(row)) }"
             >
+              <td v-if="selectable" class="px-3 py-2.5">
+                <input
+                  v-if="rowSelectable(row)"
+                  type="checkbox"
+                  class="h-4 w-4 rounded border-border accent-primary"
+                  :checked="selectedSet.has(rowKey(row))"
+                  :aria-label="t('admin.bulk.select_row')"
+                  @change="toggleRow(row)"
+                />
+              </td>
               <td
                 v-for="col in columns"
                 :key="col.key"
@@ -110,6 +206,19 @@ function alignClass(a?: "left" | "right" | "center") {
 
   <!-- ====== Mobile — cards ====== -->
   <div class="md:hidden space-y-3">
+    <label
+      v-if="selectable && rows.length > 0"
+      class="flex items-center gap-2 text-xs text-ink-tertiary px-1"
+    >
+      <input
+        type="checkbox"
+        class="h-4 w-4 rounded border-border accent-primary"
+        :checked="allSelected"
+        :indeterminate="someSelected"
+        @change="toggleAll"
+      />
+      {{ t("admin.bulk.select_all") }}
+    </label>
     <template v-if="loading && rows.length === 0">
       <div
         v-for="i in skeletonRows"
@@ -135,9 +244,18 @@ function alignClass(a?: "left" | "right" | "center") {
         v-for="row in rows"
         :key="rowKey(row)"
         class="rounded-md border border-border bg-bg-card p-3 space-y-2"
+        :class="{ 'border-primary/40 bg-primary/5': selectable && selectedSet.has(rowKey(row)) }"
       >
         <!-- Header: first column + actions in top-right -->
         <div class="flex items-start justify-between gap-3">
+          <input
+            v-if="selectable && rowSelectable(row)"
+            type="checkbox"
+            class="h-4 w-4 rounded border-border accent-primary mt-0.5 shrink-0"
+            :checked="selectedSet.has(rowKey(row))"
+            :aria-label="t('admin.bulk.select_row')"
+            @change="toggleRow(row)"
+          />
           <div class="min-w-0 flex-1">
             <slot
               :name="`cell-${columns[0].key}`"

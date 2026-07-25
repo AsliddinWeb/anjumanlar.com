@@ -16,11 +16,12 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends, Query, status
+from fastapi import APIRouter, Body, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.limiter import limiter
 from app.db.session import get_db
-from app.dependencies import get_current_user, require_admin
+from app.dependencies import get_current_user, require_admin_scope
 from app.models import User
 from app.models import ReviewStatus
 from app.schemas.review import (
@@ -102,7 +103,9 @@ async def update_review(
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Delete your own review (admins can delete anyone's)",
 )
+@limiter.limit("20/minute")
 async def delete_review(
+    request: Request,
     review_id: UUID,
     user: Annotated[User, Depends(get_current_user)],
     db: AsyncSession = Depends(get_db),
@@ -120,7 +123,7 @@ async def delete_review(
     summary="Admin review list — pending by default, filterable to any status",
 )
 async def admin_list_reviews(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("reviews"))],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     status_filter: ReviewStatus | None = Query(None, alias="status"),
@@ -142,9 +145,11 @@ async def admin_list_reviews(
     response_model=ReviewAdminView,
     summary="Approve a review and recompute the book's rating aggregate",
 )
+@limiter.limit("60/minute")
 async def approve_review(
+    request: Request,
     review_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("reviews"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewAdminView:
     review = await review_service.approve_review(db, admin, review_id)
@@ -157,9 +162,11 @@ async def approve_review(
     response_model=ReviewAdminView,
     summary="Reject a review (kept in the table for audit)",
 )
+@limiter.limit("60/minute")
 async def reject_review(
+    request: Request,
     review_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("reviews"))],
     _body: dict | None = Body(default=None),  # accept empty/extra body for now
     db: AsyncSession = Depends(get_db),
 ) -> ReviewAdminView:

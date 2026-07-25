@@ -4,7 +4,8 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "reviews",
 });
 
 const { t } = useI18n();
@@ -129,6 +130,57 @@ const STATUS_TONE: Record<ReviewStatus, "success" | "warning" | "neutral" | "err
   approved: "success",
   rejected: "error",
 };
+
+// ---- Bulk selection (pending only) ----
+const selected = ref<string[]>([]);
+
+watch(items, (newItems) => {
+  const ids = new Set(newItems.map((r) => r.id));
+  selected.value = selected.value.filter((id) => ids.has(id));
+});
+
+const pendingItems = computed(() => items.value.filter((r) => r.status === "pending"));
+const allPendingSelected = computed(
+  () => pendingItems.value.length > 0 && pendingItems.value.every((r) => selected.value.includes(r.id)),
+);
+
+function toggleSelectAll() {
+  selected.value = allPendingSelected.value ? [] : pendingItems.value.map((r) => r.id);
+}
+
+function toggleSelectOne(id: string) {
+  selected.value = selected.value.includes(id)
+    ? selected.value.filter((x) => x !== id)
+    : [...selected.value, id];
+}
+
+const bulkAction = ref<"approve" | "reject" | null>(null);
+const bulkBusy = ref(false);
+
+function closeBulkDialog(open: boolean) {
+  if (!open) bulkAction.value = null;
+}
+
+async function confirmBulkAction() {
+  if (!bulkAction.value || bulkBusy.value) return;
+  bulkBusy.value = true;
+  const ids = [...selected.value];
+  const results = await Promise.allSettled(
+    ids.map((id) => {
+      const opts: { method: "POST"; body?: Record<string, unknown> } = { method: "POST" };
+      if (bulkAction.value === "reject") opts.body = {};
+      return api(`/admin/reviews/${id}/${bulkAction.value}`, opts);
+    }),
+  );
+  const ok = results.filter((r) => r.status === "fulfilled").length;
+  const fail = results.length - ok;
+  if (fail === 0) toast.success(t("admin.bulk.done_success", { n: ok }));
+  else toast.warning(t("admin.bulk.done_partial", { ok, fail }));
+  selected.value = [];
+  bulkBusy.value = false;
+  bulkAction.value = null;
+  await refresh();
+}
 </script>
 
 <template>
@@ -202,15 +254,60 @@ const STATUS_TONE: Record<ReviewStatus, "success" | "warning" | "neutral" | "err
       :description="t('admin.filters.no_results_desc')"
     />
 
-    <ul v-else class="space-y-3">
+    <template v-if="items.length > 0">
+      <div
+        v-if="pendingItems.length > 0"
+        class="flex items-center gap-3 mb-1 px-1"
+      >
+        <label class="flex items-center gap-2 text-xs text-ink-tertiary">
+          <input
+            type="checkbox"
+            class="h-4 w-4 rounded border-border accent-primary"
+            :checked="allPendingSelected"
+            @change="toggleSelectAll"
+          />
+          {{ t('admin.bulk.select_all') }}
+        </label>
+      </div>
+
+      <div
+        v-if="selected.length > 0"
+        class="flex items-center gap-3 mb-3 px-3 py-2 rounded-md border border-primary/30 bg-primary/5"
+      >
+        <span class="text-sm text-ink">{{ t('admin.bulk.selected_count', { n: selected.length }) }}</span>
+        <span class="flex-1" />
+        <UiButton size="sm" variant="ghost" @click="selected = []">
+          {{ t('admin.bulk.clear') }}
+        </UiButton>
+        <UiButton size="sm" variant="ghost" @click="bulkAction = 'reject'">
+          <Icon name="close" class="h-4 w-4" />
+          {{ t('admin.bulk.reject_selected') }}
+        </UiButton>
+        <UiButton size="sm" @click="bulkAction = 'approve'">
+          <Icon name="check" class="h-4 w-4" />
+          {{ t('admin.bulk.approve_selected') }}
+        </UiButton>
+      </div>
+    </template>
+
+    <ul v-if="items.length > 0" class="space-y-3">
       <li
         v-for="r in items"
         :key="r.id"
         class="rounded-md border border-border bg-bg-card overflow-hidden hover:border-primary/40 transition-colors"
+        :class="{ 'border-primary/40 bg-primary/5': selected.includes(r.id) }"
       >
         <div class="p-4 space-y-3">
           <header class="flex items-start justify-between gap-3 flex-wrap">
             <div class="flex items-center gap-3 min-w-0">
+              <input
+                v-if="r.status === 'pending'"
+                type="checkbox"
+                class="h-4 w-4 rounded border-border accent-primary shrink-0"
+                :checked="selected.includes(r.id)"
+                :aria-label="t('admin.bulk.select_row')"
+                @change="toggleSelectOne(r.id)"
+              />
               <div
                 class="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0"
               >
@@ -318,6 +415,23 @@ const STATUS_TONE: Record<ReviewStatus, "success" | "warning" | "neutral" | "err
       :loading="busy"
       @update:open="(v) => !v && (deleteTarget = null)"
       @confirm="confirmDelete"
+    />
+
+    <AdminConfirmDialog
+      :open="!!bulkAction"
+      :tone="bulkAction === 'approve' ? 'primary' : 'danger'"
+      :icon="bulkAction === 'approve' ? 'check-circle-solid' : 'close'"
+      :title="bulkAction === 'approve'
+        ? t('admin.bulk.approve_confirm_title', { n: selected.length })
+        : t('admin.bulk.reject_confirm_title', { n: selected.length })"
+      :description="bulkAction === 'approve'
+        ? t('admin.bulk.approve_confirm_body', { n: selected.length })
+        : t('admin.bulk.reject_confirm_body', { n: selected.length })"
+      :confirm-label="bulkAction === 'approve' ? t('admin.bulk.approve_selected') : t('admin.bulk.reject_selected')"
+      :cancel-label="t('admin.actions.cancel')"
+      :loading="bulkBusy"
+      @update:open="closeBulkDialog"
+      @confirm="confirmBulkAction"
     />
   </section>
 </template>

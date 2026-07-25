@@ -2,10 +2,12 @@
 import type { AuditAction, AuditLogList, AuditLogPublic } from "~/types/api";
 import type { Column } from "~/components/admin/AdminDataTable.vue";
 import type { IconName } from "~/utils/icons";
+import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "audit",
 });
 
 const { t } = useI18n();
@@ -13,6 +15,7 @@ const localePath = useLocalePath();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
+const toast = useToast();
 const { formatDate } = useFormatDate();
 
 useHead({ title: t("admin.audit.title") });
@@ -21,13 +24,22 @@ const PAGE_SIZE = 50;
 const currentPage = computed(() => Math.max(1, Number(route.query.page) || 1));
 const actionFilter = computed(() => (route.query.action as string) || "");
 const searchQuery = computed(() => (route.query.q as string) || "");
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const userIdFilter = computed(() => {
+  const raw = (route.query.user_id as string) || "";
+  return UUID_RE.test(raw) ? raw : "";
+});
+
+const sort = computed(() => (route.query.sort as string) || "-created_at");
 
 const queryParams = computed(() => {
   const p: Record<string, string | number> = {
     page: currentPage.value,
     page_size: PAGE_SIZE,
+    sort: sort.value,
   };
   if (actionFilter.value) p.action = actionFilter.value;
+  if (userIdFilter.value) p.user_id = userIdFilter.value;
   return p;
 });
 
@@ -39,16 +51,23 @@ const { data: rawList, pending } = await useAsyncData(
 
 const list = computed(() => rawList.value as AuditLogList | null);
 
+// Server already scopes results to `userIdFilter`. The free-text box only
+// narrows the current page further by action label / IP — it isn't a
+// substitute for the user filter above, which is the only thing that
+// searches across the full audit history.
 const filtered = computed<AuditLogPublic[]>(() => {
   const items = list.value?.items ?? [];
   const q = searchQuery.value.trim().toLowerCase();
   if (!q) return items;
   return items.filter((r) =>
-    (r.user_id ?? "").toLowerCase().includes(q)
-    || (r.ip_address ?? "").toLowerCase().includes(q)
-    || r.action.toLowerCase().includes(q),
+    (r.ip_address ?? "").toLowerCase().includes(q)
+    || t(`admin.audit.actions.${r.action}`).toLowerCase().includes(q),
   );
 });
+
+function filterByUser(userId: string | null) {
+  setQuery({ user_id: userId ?? undefined });
+}
 
 function setQuery(updates: Record<string, string | number | undefined>) {
   const next: Record<string, string> = {};
@@ -72,7 +91,7 @@ function resetFilters() {
   router.replace({ query: {} });
 }
 
-const filtersDirty = computed(() => Boolean(actionFilter.value || searchQuery.value));
+const filtersDirty = computed(() => Boolean(actionFilter.value || searchQuery.value || userIdFilter.value));
 
 const actionOptions: AuditAction[] = [
   "register",
@@ -116,11 +135,38 @@ function toggleExpand(id: string) {
   else expanded.value.add(id);
 }
 
+// ---- Excel export (walks every page of the current filter) ----
+const exporting = ref(false);
+
+async function exportExcel() {
+  if (exporting.value) return;
+  exporting.value = true;
+  try {
+    const all = await fetchAllPages<AuditLogPublic>(
+      (page, page_size) => api<AuditLogList>("/admin/audit", { query: { ...queryParams.value, page, page_size } }),
+      200,
+    );
+    const rows = all.map((r) => ({
+      [t("admin.audit.col_action")]: t(`admin.audit.actions.${r.action}`),
+      [t("admin.audit.col_user")]: r.user_id ?? t("admin.audit.anonymous"),
+      [t("admin.audit.col_ip")]: r.ip_address ?? "",
+      [t("admin.audit.col_when")]: formatDate(r.created_at),
+    }));
+    await exportToExcel(`monografiya-audit-${new Date().toISOString().slice(0, 10)}`, "Audit log", rows);
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    exporting.value = false;
+  }
+}
+
 const columns: Column<AuditLogPublic>[] = [
   { key: "action", label: t("admin.audit.col_action"), width: "w-56" },
   { key: "user", label: t("admin.audit.col_user") },
   { key: "ip", label: t("admin.audit.col_ip"), width: "w-32", mobileHidden: true },
-  { key: "when", label: t("admin.audit.col_when"), width: "w-44" },
+  { key: "when", label: t("admin.audit.col_when"), width: "w-44", sortKey: "created_at" },
 ];
 </script>
 
@@ -142,6 +188,10 @@ const columns: Column<AuditLogPublic>[] = [
           icon="document"
           :label="t('admin.audit.total', { n: list.total })"
         />
+        <UiButton variant="ghost" size="sm" :loading="exporting" @click="exportExcel">
+          <Icon name="document" class="h-3.5 w-3.5" />
+          {{ t('admin.finance.export_excel') }}
+        </UiButton>
       </template>
     </AdminPageHeader>
 
@@ -163,6 +213,19 @@ const columns: Column<AuditLogPublic>[] = [
       />
     </AdminFilterBar>
 
+    <div
+      v-if="userIdFilter"
+      class="flex items-center gap-2 mb-3 px-3 py-2 rounded-md border border-primary/30 bg-primary/5 text-sm"
+    >
+      <Icon name="user-circle" class="h-4 w-4 text-primary shrink-0" />
+      <span class="text-ink">{{ t('admin.audit.filtering_user') }}</span>
+      <code class="font-mono text-xs text-ink-secondary">{{ userIdFilter }}</code>
+      <span class="flex-1" />
+      <UiButton size="sm" variant="ghost" @click="filterByUser(null)">
+        {{ t('admin.audit.clear_user_filter') }}
+      </UiButton>
+    </div>
+
     <AdminDataTable
       :columns="columns"
       :rows="filtered"
@@ -173,6 +236,8 @@ const columns: Column<AuditLogPublic>[] = [
         title: filtersDirty ? t('admin.filters.no_results') : t('admin.audit.empty_title'),
         description: filtersDirty ? t('admin.filters.no_results_desc') : t('admin.audit.empty_body'),
       }"
+      :sort="sort"
+      @update:sort="(v) => setQuery({ sort: v })"
     >
       <template #cell-action="{ row }">
         <button
@@ -194,9 +259,15 @@ const columns: Column<AuditLogPublic>[] = [
         </button>
       </template>
       <template #cell-user="{ row }">
-        <code v-if="row.user_id" class="font-mono text-xs text-ink-secondary">
+        <button
+          v-if="row.user_id"
+          type="button"
+          class="font-mono text-xs text-ink-secondary hover:text-primary underline decoration-dotted underline-offset-2"
+          :title="t('admin.audit.filter_by_user')"
+          @click="filterByUser(row.user_id)"
+        >
           {{ row.user_id.slice(0, 8) }}…
-        </code>
+        </button>
         <span v-else class="text-xs text-ink-tertiary italic">
           {{ t("admin.audit.anonymous") }}
         </span>

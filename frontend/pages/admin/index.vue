@@ -17,9 +17,18 @@ interface StatsSnapshot {
   generated_at: string;
 }
 
+interface DayPoint {
+  date: string;
+  gross: number;
+  orders: number;
+}
+interface FinanceOverview {
+  series: DayPoint[];
+}
+
 const { t } = useI18n();
 const localePath = useLocalePath();
-const { user } = useAuth();
+const { user, hasAdminScope } = useAuth();
 const api = useApi();
 const { formatDate } = useFormatDate();
 
@@ -32,6 +41,20 @@ const { data: statsRaw, pending } = await useAsyncData(
 );
 
 const stats = computed(() => statsRaw.value as StatsSnapshot | null);
+
+// Scoped admins without "finance" can't reach this endpoint — skip the
+// fetch entirely rather than firing a request that's guaranteed a 403.
+const { data: revenueOverviewRaw } = await useAsyncData(
+  "admin:dashboard:revenue-trend",
+  () => api<FinanceOverview>("/admin/finance/overview", { query: { days: 30 } }),
+  { server: false, immediate: hasAdminScope("finance") },
+);
+const revenueSeries = computed(() =>
+  ((revenueOverviewRaw.value as FinanceOverview | null)?.series ?? []).map((p) => ({
+    date: p.date,
+    value: p.gross,
+  })),
+);
 
 const actionItems = computed(() => {
   const s = stats.value;
@@ -201,6 +224,24 @@ const generatedAt = computed(() => {
             tone="warning"
             :to="localePath('/admin/withdrawals')"
           />
+        </div>
+      </section>
+
+      <section v-if="revenueSeries.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+            {{ t("admin.kpi.revenue_trend") }}
+          </h2>
+          <NuxtLink
+            :to="localePath('/admin/finance')"
+            class="text-xs text-primary hover:underline inline-flex items-center gap-1"
+          >
+            {{ t("admin.kpi.revenue_trend_details") }}
+            <Icon name="arrow-right" class="h-3 w-3" />
+          </NuxtLink>
+        </div>
+        <div class="rounded-md border border-border bg-bg-card p-5">
+          <AdminMiniChart :points="revenueSeries" :format="(n) => formatPrice(n)" />
         </div>
       </section>
     </template>

@@ -18,7 +18,7 @@ from fastapi import APIRouter, Body, Depends, File, Form, Query, UploadFile, sta
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies import get_current_user, require_admin
+from app.dependencies import get_current_user, require_admin_scope
 from app.models import ReviewRequestStatus, User
 from app.schemas.review_request import (
     ReviewRequestCancel,
@@ -213,7 +213,7 @@ async def submit_review(
     summary="Full review-request catalogue (admin+)",
 )
 async def admin_list_requests(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("review_requests"))],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     status_filter: ReviewRequestStatus | None = Query(None, alias="status"),
@@ -237,7 +237,7 @@ async def admin_list_requests(
 )
 async def admin_read_request(
     request_id: UUID,
-    user: Annotated[User, Depends(require_admin)],
+    user: Annotated[User, Depends(require_admin_scope("review_requests"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewRequestPublic:
     row = await review_request_service.get_for_user(db, user, request_id)
@@ -252,7 +252,7 @@ async def admin_read_request(
 async def admin_quote_request(
     request_id: UUID,
     data: ReviewRequestQuote,
-    user: Annotated[User, Depends(require_admin)],
+    user: Annotated[User, Depends(require_admin_scope("review_requests"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewRequestPublic:
     row = await review_request_service.quote(db, user, request_id, data)
@@ -267,7 +267,7 @@ async def admin_quote_request(
 )
 async def admin_submit_review(
     request_id: UUID,
-    user: Annotated[User, Depends(require_admin)],
+    user: Annotated[User, Depends(require_admin_scope("review_requests"))],
     review_text: str = Form(..., min_length=1, max_length=20_000),
     file: UploadFile | None = File(default=None),
     db: AsyncSession = Depends(get_db),
@@ -289,7 +289,7 @@ async def admin_submit_review(
 )
 async def admin_mark_paid(
     request_id: UUID,
-    user: Annotated[User, Depends(require_admin)],
+    user: Annotated[User, Depends(require_admin_scope("review_requests"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewRequestPublic:
     row = await review_request_service.mark_paid(db, user, request_id)
@@ -304,7 +304,7 @@ async def admin_mark_paid(
 )
 async def admin_cancel_request(
     request_id: UUID,
-    user: Annotated[User, Depends(require_admin)],
+    user: Annotated[User, Depends(require_admin_scope("review_requests"))],
     data: ReviewRequestCancel = Body(default_factory=ReviewRequestCancel),
     db: AsyncSession = Depends(get_db),
 ) -> ReviewRequestPublic:

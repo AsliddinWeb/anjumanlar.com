@@ -7,20 +7,22 @@ attached — those have to be resolved first).
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.limiter import limiter
 from app.db.session import get_db
-from app.dependencies import require_admin
+from app.dependencies import require_admin_scope
 from app.models import User, UserRole, UserStatus
 from app.models import AuthorProfile
 from app.schemas.auth import (
     AdminUserCreate,
     AdminUserDetail,
     AdminUserRoleUpdate,
+    AdminUserScopesUpdate,
     AdminUserStatusUpdate,
     AdminUserUpdate,
     UserList,
@@ -38,12 +40,15 @@ router = APIRouter(prefix="/admin/users", tags=["admin-users"])
     summary="List users with optional search + role/status filters (admin+)",
 )
 async def admin_list_users(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("users"))],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     search: str | None = Query(None, min_length=1, max_length=200),
     role: UserRole | None = None,
     status_filter: UserStatus | None = Query(None, alias="status"),
+    sort: Literal[
+        "created_at", "-created_at", "full_name", "-full_name", "email", "-email",
+    ] = "-created_at",
     db: AsyncSession = Depends(get_db),
 ) -> UserList:
     items, total = await user_service.admin_list(
@@ -53,6 +58,7 @@ async def admin_list_users(
         search=search,
         role=role,
         status=status_filter,
+        sort=sort,
     )
     return UserList(
         items=[UserPublic.model_validate(u) for u in items],
@@ -68,9 +74,11 @@ async def admin_list_users(
     status_code=status.HTTP_201_CREATED,
     summary="Create a user from the admin panel (admin+; superadmin role is superadmin-only)",
 )
+@limiter.limit("20/minute")
 async def admin_create_user_endpoint(
+    request: Request,
     data: AdminUserCreate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("users"))],
     db: AsyncSession = Depends(get_db),
 ) -> UserPublic:
     user = await user_service.admin_create_user(db, admin, data)
@@ -85,7 +93,7 @@ async def admin_create_user_endpoint(
 )
 async def admin_read_user(
     user_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("users"))],
     db: AsyncSession = Depends(get_db),
 ) -> AdminUserDetail:
     user = await user_service.get_by_id(db, user_id)
@@ -110,10 +118,12 @@ async def admin_read_user(
     response_model=UserPublic,
     summary="Admin edit: any field (email, name, role, status, password)",
 )
+@limiter.limit("30/minute")
 async def admin_patch_user(
+    request: Request,
     user_id: UUID,
     data: AdminUserUpdate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("users"))],
     db: AsyncSession = Depends(get_db),
 ) -> UserPublic:
     user = await user_service.admin_update_user(db, admin, user_id, data)
@@ -126,10 +136,12 @@ async def admin_patch_user(
     response_model=UserPublic,
     summary="Change a user's role (admin+; superadmin promotions are superadmin-only)",
 )
+@limiter.limit("30/minute")
 async def admin_change_user_role(
+    request: Request,
     user_id: UUID,
     data: AdminUserRoleUpdate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("users"))],
     db: AsyncSession = Depends(get_db),
 ) -> UserPublic:
     target = await user_service.admin_change_role(db, admin, user_id, data.role)
@@ -142,13 +154,33 @@ async def admin_change_user_role(
     response_model=UserPublic,
     summary="Block or reactivate a user (admin+). Blocking revokes every session.",
 )
+@limiter.limit("30/minute")
 async def admin_change_user_status(
+    request: Request,
     user_id: UUID,
     data: AdminUserStatusUpdate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("users"))],
     db: AsyncSession = Depends(get_db),
 ) -> UserPublic:
     target = await user_service.admin_change_status(db, admin, user_id, data.status)
+    await db.commit()
+    return UserPublic.model_validate(target)
+
+
+@router.patch(
+    "/{user_id}/scopes",
+    response_model=UserPublic,
+    summary="Restrict (or unrestrict) which admin sections a user can reach (admin+, target must be role=admin)",
+)
+@limiter.limit("30/minute")
+async def admin_change_user_scopes(
+    request: Request,
+    user_id: UUID,
+    data: AdminUserScopesUpdate,
+    admin: Annotated[User, Depends(require_admin_scope("users"))],
+    db: AsyncSession = Depends(get_db),
+) -> UserPublic:
+    target = await user_service.admin_change_scopes(db, admin, user_id, data.admin_scopes)
     await db.commit()
     return UserPublic.model_validate(target)
 
@@ -158,9 +190,11 @@ async def admin_change_user_status(
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Hard-delete a user (admin+). Refuses if books/orders/withdrawals exist.",
 )
+@limiter.limit("10/minute")
 async def admin_delete_user(
+    request: Request,
     user_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("users"))],
     db: AsyncSession = Depends(get_db),
 ) -> None:
     await user_service.admin_delete_user(db, admin, user_id)

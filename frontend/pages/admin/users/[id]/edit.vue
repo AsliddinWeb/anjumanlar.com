@@ -5,7 +5,8 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "users",
 });
 
 const { t } = useI18n();
@@ -14,6 +15,7 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const toast = useToast();
+const { user: me } = useAuth();
 
 const userId = computed(() => route.params.id as string);
 
@@ -42,6 +44,7 @@ function modelFromUser(u: AdminUserDetail): UserFormValue {
     academic_title: u.author_academic_title ?? "",
     institution: u.author_institution ?? "",
     bio: u.author_bio ?? "",
+    admin_scopes: u.admin_scopes,
   };
 }
 
@@ -79,6 +82,12 @@ async function save() {
     }
 
     await api(`/admin/users/${user.value.id}`, { method: "PATCH", body });
+    if (form.value.role === "admin" && me.value?.id !== user.value.id) {
+      await api(`/admin/users/${user.value.id}/scopes`, {
+        method: "PATCH",
+        body: { admin_scopes: form.value.admin_scopes },
+      });
+    }
     toast.success(t("admin.users.update_success"));
     form.value.password = "";
     await refresh();
@@ -139,6 +148,7 @@ async function confirmDelete() {
       v-if="form"
       v-model="form"
       password-optional
+      :hide-scopes="me?.id === user.id"
       :loading="submitting"
       :error="error"
       :submit-label="t('admin.actions.save')"

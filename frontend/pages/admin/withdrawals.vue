@@ -6,7 +6,8 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "withdrawals",
 });
 
 const { t } = useI18n();
@@ -200,6 +201,35 @@ const statusOptions = [
   { value: "cancelled", labelKey: "withdrawals.statuses.cancelled" },
 ];
 
+// ---- Excel export (walks every page of the current filter) ----
+const exporting = ref(false);
+
+async function exportExcel() {
+  if (exporting.value) return;
+  exporting.value = true;
+  try {
+    const all = await fetchAllPages<WithdrawalPublic>(
+      (page, page_size) => api<WithdrawalList>("/admin/withdrawals", { query: { ...queryParams.value, page, page_size } }),
+      100,
+    );
+    const rows = all.map((w) => ({
+      Summa: w.amount,
+      Holat: t(`withdrawals.statuses.${w.status}`),
+      "So'ralgan sana": formatDate(w.created_at),
+      "Yakunlangan sana": w.processed_at ? formatDate(w.processed_at) : "",
+      "Tranzaksiya raqami": w.transaction_ref ?? "",
+      Izoh: w.admin_notes ?? "",
+    }));
+    await exportToExcel(`monografiya-withdrawals-${new Date().toISOString().slice(0, 10)}`, "Pul yechish", rows);
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    exporting.value = false;
+  }
+}
+
 const stats = computed(() => {
   const items = list.value?.items ?? [];
   return {
@@ -234,6 +264,10 @@ const stats = computed(() => {
           pulse
           :label="t('admin.withdrawals.queue_processing', { n: stats.processing })"
         />
+        <UiButton variant="ghost" size="sm" :loading="exporting" @click="exportExcel">
+          <Icon name="document" class="h-3.5 w-3.5" />
+          {{ t('admin.finance.export_excel') }}
+        </UiButton>
       </template>
     </AdminPageHeader>
 

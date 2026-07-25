@@ -21,6 +21,8 @@ from app.models import (
     OrderItem,
     OrderStatus,
     Review,
+    ReviewRequest,
+    ReviewRequestStatus,
     ReviewStatus,
     User,
     UserRole,
@@ -118,6 +120,15 @@ async def snapshot(db: AsyncSession) -> dict[str, Any]:
         )
     ).scalar_one()
 
+    # ---- review requests (paid peer review) ----
+    review_requests_pending = (
+        await db.execute(
+            select(func.count())
+            .select_from(ReviewRequest)
+            .where(ReviewRequest.status == ReviewRequestStatus.pending)
+        )
+    ).scalar_one()
+
     # ---- orders + revenue ----
     orders_paid_total = (
         await db.execute(
@@ -193,6 +204,9 @@ async def snapshot(db: AsyncSession) -> dict[str, Any]:
         },
         "reviews": {
             "pending": int(reviews_pending),
+        },
+        "review_requests": {
+            "pending": int(review_requests_pending),
         },
         "orders": {
             "paid_total": int(orders_paid_total),

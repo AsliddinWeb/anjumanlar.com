@@ -3,7 +3,8 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "finance",
 });
 
 interface DayPoint {
@@ -58,18 +59,18 @@ const monthDelta = computed(() => {
   return Math.round(((cur - prev) / prev) * 100);
 });
 
-function exportCsv() {
+async function exportExcel() {
   if (!overview.value) return;
-  const rows = [["date", "gross_uzs", "orders"]];
-  for (const p of overview.value.series) rows.push([p.date, String(p.gross), String(p.orders)]);
-  const csv = rows.map((r) => r.join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `monografiya-finance-${overview.value.generated_at.slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  const rows = overview.value.series.map((p) => ({
+    Sana: p.date,
+    "Yalpi daromad (so'm)": p.gross,
+    "Buyurtmalar soni": p.orders,
+  }));
+  await exportToExcel(
+    `monografiya-finance-${overview.value.generated_at.slice(0, 10)}`,
+    "Moliyaviy",
+    rows,
+  );
 }
 </script>
 
@@ -94,9 +95,9 @@ function exportCsv() {
           <option :value="90">{{ t("admin.finance.range_90d") }}</option>
           <option :value="180">{{ t("admin.finance.range_180d") }}</option>
         </select>
-        <UiButton variant="ghost" size="sm" :disabled="!overview" @click="exportCsv">
+        <UiButton variant="ghost" size="sm" :disabled="!overview" @click="exportExcel">
           <Icon name="document" class="h-3.5 w-3.5" />
-          {{ t("admin.finance.export_csv") }}
+          {{ t("admin.finance.export_excel") }}
         </UiButton>
       </template>
     </AdminPageHeader>

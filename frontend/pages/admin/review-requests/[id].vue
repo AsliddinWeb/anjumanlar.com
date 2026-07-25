@@ -5,7 +5,8 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "review_requests",
 });
 
 const { t } = useI18n();

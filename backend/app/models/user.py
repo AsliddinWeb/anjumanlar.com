@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy import Enum as SAEnum
-from sqlalchemy.dialects.postgresql import CITEXT, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, CITEXT, JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin, UUIDMixin
@@ -59,6 +59,13 @@ class User(UUIDMixin, TimestampMixin, Base):
         default=UserStatus.pending,
         index=True,
     )
+
+    # Only meaningful for role == admin. NULL = unrestricted (every admin
+    # section) — the default, so existing admins keep full access after
+    # this column ships. A non-null list narrows the caller to those
+    # sections only; superadmin always bypasses this check regardless of
+    # the value. See app/core/admin_scopes.py for the fixed scope catalog.
+    admin_scopes: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True, default=None)
 
     preferred_locale: Mapped[str] = mapped_column(String(5), nullable=False, default="uz")
     preferences: Mapped[dict[str, Any]] = mapped_column(

@@ -6,7 +6,8 @@ import { formatPrice } from "~/composables/useLocaleText";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "books",
 });
 
 const { t } = useI18n();
@@ -22,11 +23,14 @@ useHead({ title: t("admin.books.title") });
 
 const PAGE_SIZE = 20;
 
+const sort = computed(() => (route.query.sort as string) || "-created_at");
+
 const queryParams = computed(() => ({
   page: Math.max(1, Number(route.query.page) || 1),
   page_size: PAGE_SIZE,
   search: ((route.query.q as string) || "").trim() || undefined,
   status: ((route.query.status as string) || undefined) as BookStatus | undefined,
+  sort: sort.value,
 }));
 
 const { data: listRaw, pending, refresh } = await useAsyncData(
@@ -92,11 +96,90 @@ async function confirmDelete() {
   }
 }
 
+// ---- Bulk selection ----
+const selected = ref<(string | number)[]>([]);
+
+watch(items, (newItems) => {
+  const ids = new Set<string | number>(newItems.map((b) => b.id));
+  selected.value = selected.value.filter((id) => ids.has(id));
+});
+
+function isPendingRow(row: BookOwnerView) {
+  return row.status === "pending";
+}
+
+const selectedBooks = computed(() => items.value.filter((b) => selected.value.includes(b.id)));
+
+const bulkAction = ref<"approve" | "reject" | null>(null);
+const bulkReason = ref("");
+const bulkReasonError = ref<string | null>(null);
+const bulkBusy = ref(false);
+
+function closeBulkDialog(open: boolean) {
+  if (open) return;
+  bulkAction.value = null;
+  bulkReason.value = "";
+  bulkReasonError.value = null;
+}
+
+async function confirmBulkAction() {
+  if (!bulkAction.value || bulkBusy.value) return;
+  if (bulkAction.value === "reject" && !bulkReason.value.trim()) {
+    bulkReasonError.value = t("admin.bulk.reject_reason_required");
+    return;
+  }
+  bulkBusy.value = true;
+  const targets = selectedBooks.value;
+  const results = await Promise.allSettled(
+    targets.map((b) =>
+      bulkAction.value === "approve"
+        ? api(`/books/admin/${b.id}/approve`, { method: "POST" })
+        : api(`/books/admin/${b.id}/reject`, { method: "POST", body: { reason: bulkReason.value.trim() } }),
+    ),
+  );
+  const ok = results.filter((r) => r.status === "fulfilled").length;
+  const fail = results.length - ok;
+  if (fail === 0) toast.success(t("admin.bulk.done_success", { n: ok }));
+  else toast.warning(t("admin.bulk.done_partial", { ok, fail }));
+  selected.value = [];
+  bulkBusy.value = false;
+  closeBulkDialog(false);
+  await refresh();
+}
+
+// ---- Excel export (walks every page of the current filter) ----
+const exporting = ref(false);
+
+async function exportExcel() {
+  if (exporting.value) return;
+  exporting.value = true;
+  try {
+    const all = await fetchAllPages<BookOwnerView>(
+      (page, page_size) => api<BookOwnerList>("/books/admin/all", { query: { ...queryParams.value, page, page_size } }),
+      100,
+    );
+    const rows = all.map((b) => ({
+      [t("account_books.table.title_col")]: localised(b.title, b.slug),
+      [t("admin.books.author_field")]: b.author.display_name,
+      [t("account_books.table.status")]: t(`account_books.status.${b.status}`),
+      [t("account_books.table.price")]: b.price,
+      [t("account_books.table.updated_at")]: formatDate(b.created_at, { withTime: false }),
+    }));
+    await exportToExcel(`monografiya-books-${new Date().toISOString().slice(0, 10)}`, "Kitoblar", rows);
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    exporting.value = false;
+  }
+}
+
 const columns: Column<BookOwnerView>[] = [
   { key: "title", label: t("account_books.table.title_col") },
   { key: "status", label: t("account_books.table.status"), align: "center", width: "w-32" },
-  { key: "price", label: t("account_books.table.price"), align: "right", width: "w-28", mobileHidden: true },
-  { key: "created", label: t("account_books.table.updated_at"), width: "w-32", mobileHidden: true },
+  { key: "price", label: t("account_books.table.price"), align: "right", width: "w-28", mobileHidden: true, sortKey: "price" },
+  { key: "created", label: t("account_books.table.updated_at"), width: "w-32", mobileHidden: true, sortKey: "created_at" },
 ];
 </script>
 
@@ -118,6 +201,10 @@ const columns: Column<BookOwnerView>[] = [
           icon="book"
           :label="t('admin.books.results', { n: list.total })"
         />
+        <UiButton variant="ghost" size="sm" :loading="exporting" @click="exportExcel">
+          <Icon name="document" class="h-3.5 w-3.5" />
+          {{ t('admin.finance.export_excel') }}
+        </UiButton>
         <UiButton :to="localePath('/admin/books/new')">
           <Icon name="plus" class="h-4 w-4" />
           {{ t('admin.books.new_button') }}
@@ -147,16 +234,41 @@ const columns: Column<BookOwnerView>[] = [
       />
     </AdminFilterBar>
 
+    <div
+      v-if="selected.length > 0"
+      class="flex items-center gap-3 mb-3 px-3 py-2 rounded-md border border-primary/30 bg-primary/5"
+    >
+      <span class="text-sm text-ink">{{ t('admin.bulk.selected_count', { n: selected.length }) }}</span>
+      <span class="flex-1" />
+      <UiButton size="sm" variant="ghost" @click="selected = []">
+        {{ t('admin.bulk.clear') }}
+      </UiButton>
+      <UiButton size="sm" variant="ghost" @click="bulkAction = 'reject'">
+        <Icon name="close" class="h-4 w-4" />
+        {{ t('admin.bulk.reject_selected') }}
+      </UiButton>
+      <UiButton size="sm" @click="bulkAction = 'approve'">
+        <Icon name="check" class="h-4 w-4" />
+        {{ t('admin.bulk.approve_selected') }}
+      </UiButton>
+    </div>
+
     <AdminDataTable
       :columns="columns"
       :rows="items"
       :row-key="(r) => r.id"
       :loading="pending"
+      selectable
+      :selected="selected"
+      :is-selectable="isPendingRow"
+      :sort="sort"
       :empty="{
         icon: 'book',
         title: filtersDirty ? t('admin.filters.no_results') : t('admin.books.empty_title'),
         description: filtersDirty ? t('admin.filters.no_results_desc') : t('admin.books.empty_body'),
       }"
+      @update:selected="(v) => (selected = v)"
+      @update:sort="(v) => setQuery({ sort: v })"
     >
       <template #cell-title="{ row }">
         <div class="flex items-center gap-3 min-w-0">
@@ -250,5 +362,33 @@ const columns: Column<BookOwnerView>[] = [
       @update:open="(v) => !v && (deleteTarget = null)"
       @confirm="confirmDelete"
     />
+
+    <AdminConfirmDialog
+      :open="!!bulkAction"
+      :tone="bulkAction === 'approve' ? 'primary' : 'danger'"
+      :icon="bulkAction === 'approve' ? 'check-circle-solid' : 'close'"
+      :title="bulkAction === 'approve'
+        ? t('admin.bulk.approve_confirm_title', { n: selected.length })
+        : t('admin.bulk.reject_confirm_title', { n: selected.length })"
+      :description="bulkAction === 'approve'
+        ? t('admin.bulk.approve_confirm_body', { n: selected.length })
+        : t('admin.bulk.reject_confirm_body', { n: selected.length })"
+      :confirm-label="bulkAction === 'approve' ? t('admin.bulk.approve_selected') : t('admin.bulk.reject_selected')"
+      :cancel-label="t('admin.actions.cancel')"
+      :loading="bulkBusy"
+      @update:open="closeBulkDialog"
+      @confirm="confirmBulkAction"
+    >
+      <label v-if="bulkAction === 'reject'" class="block">
+        <span class="block text-sm text-ink-secondary mb-1">{{ t('admin.bulk.reject_reason_label') }}</span>
+        <textarea
+          v-model="bulkReason"
+          rows="3"
+          :placeholder="t('admin.bulk.reject_reason_placeholder')"
+          class="w-full px-3 py-2 rounded border border-border bg-bg text-sm text-ink focus:outline-none focus:border-primary"
+        />
+        <span v-if="bulkReasonError" class="block text-xs text-error mt-1">{{ bulkReasonError }}</span>
+      </label>
+    </AdminConfirmDialog>
   </section>
 </template>

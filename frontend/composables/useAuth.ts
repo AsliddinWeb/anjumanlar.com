@@ -12,6 +12,7 @@ export function useAuth() {
     isAuthenticated,
     isVerified,
     hasRole: store.hasRole,
+    hasAdminScope: store.hasAdminScope,
     login: store.login,
     register: store.register,
     logout: store.logout,

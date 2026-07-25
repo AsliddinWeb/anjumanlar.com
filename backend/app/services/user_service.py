@@ -52,6 +52,16 @@ async def set_avatar(
     return user
 
 
+_ADMIN_USER_SORT_MAP = {
+    "created_at": User.created_at.asc(),
+    "-created_at": User.created_at.desc(),
+    "full_name": User.full_name.asc(),
+    "-full_name": User.full_name.desc(),
+    "email": User.email.asc(),
+    "-email": User.email.desc(),
+}
+
+
 async def admin_list(
     db: AsyncSession,
     *,
@@ -60,6 +70,7 @@ async def admin_list(
     search: str | None = None,
     role: UserRole | None = None,
     status: UserStatus | None = None,
+    sort: str = "-created_at",
 ) -> tuple[list[User], int]:
     """Admin search across users. Filters compose AND."""
     base = select(User)
@@ -72,10 +83,11 @@ async def admin_list(
         base = base.where(User.status == status)
 
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    clause = _ADMIN_USER_SORT_MAP.get(sort, _ADMIN_USER_SORT_MAP["-created_at"])
     rows = (
         (
             await db.execute(
-                base.order_by(User.created_at.desc())
+                base.order_by(clause)
                 .offset((page - 1) * page_size)
                 .limit(page_size)
             )
@@ -129,9 +141,33 @@ async def admin_change_role(
             details={"code": "superadmin_required"},
         )
     target.role = new_role
+    if new_role != UserRole.admin:
+        # Scopes are only meaningful for `admin` — clear them so a later
+        # re-promotion starts from "unrestricted" rather than a stale list.
+        target.admin_scopes = None
     await db.flush()
     if new_role in {UserRole.author, UserRole.admin, UserRole.superadmin}:
         await _ensure_author_profile(db, target)
+    return target
+
+
+async def admin_change_scopes(
+    db: AsyncSession,
+    actor: User,
+    user_id: UUID,
+    new_scopes: list[str] | None,
+) -> User:
+    """Restrict (or unrestrict) which admin sections `user_id` can reach.
+    No-op in effect on anything but `role == admin` — superadmin always
+    bypasses scope checks, and other roles never pass `require_admin`."""
+    target = await _get(db, user_id)
+    if target.id == actor.id:
+        raise ConflictError(
+            "You can't change your own admin scopes", details={"code": "self_scope_change"}
+        )
+    _assert_target_not_superadmin(target, actor)
+    target.admin_scopes = new_scopes
+    await db.flush()
     return target
 
 
@@ -185,6 +221,7 @@ async def admin_create_user(
         status=data.status,
         email_verified=True,
         preferred_locale=data.preferred_locale,
+        admin_scopes=data.admin_scopes if data.role == UserRole.admin else None,
     )
     db.add(user)
     await db.flush()
@@ -304,6 +341,8 @@ async def admin_update_user(
         target.full_name = data.full_name
     if data.role is not None:
         target.role = data.role
+        if data.role != UserRole.admin:
+            target.admin_scopes = None
     if data.status is not None:
         target.status = data.status
         if data.status == UserStatus.blocked:

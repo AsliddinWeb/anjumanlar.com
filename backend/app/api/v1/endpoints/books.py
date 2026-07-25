@@ -7,15 +7,16 @@ slug matcher.
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends, File, Query, UploadFile, status
+from fastapi import APIRouter, Body, Depends, File, Query, Request, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ForbiddenError
+from app.core.limiter import limiter
 from app.db.session import get_db
-from app.dependencies import require_admin, require_author
+from app.dependencies import require_admin_scope, require_author
 from app.models import BookStatus, User
 from app.schemas.book import (
     BookAdminCreate,
@@ -272,12 +273,13 @@ async def upload_book_file(
     summary="Full admin catalogue — every book regardless of status (admin+)",
 )
 async def admin_list_all(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("books"))],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     status_filter: BookStatus | None = Query(None, alias="status"),
     search: str | None = Query(None, min_length=1, max_length=200),
     author_id: UUID | None = None,
+    sort: Literal["created_at", "-created_at", "price", "-price"] = "-created_at",
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerList:
     items, total = await book_service.admin_list_all(
@@ -287,6 +289,7 @@ async def admin_list_all(
         status=status_filter,
         search=search,
         author_id=author_id,
+        sort=sort,
     )
     return BookOwnerList(
         items=[BookOwnerView.model_validate(b) for b in items],
@@ -302,9 +305,11 @@ async def admin_list_all(
     status_code=status.HTTP_201_CREATED,
     summary="Admin creates a book on behalf of any author (admin+)",
 )
+@limiter.limit("30/minute")
 async def admin_create_book(
+    request: Request,
     data: BookAdminCreate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("books"))],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:
     book = await book_service.admin_create_book(db, admin, data.author_id, data)
@@ -317,10 +322,12 @@ async def admin_create_book(
     response_model=BookOwnerView,
     summary="Admin edit — any status, any field (admin+)",
 )
+@limiter.limit("30/minute")
 async def admin_patch_book(
+    request: Request,
     book_id: UUID,
     data: BookAdminUpdate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("books"))],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:
     book = await book_service.admin_update_book(db, admin, book_id, data)
@@ -334,7 +341,7 @@ async def admin_patch_book(
     summary="Books awaiting moderation (admin+)",
 )
 async def admin_list_moderation(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("books"))],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -353,9 +360,11 @@ async def admin_list_moderation(
     response_model=BookOwnerView,
     summary="Admin shortcut — publish a draft / rejected / pending book straight away",
 )
+@limiter.limit("30/minute")
 async def admin_publish_book_endpoint(
+    request: Request,
     book_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("books"))],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:
     book = await book_service.admin_publish_book(db, admin, book_id)
@@ -368,9 +377,11 @@ async def admin_publish_book_endpoint(
     response_model=BookOwnerView,
     summary="Admin shortcut — pull an approved book back to draft (hides it)",
 )
+@limiter.limit("30/minute")
 async def admin_unpublish_book_endpoint(
+    request: Request,
     book_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("books"))],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:
     book = await book_service.admin_unpublish_book(db, admin, book_id)
@@ -383,9 +394,11 @@ async def admin_unpublish_book_endpoint(
     response_model=BookOwnerView,
     summary="Approve a pending book (admin+)",
 )
+@limiter.limit("60/minute")
 async def admin_approve_book(
+    request: Request,
     book_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("books"))],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:
     book = await book_service.approve(db, admin, book_id)
@@ -398,9 +411,11 @@ async def admin_approve_book(
     response_model=BookOwnerView,
     summary="Reject a pending book with a reason (admin+)",
 )
+@limiter.limit("60/minute")
 async def admin_reject_book(
+    request: Request,
     book_id: UUID,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("books"))],
     data: BookRejectRequest = Body(...),
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:

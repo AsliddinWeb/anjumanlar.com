@@ -335,6 +335,14 @@ async def admin_unpublish_book(db: AsyncSession, admin: User, book_id: UUID) -> 
     return await _get_loaded(db, book.id)
 
 
+_ADMIN_BOOK_SORT_MAP = {
+    "created_at": Book.created_at.asc(),
+    "-created_at": Book.created_at.desc(),
+    "price": Book.price.asc(),
+    "-price": Book.price.desc(),
+}
+
+
 async def admin_list_all(
     db: AsyncSession,
     *,
@@ -343,6 +351,7 @@ async def admin_list_all(
     status: BookStatus | None = None,
     search: str | None = None,
     author_id: UUID | None = None,
+    sort: str = "-created_at",
 ) -> tuple[list[Book], int]:
     """Full admin catalogue — every book regardless of status. Filters
     are AND-composed; missing values are ignored."""
@@ -360,7 +369,8 @@ async def admin_list_all(
             )
         )
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
-    base = base.order_by(Book.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
+    clause = _ADMIN_BOOK_SORT_MAP.get(sort, _ADMIN_BOOK_SORT_MAP["-created_at"])
+    base = base.order_by(clause).offset((page - 1) * page_size).limit(page_size)
     items = (await db.execute(base)).scalars().unique().all()
     return list(items), total
 

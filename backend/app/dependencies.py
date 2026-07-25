@@ -100,3 +100,22 @@ def require_roles(*allowed: UserRole):
 require_author = require_roles(UserRole.author, UserRole.admin, UserRole.superadmin)
 require_admin = require_roles(UserRole.admin, UserRole.superadmin)
 require_superadmin = require_roles(UserRole.superadmin)
+
+
+def require_admin_scope(scope: str):
+    """Factory: like `require_admin`, but a non-superadmin caller must also
+    carry `scope` in their `admin_scopes` list. `admin_scopes is None` keeps
+    the legacy "every admin sees everything" behaviour, so this is opt-in
+    per account — see app/core/admin_scopes.py for the fixed scope catalog.
+    """
+
+    async def _checker(
+        user: Annotated[User, Depends(require_admin)],
+    ) -> User:
+        if user.role == UserRole.superadmin:
+            return user
+        if user.admin_scopes is not None and scope not in user.admin_scopes:
+            raise ForbiddenError(f"Missing admin scope: {scope}")
+        return user
+
+    return _checker

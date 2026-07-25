@@ -13,7 +13,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies import require_admin
+from app.dependencies import require_admin_scope
 from app.models import User
 from app.schemas.review_category import (
     ReviewCategoryCreate,
@@ -50,7 +50,7 @@ async def list_public_categories(
     summary="All review-request categories (admin)",
 )
 async def admin_list_categories(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("review_categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewCategoryList:
     rows, total = await review_category_service.list_admin(db)
@@ -68,7 +68,7 @@ async def admin_list_categories(
 )
 async def admin_create_category(
     data: ReviewCategoryCreate,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("review_categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewCategoryPublic:
     row = await review_category_service.create(db, data)
@@ -84,7 +84,7 @@ async def admin_create_category(
 async def admin_update_category(
     category_id: UUID,
     data: ReviewCategoryUpdate,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("review_categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> ReviewCategoryPublic:
     row = await review_category_service.update(db, category_id, data)
@@ -99,7 +99,7 @@ async def admin_update_category(
 )
 async def admin_delete_category(
     category_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("review_categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> None:
     await review_category_service.delete(db, category_id)

@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies import get_current_user, require_admin
+from app.dependencies import get_current_user, require_admin_scope
 from app.models import User
 from app.services import finance_service
 
@@ -29,7 +29,7 @@ author_router = APIRouter(prefix="/finance", tags=["finance"])
     summary="Admin finance overview (KPIs + series + top tables)",
 )
 async def admin_finance_overview(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("finance"))],
     days: int = Query(30, ge=7, le=180),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:

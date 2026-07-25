@@ -13,6 +13,20 @@ export type LocalisedText = Partial<Record<Locale | string, string>>;
 
 // ---------- User / auth ----------
 
+/** Fixed catalog of admin panel sections — mirrors app/core/admin_scopes.py. */
+export type AdminScope =
+  | "books"
+  | "reviews"
+  | "review_requests"
+  | "review_categories"
+  | "blog"
+  | "categories"
+  | "users"
+  | "withdrawals"
+  | "finance"
+  | "audit"
+  | "settings";
+
 export interface UserPublic {
   id: string;
   email: string;
@@ -23,6 +37,8 @@ export interface UserPublic {
   avatar_url: string | null;
   preferred_locale: string;
   created_at: string;
+  /** Only meaningful when role === "admin". null = every section. */
+  admin_scopes: AdminScope[] | null;
 }
 
 export interface TokenPair {
@@ -230,10 +246,16 @@ export interface AdminUserCreate {
   role: UserRole;
   status: UserStatus;
   preferred_locale?: Locale;
+  /** Only applied when role === "admin". */
+  admin_scopes?: AdminScope[] | null;
   display_name?: string;
   academic_title?: string;
   institution?: string;
   bio?: string;
+}
+
+export interface AdminUserScopesUpdate {
+  admin_scopes: AdminScope[] | null;
 }
 
 // ---------- Review requests (paid peer review) ----------

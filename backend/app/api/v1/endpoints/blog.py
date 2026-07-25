@@ -15,7 +15,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies import require_admin
+from app.dependencies import require_admin_scope
 from app.models import BlogPostStatus, User
 from app.schemas.blog import (
     BlogPostAdminList,
@@ -73,7 +73,7 @@ async def read_post(slug: str, db: AsyncSession = Depends(get_db)) -> BlogPostPu
     summary="List blog posts (admin+, any status)",
 )
 async def admin_list_posts(
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("blog"))],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     status_filter: BlogPostStatus | None = Query(None, alias="status"),
@@ -98,7 +98,7 @@ async def admin_list_posts(
 )
 async def admin_create_post(
     data: BlogPostCreate,
-    admin: Annotated[User, Depends(require_admin)],
+    admin: Annotated[User, Depends(require_admin_scope("blog"))],
     db: AsyncSession = Depends(get_db),
 ) -> BlogPostAdminView:
     post = await blog_service.create(db, admin, data)
@@ -113,7 +113,7 @@ async def admin_create_post(
 )
 async def admin_read_post(
     post_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("blog"))],
     db: AsyncSession = Depends(get_db),
 ) -> BlogPostAdminView:
     return BlogPostAdminView.model_validate(await blog_service.get_by_id(db, post_id))
@@ -127,7 +127,7 @@ async def admin_read_post(
 async def admin_update_post(
     post_id: UUID,
     data: BlogPostUpdate,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("blog"))],
     db: AsyncSession = Depends(get_db),
 ) -> BlogPostAdminView:
     post = await blog_service.update(db, post_id, data)
@@ -142,7 +142,7 @@ async def admin_update_post(
 )
 async def admin_publish_post(
     post_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("blog"))],
     db: AsyncSession = Depends(get_db),
 ) -> BlogPostAdminView:
     post = await blog_service.publish(db, post_id)
@@ -157,7 +157,7 @@ async def admin_publish_post(
 )
 async def admin_unpublish_post(
     post_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("blog"))],
     db: AsyncSession = Depends(get_db),
 ) -> BlogPostAdminView:
     post = await blog_service.unpublish(db, post_id)
@@ -172,7 +172,7 @@ async def admin_unpublish_post(
 )
 async def admin_delete_post(
     post_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("blog"))],
     db: AsyncSession = Depends(get_db),
 ) -> None:
     await blog_service.delete(db, post_id)

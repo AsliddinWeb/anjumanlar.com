@@ -16,7 +16,17 @@ from pydantic import (
     field_validator,
 )
 
+from app.core.admin_scopes import ADMIN_SCOPES
 from app.models import UserRole, UserStatus
+
+
+def _validate_admin_scopes(v: list[str] | None) -> list[str] | None:
+    if v is None:
+        return v
+    unknown = sorted(set(v) - set(ADMIN_SCOPES))
+    if unknown:
+        raise ValueError(f"Unknown admin scope(s): {', '.join(unknown)}")
+    return sorted(set(v))
 
 # Password policy mirrors docs/03-backend/03-authentication.md §"Parol siyosati":
 # 8+ chars, at least one uppercase letter, one lowercase letter, one digit.
@@ -70,6 +80,9 @@ class UserPublic(BaseModel):
     avatar_url: str | None = None
     preferred_locale: str
     created_at: datetime
+    # Only meaningful when role == admin; None means unrestricted access to
+    # every admin section (also true for superadmin, regardless of value).
+    admin_scopes: list[str] | None = None
 
 
 class UserList(BaseModel):
@@ -97,6 +110,18 @@ class AdminUserStatusUpdate(BaseModel):
     status: UserStatus
 
 
+class AdminUserScopesUpdate(BaseModel):
+    """`None` (or omitted) clears the restriction — the admin sees every
+    section again. An empty list is valid too and means "no sections"."""
+
+    admin_scopes: list[str] | None = None
+
+    @field_validator("admin_scopes")
+    @classmethod
+    def _validate_scopes(cls, v: list[str] | None) -> list[str] | None:
+        return _validate_admin_scopes(v)
+
+
 class AdminUserCreate(BaseModel):
     """Admin payload for POST /admin/users — create a user from the panel.
 
@@ -114,6 +139,8 @@ class AdminUserCreate(BaseModel):
     role: UserRole = UserRole.reader
     status: UserStatus = UserStatus.active
     preferred_locale: Literal["uz", "ru", "en"] = "uz"
+    # Only applied when role == admin; ignored otherwise.
+    admin_scopes: list[str] | None = None
 
     # Optional AuthorProfile fields (only used when role implies authoring)
     display_name: str | None = Field(default=None, max_length=255)
@@ -125,6 +152,11 @@ class AdminUserCreate(BaseModel):
     @classmethod
     def _strip(cls, v: str) -> str:
         return v.strip()
+
+    @field_validator("admin_scopes")
+    @classmethod
+    def _validate_scopes(cls, v: list[str] | None) -> list[str] | None:
+        return _validate_admin_scopes(v)
 
 
 class AdminUserUpdate(BaseModel):

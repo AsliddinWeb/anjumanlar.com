@@ -6,7 +6,8 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "users",
 });
 
 const { t } = useI18n();
@@ -22,12 +23,15 @@ useHead({ title: t("admin.users.title") });
 
 const PAGE_SIZE = 20;
 
+const sort = computed(() => (route.query.sort as string) || "-created_at");
+
 const queryParams = computed(() => ({
   page: Math.max(1, Number(route.query.page) || 1),
   page_size: PAGE_SIZE,
   search: ((route.query.q as string) || "").trim() || undefined,
   role: ((route.query.role as string) || undefined) as UserRole | undefined,
   status: ((route.query.status as string) || undefined) as UserStatus | undefined,
+  sort: sort.value,
 }));
 
 const { data: usersRaw, pending, refresh } = await useAsyncData(
@@ -173,11 +177,39 @@ function canAct(u: UserPublic) {
   return !isSelf(u) && !isImmutableSuperadmin(u);
 }
 
+// ---- Excel export (walks every page of the current filter) ----
+const exporting = ref(false);
+
+async function exportExcel() {
+  if (exporting.value) return;
+  exporting.value = true;
+  try {
+    const all = await fetchAllPages<UserPublic>(
+      (page, page_size) => api<UserList>("/admin/users", { query: { ...queryParams.value, page, page_size } }),
+      100,
+    );
+    const rows = all.map((u) => ({
+      [t("admin.users.table.user")]: u.full_name,
+      Email: u.email,
+      [t("admin.users.table.role")]: t(`admin.users.roles.${u.role}`),
+      [t("admin.users.table.status")]: t(`admin.users.statuses.${u.status}`),
+      [t("admin.users.table.created_at")]: formatDate(u.created_at, { withTime: false }),
+    }));
+    await exportToExcel(`monografiya-users-${new Date().toISOString().slice(0, 10)}`, "Foydalanuvchilar", rows);
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    exporting.value = false;
+  }
+}
+
 const columns: Column<UserPublic>[] = [
-  { key: "user", label: t("admin.users.table.user") },
+  { key: "user", label: t("admin.users.table.user"), sortKey: "full_name" },
   { key: "role", label: t("admin.users.table.role"), width: "w-28" },
   { key: "status", label: t("admin.users.table.status"), align: "center", width: "w-28" },
-  { key: "created_at", label: t("admin.users.table.created_at"), width: "w-32" },
+  { key: "created_at", label: t("admin.users.table.created_at"), width: "w-32", sortKey: "created_at" },
 ];
 </script>
 
@@ -199,6 +231,10 @@ const columns: Column<UserPublic>[] = [
           icon="users"
           :label="t('admin.users.results', { n: users.total })"
         />
+        <UiButton variant="ghost" size="sm" :loading="exporting" @click="exportExcel">
+          <Icon name="document" class="h-3.5 w-3.5" />
+          {{ t('admin.finance.export_excel') }}
+        </UiButton>
         <UiButton :to="localePath('/admin/users/new')">
           <Icon name="plus" class="h-4 w-4" />
           {{ t('admin.users.new_button') }}
@@ -248,6 +284,8 @@ const columns: Column<UserPublic>[] = [
         title: filtersDirty ? t('admin.filters.no_results') : t('admin.users.empty_title'),
         description: filtersDirty ? t('admin.filters.no_results_desc') : t('admin.users.empty_body'),
       }"
+      :sort="sort"
+      @update:sort="(v) => setQuery({ sort: v })"
     >
       <template #cell-user="{ row }">
         <div class="flex items-center gap-3">

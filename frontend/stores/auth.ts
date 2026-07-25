@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { LoginResponse, UserPublic, UserRole } from "~/types/api";
+import type { AdminScope, LoginResponse, UserPublic, UserRole } from "~/types/api";
 
 /**
  * Auth store — owns the access token and the current user.
@@ -59,6 +59,17 @@ export const useAuthStore = defineStore("auth", () => {
       superadmin: ["reader", "author", "admin", "superadmin"],
     };
     return hierarchy[user.value.role].includes(role);
+  }
+
+  /** True unless the caller is a scope-restricted admin missing `scope`.
+   * Superadmin and unrestricted admins (`admin_scopes === null`) always
+   * pass — mirrors the backend's `require_admin_scope`. */
+  function hasAdminScope(scope: AdminScope): boolean {
+    if (!user.value) return false;
+    if (user.value.role === "superadmin") return true;
+    if (user.value.role !== "admin") return false;
+    if (user.value.admin_scopes === null) return true;
+    return user.value.admin_scopes.includes(scope);
   }
 
   function _setSession(payload: LoginResponse) {
@@ -189,6 +200,7 @@ export const useAuthStore = defineStore("auth", () => {
     isAuthenticated,
     isVerified,
     hasRole,
+    hasAdminScope,
     login,
     register,
     logout,

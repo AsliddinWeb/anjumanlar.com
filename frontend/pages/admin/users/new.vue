@@ -5,7 +5,8 @@ import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({
   layout: "admin",
-  middleware: ["auth", "admin"],
+  middleware: ["auth", "admin", "admin-scope"],
+  adminScope: "users",
 });
 
 const { t } = useI18n();
@@ -26,6 +27,7 @@ const form = ref<UserFormValue>({
   academic_title: "",
   institution: "",
   bio: "",
+  admin_scopes: null,
 });
 
 const submitting = ref(false);
@@ -49,6 +51,7 @@ async function submit() {
         role: form.value.role,
         status: form.value.status,
         password: form.value.password,
+        ...(form.value.role === "admin" ? { admin_scopes: form.value.admin_scopes } : {}),
         ...(isAuthorRole ? {
           display_name: form.value.display_name.trim() || form.value.full_name.trim(),
           academic_title: form.value.academic_title.trim() || null,

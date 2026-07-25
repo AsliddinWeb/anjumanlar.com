@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { IconName } from "~/utils/icons";
+import type { AdminScope } from "~/types/api";
 
 const props = withDefaults(
   defineProps<{
@@ -13,23 +14,64 @@ const props = withDefaults(
 const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
+const api = useApi();
+const { hasAdminScope } = useAuth();
 
-type Item = { to: string; icon: IconName; label: string; exact?: boolean };
+interface StatsSnapshot {
+  books: { pending: number };
+  reviews: { pending: number };
+  review_requests: { pending: number };
+  withdrawals: { open: number };
+}
 
-const items = computed<Item[]>(() => [
+// Same key the dashboard page (`admin/index.vue`) fetches under — Nuxt
+// dedupes/shares `useAsyncData` calls by key, so this doesn't double the
+// request when both are mounted (sidebar + dashboard content).
+const { data: statsRaw } = useAsyncData(
+  "admin:stats",
+  () => api<StatsSnapshot>("/admin/stats"),
+  { server: false, lazy: true },
+);
+const stats = computed(() => statsRaw.value as StatsSnapshot | null);
+
+type Item = {
+  to: string;
+  icon: IconName;
+  label: string;
+  exact?: boolean;
+  scope?: AdminScope;
+  badge?: () => number;
+};
+
+const allItems = computed<Item[]>(() => [
   { to: "/admin", icon: "chart", label: t("admin.nav.dashboard"), exact: true },
-  { to: "/admin/books", icon: "book", label: t("admin.nav.books") },
-  { to: "/admin/reviews", icon: "chat", label: t("admin.nav.reviews") },
-  { to: "/admin/review-requests", icon: "inbox", label: t("admin.nav.review_requests") },
-  { to: "/admin/review-categories", icon: "folder", label: t("admin.nav.review_categories") },
-  { to: "/admin/blog", icon: "news", label: t("admin.nav.blog") },
-  { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories") },
-  { to: "/admin/users", icon: "users", label: t("admin.nav.users") },
-  { to: "/admin/withdrawals", icon: "money", label: t("admin.nav.withdrawals") },
-  { to: "/admin/finance", icon: "chart", label: t("admin.nav.finance") },
-  { to: "/admin/audit", icon: "clipboard-list", label: t("admin.nav.audit") },
-  { to: "/admin/settings", icon: "settings", label: t("admin.nav.settings") },
+  { to: "/admin/books", icon: "book", label: t("admin.nav.books"), scope: "books", badge: () => stats.value?.books.pending ?? 0 },
+  { to: "/admin/reviews", icon: "chat", label: t("admin.nav.reviews"), scope: "reviews", badge: () => stats.value?.reviews.pending ?? 0 },
+  { to: "/admin/review-requests", icon: "inbox", label: t("admin.nav.review_requests"), scope: "review_requests", badge: () => stats.value?.review_requests.pending ?? 0 },
+  { to: "/admin/review-categories", icon: "folder", label: t("admin.nav.review_categories"), scope: "review_categories" },
+  { to: "/admin/blog", icon: "news", label: t("admin.nav.blog"), scope: "blog" },
+  { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories"), scope: "categories" },
+  { to: "/admin/users", icon: "users", label: t("admin.nav.users"), scope: "users" },
+  { to: "/admin/withdrawals", icon: "money", label: t("admin.nav.withdrawals"), scope: "withdrawals", badge: () => stats.value?.withdrawals.open ?? 0 },
+  { to: "/admin/finance", icon: "chart", label: t("admin.nav.finance"), scope: "finance" },
+  { to: "/admin/audit", icon: "clipboard-list", label: t("admin.nav.audit"), scope: "audit" },
+  { to: "/admin/settings", icon: "settings", label: t("admin.nav.settings"), scope: "settings" },
 ]);
+
+// `hasAdminScope` reads the auth store, which is only ever populated
+// client-side (session bootstrap is a `.client` plugin). Filtering
+// straight away would render fewer <li>s during SSR than the client
+// settles on once the store resolves, tripping a hydration mismatch —
+// so show everything until this component has actually mounted, then
+// narrow to what the signed-in admin can see. Mirrors the `<ClientOnly>`
+// fallback pattern used for the dashboard greeting for the same reason.
+const mounted = ref(false);
+onMounted(() => { mounted.value = true; });
+
+const items = computed(() => {
+  if (!mounted.value) return allItems.value;
+  return allItems.value.filter((item) => !item.scope || hasAdminScope(item.scope));
+});
 
 function isActive(target: string, exact = false): boolean {
   const localised = localePath(target);
@@ -77,13 +119,25 @@ const isCollapsed = computed(() => !props.forceExpanded && props.collapsed);
             ]"
             :title="isCollapsed ? item.label : undefined"
           >
-            <Icon :name="item.icon" class="h-5 w-5 shrink-0" />
-            <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
+            <span class="relative shrink-0">
+              <Icon :name="item.icon" class="h-5 w-5" />
+              <span
+                v-if="isCollapsed && item.badge?.()"
+                class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-warning"
+              />
+            </span>
+            <span v-if="!isCollapsed" class="truncate flex-1">{{ item.label }}</span>
+            <span
+              v-if="!isCollapsed && item.badge?.()"
+              class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full bg-warning/15 text-warning text-[11px] font-medium tabular-nums"
+            >
+              {{ item.badge() }}
+            </span>
             <span
               v-if="isCollapsed"
               class="pointer-events-none absolute left-full ml-2 px-2 py-1 rounded bg-bg-elevated border border-border text-xs text-ink whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-30 shadow-md"
             >
-              {{ item.label }}
+              {{ item.label }}<template v-if="item.badge?.()"> ({{ item.badge() }})</template>
             </span>
           </NuxtLink>
         </li>

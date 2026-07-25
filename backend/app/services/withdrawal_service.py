@@ -169,21 +169,31 @@ async def cancel_by_author(
 # ---------- admin ----------
 
 
+_ADMIN_WITHDRAWAL_SORT_MAP = {
+    "created_at": Withdrawal.created_at.asc(),
+    "-created_at": Withdrawal.created_at.desc(),
+    "amount": Withdrawal.amount.asc(),
+    "-amount": Withdrawal.amount.desc(),
+}
+
+
 async def admin_list(
     db: AsyncSession,
     *,
     page: int,
     page_size: int,
     status: WithdrawalStatus | None = None,
+    sort: str = "-created_at",
 ) -> tuple[list[Withdrawal], int]:
     base = select(Withdrawal)
     if status is not None:
         base = base.where(Withdrawal.status == status)
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    clause = _ADMIN_WITHDRAWAL_SORT_MAP.get(sort, _ADMIN_WITHDRAWAL_SORT_MAP["-created_at"])
     rows = (
         (
             await db.execute(
-                base.order_by(Withdrawal.created_at.desc())
+                base.order_by(clause)
                 .offset((page - 1) * page_size)
                 .limit(page_size)
             )

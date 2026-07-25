@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies import require_admin
+from app.dependencies import require_admin_scope
 from app.models import User
 from app.schemas.category import (
     CategoryCreate,
@@ -69,7 +69,7 @@ async def read_category(slug: str, db: AsyncSession = Depends(get_db)) -> Catego
 )
 async def create_category(
     data: CategoryCreate,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> CategoryPublic:
     category = await category_service.create(db, data)
@@ -85,7 +85,7 @@ async def create_category(
 async def update_category(
     category_id: UUID,
     data: CategoryUpdate,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> CategoryPublic:
     category = await category_service.update(db, category_id, data)
@@ -100,7 +100,7 @@ async def update_category(
 )
 async def delete_category(
     category_id: UUID,
-    _: Annotated[User, Depends(require_admin)],
+    _: Annotated[User, Depends(require_admin_scope("categories"))],
     db: AsyncSession = Depends(get_db),
 ) -> None:
     await category_service.delete(db, category_id)

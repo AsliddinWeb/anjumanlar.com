@@ -49,6 +49,12 @@ async def log_event(
         logger.exception("audit_log write failed: action=%s user_id=%s", action.value, user_id)
 
 
+_ADMIN_AUDIT_SORT_MAP = {
+    "created_at": AuditLog.created_at.asc(),
+    "-created_at": AuditLog.created_at.desc(),
+}
+
+
 async def list_audit(
     db: AsyncSession,
     *,
@@ -56,12 +62,13 @@ async def list_audit(
     page_size: int,
     user_id: UUID | None = None,
     action: AuditAction | None = None,
+    sort: str = "-created_at",
 ) -> tuple[list[AuditLog], int]:
-    """Admin-only audit feed. Newest first.
+    """Admin-only audit feed. Newest first by default.
 
     Filters compose AND so you can drill down by user *and* action; both
-    are optional. Result ordering is ``created_at DESC`` (the index on
-    ``created_at`` keeps this cheap)."""
+    are optional. Result ordering defaults to ``created_at DESC`` (the
+    index on ``created_at`` keeps this cheap)."""
     base = select(AuditLog)
     if user_id is not None:
         base = base.where(AuditLog.user_id == user_id)
@@ -69,10 +76,11 @@ async def list_audit(
         base = base.where(AuditLog.action == action)
 
     total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    clause = _ADMIN_AUDIT_SORT_MAP.get(sort, _ADMIN_AUDIT_SORT_MAP["-created_at"])
     rows = (
         (
             await db.execute(
-                base.order_by(AuditLog.created_at.desc())
+                base.order_by(clause)
                 .offset((page - 1) * page_size)
                 .limit(page_size)
             )
