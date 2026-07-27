@@ -911,18 +911,6 @@
       "step_3": "Taqriz tayyor — yuklab oling",
       "button": "Taqriz so'rovi yuborish"
     },
-    "content_types": {
-      "eyebrow": "Nashr turlari",
-      "title": "Zamonaviy ko'p tilli ilmiy ekotizim",
-      "subtitle": "Akademik bilimlarni raqamlashtirish va ilmiy resurslarni global miqyosda tarqatishga ixtisoslashgan platforma.",
-      "monographs": "Monografiyalar",
-      "journals": "Ilmiy jurnallar",
-      "conferences": "Konferensiya materiallari",
-      "textbooks": "O'quv qo'llanmalar",
-      "dissertations": "Dissertatsiyalar",
-      "ebooks": "Elektron darsliklar",
-      "articles": "Ilmiy maqolalar"
-    },
     "featured": "Tahririyat tanlovi",
     "featured_subtitle": "Bu hafta o'qishga arziydigan kitoblar",
     "categories": "Mavzular",

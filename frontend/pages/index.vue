@@ -65,16 +65,6 @@ const topCategories = computed(() =>
     .slice(0, 8),
 );
 
-// `featured` returns a filtered subset (small count), so the catalogue
-// total must come from the unfiltered `recent` query. Falling back to
-// featured's total used to show 2 even when 4 books existed.
-const totals = computed(() => ({
-  books: (recentData.value as BookList | null)?.total
-    ?? (featuredData.value as BookList | null)?.total
-    ?? 0,
-  categories: (catData.value as CategoryList | null)?.items.length ?? 0,
-}));
-
 // Hero stack uses up to 3 featured covers; falls back to recent so the
 // stack still renders on a brand-new install where nothing is featured.
 const heroBooks = computed(() => {
@@ -515,47 +505,6 @@ const hasError = computed(() =>
               {{ t("home.review_cta.button") }}
             </UiButton>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTENT TYPES -->
-    <section class="border-b border-border">
-      <div class="max-w-6xl mx-auto px-4 py-14 md:py-20">
-        <div class="flex justify-center mb-8 reveal">
-          <UiOrnamentDivider tone="gold" />
-        </div>
-        <div class="grid md:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-start">
-          <div class="reveal">
-            <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
-              {{ t("home.content_types.eyebrow") }}
-            </span>
-            <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mt-3">
-              {{ t("home.content_types.title") }}
-            </h2>
-            <p class="text-ink-secondary mt-3">{{ t("home.content_types.subtitle") }}</p>
-          </div>
-          <ul class="space-y-2 reveal reveal-delay-2">
-            <li
-              v-for="(item, i) in [
-                { key: 'monographs', count: '300+', icon: 'book' },
-                { key: 'journals', count: '80+', icon: 'news' },
-                { key: 'conferences', count: '150+', icon: 'document' },
-                { key: 'textbooks', count: '200+', icon: 'library' },
-                { key: 'dissertations', count: '120+', icon: 'academic' },
-                { key: 'ebooks', count: '100+', icon: 'desktop' },
-                { key: 'articles', count: '50+', icon: 'document' },
-              ]"
-              :key="i"
-              class="flex items-center gap-3 rounded-md border border-border bg-bg-card p-3 hover:border-primary/40 hover:translate-x-1 transition-all"
-            >
-              <span class="h-9 w-9 rounded-md bg-primary/10 text-primary inline-flex items-center justify-center shrink-0">
-                <Icon :name="item.icon as any" class="h-4 w-4" />
-              </span>
-              <span class="flex-1 text-ink">{{ t(`home.content_types.${item.key}`) }}</span>
-              <span class="font-serif text-lg text-primary tabular-nums">{{ item.count }}</span>
-            </li>
-          </ul>
         </div>
       </div>
     </section>

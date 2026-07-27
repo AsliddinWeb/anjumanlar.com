@@ -911,18 +911,6 @@
       "step_3": "Review is ready — download it",
       "button": "Submit a request"
     },
-    "content_types": {
-      "eyebrow": "Publication types",
-      "title": "A modern multilingual scholarly ecosystem",
-      "subtitle": "A platform built around digitising academic knowledge and distributing scholarly resources globally.",
-      "monographs": "Monographs",
-      "journals": "Scholarly journals",
-      "conferences": "Conference proceedings",
-      "textbooks": "Textbooks",
-      "dissertations": "Dissertations",
-      "ebooks": "E-textbooks",
-      "articles": "Research articles"
-    },
     "featured": "Editor's pick",
     "featured_subtitle": "This week's must-reads",
     "categories": "Topics",
