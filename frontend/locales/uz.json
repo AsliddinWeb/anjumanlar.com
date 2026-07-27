@@ -933,7 +933,7 @@
       "body": "Faylni yuklang, narxni belgilang. Modarasiyadan keyin sotuvga chiqadi.",
       "button": "Muallif sifatida ro'yxatdan o'tish",
       "perks": {
-        "earn_title": "Daromadning 80%",
+        "earn_title": "Katta daromad ulushi",
         "earn_body": "Har bir sotuvdan tushadigan haqning katta qismi — sizniki. Hisob-kitob shaffof.",
         "reach_title": "Tayyor auditoriya",
         "reach_body": "Universitet kutubxonalari, talabalar, mutaxassislar — barchasi bir platformada.",
@@ -1484,7 +1484,7 @@
       "rejected": "Rad etilgan"
     },
     "perks": {
-      "earn_title": "Daromadning 80%",
+      "earn_title": "Katta daromad ulushi",
       "earn_body": "Har sotuvdan katta qismi sizniki.",
       "reach_title": "Tayyor auditoriya",
       "reach_body": "Universitet, talaba, mutaxassislar.",
