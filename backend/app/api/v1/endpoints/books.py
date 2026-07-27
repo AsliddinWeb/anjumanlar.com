@@ -31,7 +31,7 @@ from app.schemas.book import (
     BookUpdate,
     MessageResponse,
 )
-from app.services import author_service, book_service
+from app.services import author_service, book_service, site_settings_service
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -73,6 +73,12 @@ async def create_book(
     user: Annotated[User, Depends(require_author)],
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerView:
+    settings = await site_settings_service.get(db)
+    if not settings.author_uploads_enabled:
+        raise ForbiddenError(
+            "New book uploads are temporarily paused",
+            details={"code": "author_uploads_disabled"},
+        )
     profile = await author_service.get_by_user_id(db, user.id)
     if profile is None:
         # Admin uploaded without author_profile — refuse for now; Phase 5

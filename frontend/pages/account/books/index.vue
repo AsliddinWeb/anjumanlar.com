@@ -26,6 +26,7 @@ const queryParams = computed(() => ({
 
 const { hasRole } = useAuth();
 const isAuthor = computed(() => hasRole("author"));
+const { authorUploadsEnabled } = useTheme();
 
 const { data: listRaw, pending, refresh } = await useAsyncData(
   "account:books",
@@ -114,11 +115,22 @@ async function confirmDelete() {
           {{ t("account_books.subtitle") }}
         </p>
       </div>
-      <UiButton v-if="isAuthor" :to="localePath('/account/books/new')">
+      <UiButton
+        v-if="isAuthor && authorUploadsEnabled"
+        :to="localePath('/account/books/new')"
+      >
         <Icon name="plus" class="h-4 w-4" />
         {{ t("account_books.new_button") }}
       </UiButton>
     </header>
+
+    <div
+      v-if="isAuthor && !authorUploadsEnabled"
+      class="rounded-md border border-warning/30 bg-warning/5 p-3 flex items-start gap-3 text-sm"
+    >
+      <Icon name="warning" class="h-4 w-4 text-warning shrink-0 mt-0.5" />
+      <span class="text-ink-secondary">{{ t("account_books.uploads_paused_notice") }}</span>
+    </div>
 
     <UiEmptyState
       v-if="!isAuthor"

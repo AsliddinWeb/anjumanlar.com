@@ -14,6 +14,7 @@ class SiteSettingsPublic(BaseModel):
     theme_name: str
     ornament_name: str
     animations_enabled: bool
+    author_uploads_enabled: bool
 
 
 class SiteSettingsUpdate(BaseModel):
@@ -22,3 +23,4 @@ class SiteSettingsUpdate(BaseModel):
     theme_name: str | None = Field(default=None, min_length=1, max_length=64)
     ornament_name: str | None = Field(default=None, min_length=1, max_length=64)
     animations_enabled: bool | None = None
+    author_uploads_enabled: bool | None = None

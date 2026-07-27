@@ -13,6 +13,8 @@ const toast = useToast();
 
 useHead({ title: t("account_books.new_page_title") });
 
+const { authorUploadsEnabled } = useTheme();
+
 const { data: categoriesRaw } = await useAsyncData(
   "account:books:new:categories",
   () => api<CategoryList>("/categories"),
@@ -108,7 +110,19 @@ async function submit() {
         <p class="text-sm text-ink-secondary mt-1">{{ t("account_books.new_page_subtitle") }}</p>
       </header>
 
+      <UiEmptyState
+        v-if="!authorUploadsEnabled"
+        icon="warning"
+        :title="t('account_books.uploads_paused_title')"
+        :description="t('account_books.uploads_paused_notice')"
+      >
+        <UiButton :to="localePath('/account/books')" variant="ghost">
+          {{ t("account_books.title") }}
+        </UiButton>
+      </UiEmptyState>
+
       <BookForm
+        v-else
         v-model="form"
         :categories="categories"
         :loading="submitting"

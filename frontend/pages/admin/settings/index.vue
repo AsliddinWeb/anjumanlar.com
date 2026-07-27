@@ -19,6 +19,7 @@ useHead({ title: t("admin.settings.title") });
 const applying = ref<string | null>(null);
 const applyingOrnament = ref<string | null>(null);
 const togglingAnimations = ref(false);
+const togglingAuthorUploads = ref(false);
 
 const themeList = computed(() => Object.values(THEMES));
 const ornamentList = computed(() => Object.values(ORNAMENTS));
@@ -35,6 +36,21 @@ async function toggleAnimations() {
   }
   finally {
     togglingAnimations.value = false;
+  }
+}
+
+async function toggleAuthorUploads() {
+  if (togglingAuthorUploads.value) return;
+  togglingAuthorUploads.value = true;
+  try {
+    await theme.setAuthorUploads(!theme.authorUploadsEnabled.value);
+    toast.success(t("admin.settings.author_uploads_applied"));
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    togglingAuthorUploads.value = false;
   }
 }
 
@@ -114,6 +130,40 @@ async function applyOrnament(name: string) {
           <span
             class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform"
             :class="theme.animationsEnabled.value ? 'translate-x-[22px]' : 'translate-x-0.5'"
+          />
+        </button>
+      </div>
+    </section>
+
+    <!-- AUTHOR UPLOADS -->
+    <section class="space-y-3">
+      <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+        {{ t("admin.settings.author_uploads_section") }}
+      </h2>
+      <div class="rounded-md border border-border bg-bg-card p-5 flex items-start gap-4">
+        <div class="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+          <Icon name="book" class="h-5 w-5" />
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-medium text-ink">{{ t("admin.settings.author_uploads_title") }}</h3>
+          <p class="text-xs text-ink-secondary mt-0.5">{{ t("admin.settings.author_uploads_hint") }}</p>
+          <p v-if="!theme.authorUploadsEnabled.value" class="text-xs text-warning mt-1.5 inline-flex items-center gap-1">
+            <Icon name="warning" class="h-3.5 w-3.5" />
+            {{ t("admin.settings.author_uploads_paused_label") }}
+          </p>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          :aria-checked="theme.authorUploadsEnabled.value"
+          class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+          :class="theme.authorUploadsEnabled.value ? 'bg-primary' : 'bg-border'"
+          :disabled="togglingAuthorUploads"
+          @click="toggleAuthorUploads"
+        >
+          <span
+            class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform"
+            :class="theme.authorUploadsEnabled.value ? 'translate-x-[22px]' : 'translate-x-0.5'"
           />
         </button>
       </div>

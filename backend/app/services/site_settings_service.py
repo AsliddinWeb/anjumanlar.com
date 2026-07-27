@@ -41,3 +41,10 @@ async def update_animations(db: AsyncSession, enabled: bool) -> SiteSettings:
     row.animations_enabled = enabled
     await db.flush()
     return row
+
+
+async def update_author_uploads(db: AsyncSession, enabled: bool) -> SiteSettings:
+    row = await get(db)
+    row.author_uploads_enabled = enabled
+    await db.flush()
+    return row

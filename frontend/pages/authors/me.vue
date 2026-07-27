@@ -20,6 +20,7 @@ const { formatDate } = useFormatDate();
 const { user, refresh: refreshAuth } = useAuth();
 const api = useApi();
 const toast = useToast();
+const { authorUploadsEnabled } = useTheme();
 
 useSiteSeo({ title: t("author_cabinet.title"), noindex: true });
 
@@ -48,7 +49,16 @@ async function loadProfile() {
   }
 }
 
-await loadProfile();
+// SSR never carries the access token (session restore is a client-only
+// plugin — see plugins/01.auth-bootstrap), so this always 401s
+// server-side. Worse: the catch path above calls `t()`/apiErrorMessage(),
+// and composables invoked after an `await` during SSR throw "called
+// outside of a plugin/setup" — which 500'd this page on every
+// server-rendered visit. Load client-only instead, matching the
+// `booksRaw` fetch just below.
+if (import.meta.client) {
+  await loadProfile();
+}
 
 // ---- Author's books (only when profile exists) ----
 const { data: booksRaw, refresh: refreshBooks } = await useAsyncData(
@@ -517,7 +527,7 @@ const joinedAt = computed(() => {
               <Icon name="book" class="h-4 w-4" />
               {{ t("account_books.nav_label") }}
             </UiButton>
-            <UiButton :to="localePath('/account/books/new')">
+            <UiButton v-if="authorUploadsEnabled" :to="localePath('/account/books/new')">
               <Icon name="plus" class="h-4 w-4" />
               {{ t("account_books.new_button") }}
             </UiButton>

@@ -11,6 +11,7 @@ const api = useApi();
 const cart = useCartStore();
 const { formatDate } = useFormatDate();
 const { localised } = useLocaleText();
+const { authorUploadsEnabled } = useTheme();
 
 useSiteSeo({ title: t("account.title"), noindex: true });
 
@@ -158,7 +159,7 @@ const roleLabel = computed(() => t(`account.roles.${user.value?.role ?? "reader"
             {{ t("account.quick.request_review") }}
           </NuxtLink>
           <NuxtLink
-            v-if="isAuthor"
+            v-if="isAuthor && authorUploadsEnabled"
             :to="localePath('/account/books/new')"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-bg-card hover:border-primary hover:text-primary text-xs font-medium transition-colors"
           >

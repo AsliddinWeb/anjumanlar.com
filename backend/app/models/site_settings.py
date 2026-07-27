@@ -45,6 +45,13 @@ class SiteSettings(UUIDMixin, TimestampMixin, Base):
         Boolean, nullable=False, default=True, server_default="true"
     )
 
+    # Temporary kill-switch for author self-service uploads (POST /books).
+    # Existing books stay editable — this only blocks creating new ones.
+    # Toggled from /admin/settings, no deploy needed to flip it back on.
+    author_uploads_enabled: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True, server_default="true"
+    )
+
     __table_args__ = (
         CheckConstraint("singleton = TRUE", name="site_settings_singleton_check"),
     )

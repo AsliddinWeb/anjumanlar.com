@@ -104,6 +104,22 @@ async def test_create_book_succeeds_for_author(api_client: AsyncClient, db_sessi
 
 
 @pytest.mark.asyncio
+async def test_create_book_blocked_when_author_uploads_disabled(
+    api_client: AsyncClient, db_session: AsyncSession
+):
+    from app.services import site_settings_service
+
+    user, _ = await _make_author(db_session, "uploads-paused@example.com")
+    await site_settings_service.update_author_uploads(db_session, False)
+    await db_session.commit()
+
+    token = await _token(api_client, user.email)
+    resp = await api_client.post("/api/v1/books", headers=_h(token), json=_book_payload())
+    assert resp.status_code == 403
+    assert resp.json()["error"]["details"]["code"] == "author_uploads_disabled"
+
+
+@pytest.mark.asyncio
 async def test_create_book_rejects_empty_title(api_client: AsyncClient, db_session: AsyncSession):
     user, _ = await _make_author(db_session, "empty-title@example.com")
     token = await _token(api_client, user.email)
