@@ -201,6 +201,9 @@ async def get_with_items(db: AsyncSession, order_id: UUID) -> Order:
                 selectinload(Order.items)
                 .selectinload(OrderItem.book)
                 .selectinload(Book.categories),
+                selectinload(Order.items)
+                .selectinload(OrderItem.book)
+                .selectinload(Book.publication_type),
             )
             .where(Order.id == order_id)
         )
@@ -236,6 +239,9 @@ async def list_for_user(
             selectinload(Order.items)
             .selectinload(OrderItem.book)
             .selectinload(Book.categories),
+            selectinload(Order.items)
+            .selectinload(OrderItem.book)
+            .selectinload(Book.publication_type),
         )
         .where(Order.user_id == user.id)
     )

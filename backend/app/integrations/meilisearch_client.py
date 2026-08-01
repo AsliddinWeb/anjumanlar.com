@@ -40,6 +40,7 @@ _FILTERABLE = [
     "price",
     "category_ids",
     "category_slugs",
+    "publication_type_slug",
     "author_id",
     "author_slug",
 ]

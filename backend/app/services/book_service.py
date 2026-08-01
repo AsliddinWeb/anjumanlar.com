@@ -39,6 +39,7 @@ from app.models import (
     Book,
     BookStatus,
     Category,
+    PublicationType,
     User,
     UserRole,
 )
@@ -115,6 +116,7 @@ def _book_load_options():
     return (
         selectinload(Book.author),
         selectinload(Book.categories),
+        selectinload(Book.publication_type),
     )
 
 
@@ -170,6 +172,7 @@ async def create_book(
         publisher=data.publisher,
         price=data.price,
         discount_price=data.discount_price,
+        publication_type_id=data.publication_type_id,
         keywords=data.keywords,
         seo_title=seo_title,
         seo_description=seo_description,
@@ -245,6 +248,7 @@ async def admin_create_book(
         publisher=data.publisher,
         price=data.price,
         discount_price=data.discount_price,
+        publication_type_id=data.publication_type_id,
         keywords=data.keywords,
         seo_title=seo_title,
         seo_description=seo_description,
@@ -351,6 +355,7 @@ async def admin_list_all(
     status: BookStatus | None = None,
     search: str | None = None,
     author_id: UUID | None = None,
+    publication_type_id: UUID | None = None,
     sort: str = "-created_at",
 ) -> tuple[list[Book], int]:
     """Full admin catalogue — every book regardless of status. Filters
@@ -360,6 +365,8 @@ async def admin_list_all(
         base = base.where(Book.status == status)
     if author_id is not None:
         base = base.where(Book.author_id == author_id)
+    if publication_type_id is not None:
+        base = base.where(Book.publication_type_id == publication_type_id)
     if search:
         like = f"%{search}%"
         base = base.where(
@@ -538,6 +545,7 @@ async def list_public(
     page_size: int,
     search: str | None = None,
     category_slug: str | None = None,
+    publication_type_slug: str | None = None,
     author_slug: str | None = None,
     language: str | None = None,
     min_price: float | None = None,
@@ -563,6 +571,10 @@ async def list_public(
         )
     if category_slug:
         base = base.join(Book.categories).where(Category.slug == category_slug)
+    if publication_type_slug:
+        base = base.join(Book.publication_type).where(
+            PublicationType.slug == publication_type_slug
+        )
     if author_slug:
         base = base.join(Book.author).where(AuthorProfile.slug == author_slug)
     if language:

@@ -216,6 +216,7 @@ async def list_for_user(
         .options(
             selectinload(UserLibrary.book).selectinload(Book.author),
             selectinload(UserLibrary.book).selectinload(Book.categories),
+            selectinload(UserLibrary.book).selectinload(Book.publication_type),
         )
         .where(UserLibrary.user_id == user.id)
     )

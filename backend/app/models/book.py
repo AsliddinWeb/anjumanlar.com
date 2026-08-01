@@ -41,6 +41,7 @@ from app.db.base import Base, TimestampMixin, UUIDMixin
 if TYPE_CHECKING:
     from app.models.author_profile import AuthorProfile
     from app.models.category import Category
+    from app.models.publication_type import PublicationType
     from app.models.review import Review
     from app.models.user import User
 
@@ -96,6 +97,16 @@ class Book(UUIDMixin, TimestampMixin, Base):
         nullable=False,
         default=BookLanguage.uz,
         server_default="uz",
+    )
+    # What KIND of publication this is (textbook, monograph, dictionary,
+    # ...) — orthogonal to the subject `categories`. Nullable: existing
+    # books predate this column and need a one-time admin classification
+    # pass; new uploads should set it going forward.
+    publication_type_id: Mapped[UUID | None] = mapped_column(
+        PG_UUID(as_uuid=True),
+        ForeignKey("publication_types.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
     )
     pages_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     file_size_mb: Mapped[float | None] = mapped_column(Numeric(8, 2), nullable=True)
@@ -164,6 +175,7 @@ class Book(UUIDMixin, TimestampMixin, Base):
     categories: Mapped[list[Category]] = relationship(
         secondary="book_categories", back_populates="books"
     )
+    publication_type: Mapped[PublicationType | None] = relationship(back_populates="books")
     reviews: Mapped[list[Review]] = relationship(
         back_populates="book", cascade="all, delete-orphan", passive_deletes=True
     )

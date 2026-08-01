@@ -51,6 +51,7 @@ const allItems = computed<Item[]>(() => [
   { to: "/admin/review-categories", icon: "folder", label: t("admin.nav.review_categories"), scope: "review_categories" },
   { to: "/admin/blog", icon: "news", label: t("admin.nav.blog"), scope: "blog" },
   { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories"), scope: "categories" },
+  { to: "/admin/publication-types", icon: "book", label: t("admin.nav.publication_types"), scope: "categories" },
   { to: "/admin/users", icon: "users", label: t("admin.nav.users"), scope: "users" },
   { to: "/admin/withdrawals", icon: "money", label: t("admin.nav.withdrawals"), scope: "withdrawals", badge: () => stats.value?.withdrawals.open ?? 0 },
   { to: "/admin/finance", icon: "chart", label: t("admin.nav.finance"), scope: "finance" },

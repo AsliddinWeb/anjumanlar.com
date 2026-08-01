@@ -32,6 +32,7 @@ router = APIRouter(prefix="/search", tags=["search"])
 async def search(
     q: Annotated[str | None, Query(min_length=1, max_length=200)] = None,
     category: str | None = Query(None, description="Category slug"),
+    publication_type: str | None = Query(None, description="Publication type slug"),
     language: str | None = None,
     min_price: float | None = Query(None, ge=0),
     max_price: float | None = Query(None, ge=0),
@@ -44,6 +45,7 @@ async def search(
 ) -> BookList:
     filters = search_service.build_filters(
         category_slug=category,
+        publication_type_slug=publication_type,
         language=language,
         min_price=min_price,
         max_price=max_price,
@@ -74,7 +76,11 @@ async def search(
         (
             await db.execute(
                 select(Book)
-                .options(selectinload(Book.author), selectinload(Book.categories))
+                .options(
+                    selectinload(Book.author),
+                    selectinload(Book.categories),
+                    selectinload(Book.publication_type),
+                )
                 .where(
                     Book.id.in_(hit_ids),
                     Book.status == BookStatus.approved,

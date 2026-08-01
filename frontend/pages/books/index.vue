@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BookList, CategoryList } from "~/types/api";
+import type { BookList, CategoryList, PublicationTypeList } from "~/types/api";
 import type { IconName } from "~/utils/icons";
 
 const { t } = useI18n();
@@ -22,6 +22,7 @@ const queryParams = computed(() => {
   return {
     search: ((route.query.q as string) || "").trim() || undefined,
     category: (route.query.category as string) || undefined,
+    publication_type: (route.query.publication_type as string) || undefined,
     language: (route.query.language as string) || undefined,
     min_price: route.query.min_price ? Number(route.query.min_price) : undefined,
     max_price: maxFromFree !== undefined && maxFromFree !== "" ? Number(maxFromFree) : undefined,
@@ -55,6 +56,19 @@ const categoryOptions = computed(() => {
         label: `${prefix}${localised(c.name, c.slug)}`,
       };
     }),
+  ];
+});
+
+const { data: publicationTypes } = await useAsyncData<PublicationTypeList>(
+  "catalog:publication-types",
+  () => api<PublicationTypeList>("/publication-types", { query: { active_only: true } }),
+);
+
+const publicationTypeOptions = computed(() => {
+  const items = [...(publicationTypes.value?.items ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+  return [
+    { value: "", label: t("catalog.filters.publication_type_any") },
+    ...items.map((pt) => ({ value: pt.slug, label: localised(pt.name, pt.slug) })),
   ];
 });
 
@@ -107,6 +121,7 @@ const hasActiveFilters = computed(
     Boolean(
       queryParams.value.search
       || queryParams.value.category
+      || queryParams.value.publication_type
       || queryParams.value.language
       || queryParams.value.min_price != null
       || (queryParams.value.max_price != null && route.query.is_free !== "true")
@@ -130,6 +145,14 @@ const activeChips = computed<{ key: string; label: string; clear: () => void }[]
       key: "category",
       label: cat ? localised(cat.name, cat.slug) : queryParams.value.category,
       clear: () => setQuery({ category: undefined }),
+    });
+  }
+  if (queryParams.value.publication_type) {
+    const pt = publicationTypes.value?.items.find((p) => p.slug === queryParams.value.publication_type);
+    chips.push({
+      key: "publication_type",
+      label: pt ? localised(pt.name, pt.slug) : queryParams.value.publication_type,
+      clear: () => setQuery({ publication_type: undefined }),
     });
   }
   if (queryParams.value.language) {
@@ -340,6 +363,13 @@ useEscape(() => {
               />
 
               <UiSelect
+                :model-value="queryParams.publication_type ?? ''"
+                :label="t('catalog.filters.publication_type')"
+                :options="publicationTypeOptions"
+                @update:model-value="(v) => setQuery({ publication_type: v })"
+              />
+
+              <UiSelect
                 :model-value="queryParams.language ?? ''"
                 :label="t('catalog.filters.language')"
                 :options="languageOptions"
@@ -501,6 +531,12 @@ useEscape(() => {
               :label="t('catalog.filters.category')"
               :options="categoryOptions"
               @update:model-value="(v) => setQuery({ category: v })"
+            />
+            <UiSelect
+              :model-value="queryParams.publication_type ?? ''"
+              :label="t('catalog.filters.publication_type')"
+              :options="publicationTypeOptions"
+              @update:model-value="(v) => setQuery({ publication_type: v })"
             />
             <UiSelect
               :model-value="queryParams.language ?? ''"

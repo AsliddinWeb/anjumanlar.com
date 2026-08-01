@@ -33,6 +33,10 @@ class BookCreate(BaseModel):
     price: PriceField = 0
     discount_price: PriceField | None = None
     category_ids: list[UUID] = Field(default_factory=list)
+    # What KIND of publication this is (textbook, monograph, ...) —
+    # orthogonal to category_ids (subject area). Optional: existing
+    # books predate this and older upload flows may still omit it.
+    publication_type_id: UUID | None = None
     keywords: list[str] = Field(default_factory=list, max_length=20)
 
     def _localised_has_content(self) -> bool:
@@ -53,6 +57,7 @@ class BookUpdate(BaseModel):
     price: PriceField | None = None
     discount_price: PriceField | None = None
     category_ids: list[UUID] | None = None
+    publication_type_id: UUID | None = None
     keywords: list[str] | None = Field(default=None, max_length=20)
 
 
@@ -77,6 +82,13 @@ class BookAdminUpdate(BookUpdate):
 
 
 class BookCategoryRef(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    slug: str
+    name: dict[str, Any]
+
+
+class BookPublicationTypeRef(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID
     slug: str
@@ -124,6 +136,7 @@ class BookPublic(BaseModel):
 
     author: BookAuthorRef
     categories: list[BookCategoryRef]
+    publication_type: BookPublicationTypeRef | None = None
 
 
 class BookOwnerView(BookPublic):

@@ -12,6 +12,7 @@ from app.models.book_category import book_categories
 from app.models.category import Category
 from app.models.order import Order, OrderItem, OrderStatus
 from app.models.payment import Payment, PaymentProvider, PaymentStatus
+from app.models.publication_type import PublicationType
 from app.models.refresh_token import RefreshToken
 from app.models.review import Review, ReviewStatus
 from app.models.review_category import ReviewCategory
@@ -40,6 +41,7 @@ __all__ = [
     "Payment",
     "PaymentProvider",
     "PaymentStatus",
+    "PublicationType",
     "RefreshToken",
     "Review",
     "ReviewCategory",

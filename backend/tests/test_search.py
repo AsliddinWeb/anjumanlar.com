@@ -131,6 +131,7 @@ def test_book_to_document_handles_empty_locales():
         is_free=True,
         featured=False,
         categories=[],
+        publication_type=None,
         author_id=uuid.uuid4(),
         author=None,
         publisher=None,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BookOwnerView, CategoryList } from "~/types/api";
+import type { BookOwnerView, CategoryList, PublicationTypeList } from "~/types/api";
 import type { BookFormValue } from "~/components/book/BookForm.vue";
 import { apiErrorMessage } from "~/composables/useAuth";
 
@@ -22,6 +22,13 @@ const { data: categoriesRaw } = await useAsyncData(
 );
 const categories = computed(() => categoriesRaw.value?.items ?? []);
 
+const { data: publicationTypesRaw } = await useAsyncData(
+  "account:books:new:publication-types",
+  () => api<PublicationTypeList>("/publication-types"),
+  { server: false },
+);
+const publicationTypes = computed(() => publicationTypesRaw.value?.items ?? []);
+
 function emptyForm(): BookFormValue {
   return {
     title_uz: "", title_ru: "", title_en: "",
@@ -35,6 +42,7 @@ function emptyForm(): BookFormValue {
     price: "0",
     discount_price: "",
     category_ids: [],
+    publication_type_id: "",
     keywords: "",
     featured: false,
   };
@@ -74,6 +82,7 @@ async function submit() {
       price: Number(form.value.price) || 0,
       discount_price: form.value.discount_price ? Number(form.value.discount_price) : null,
       category_ids: form.value.category_ids,
+      publication_type_id: form.value.publication_type_id || null,
       keywords: form.value.keywords
         .split(",")
         .map((k) => k.trim())
@@ -125,6 +134,7 @@ async function submit() {
         v-else
         v-model="form"
         :categories="categories"
+        :publication-types="publicationTypes"
         :loading="submitting"
         :error="error"
         :submit-label="t('admin.actions.create')"

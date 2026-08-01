@@ -121,6 +121,7 @@ async def list_books(
     page_size: int = Query(20, ge=1, le=100),
     search: str | None = Query(None, min_length=1, max_length=200),
     category: str | None = Query(None, description="Category slug"),
+    publication_type: str | None = Query(None, description="Publication type slug"),
     author: str | None = Query(None, description="Author slug"),
     language: str | None = Query(None),
     min_price: float | None = Query(None, ge=0),
@@ -135,6 +136,7 @@ async def list_books(
         page_size=page_size,
         search=search,
         category_slug=category,
+        publication_type_slug=publication_type,
         author_slug=author,
         language=language,
         min_price=min_price,
@@ -285,6 +287,7 @@ async def admin_list_all(
     status_filter: BookStatus | None = Query(None, alias="status"),
     search: str | None = Query(None, min_length=1, max_length=200),
     author_id: UUID | None = None,
+    publication_type_id: UUID | None = None,
     sort: Literal["created_at", "-created_at", "price", "-price"] = "-created_at",
     db: AsyncSession = Depends(get_db),
 ) -> BookOwnerList:
@@ -295,6 +298,7 @@ async def admin_list_all(
         status=status_filter,
         search=search,
         author_id=author_id,
+        publication_type_id=publication_type_id,
         sort=sort,
     )
     return BookOwnerList(

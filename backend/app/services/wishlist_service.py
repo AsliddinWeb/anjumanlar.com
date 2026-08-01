@@ -77,6 +77,7 @@ async def list_for_user(
         .options(
             selectinload(Wishlist.book).selectinload(Book.author),
             selectinload(Wishlist.book).selectinload(Book.categories),
+            selectinload(Wishlist.book).selectinload(Book.publication_type),
         )
         .join(Book, Wishlist.book_id == Book.id)
         .where(
@@ -107,6 +108,7 @@ async def _get_loaded(db: AsyncSession, wishlist_id: UUID) -> Wishlist:
             .options(
                 selectinload(Wishlist.book).selectinload(Book.author),
                 selectinload(Wishlist.book).selectinload(Book.categories),
+                selectinload(Wishlist.book).selectinload(Book.publication_type),
             )
             .where(Wishlist.id == wishlist_id)
         )

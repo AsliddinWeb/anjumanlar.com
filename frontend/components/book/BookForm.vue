@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BookLanguage, CategoryPublic } from "~/types/api";
+import type { BookLanguage, CategoryPublic, PublicationTypePublic } from "~/types/api";
 
 export interface BookFormValue {
   title_uz: string;
@@ -19,6 +19,8 @@ export interface BookFormValue {
   price: string;
   discount_price: string;
   category_ids: string[];
+  /** "" = none. What KIND of publication this is — orthogonal to category_ids. */
+  publication_type_id: string;
   keywords: string;
   featured: boolean;
 }
@@ -26,6 +28,7 @@ export interface BookFormValue {
 const props = defineProps<{
   modelValue: BookFormValue;
   categories: CategoryPublic[];
+  publicationTypes: PublicationTypePublic[];
   loading?: boolean;
   error?: string | null;
   submitLabel: string;
@@ -78,6 +81,13 @@ const categoryOptions = computed(() =>
     localised(a.name, a.slug).localeCompare(localised(b.name, b.slug)),
   ),
 );
+
+const publicationTypeOptions = computed(() => [
+  { value: "", label: t("account_books.form.publication_type_none") },
+  ...[...props.publicationTypes]
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((pt) => ({ value: pt.id, label: localised(pt.name, pt.slug) })),
+]);
 
 function toggleCategory(id: string) {
   const set = new Set(props.modelValue.category_ids);
@@ -143,13 +153,23 @@ function isCategorySelected(id: string) {
         {{ t("account_books.section_classification") }}
       </h2>
 
-      <div class="grid sm:grid-cols-3 gap-3">
+      <div class="grid sm:grid-cols-2 gap-3">
+        <UiSelect
+          :model-value="modelValue.publication_type_id"
+          :label="t('account_books.form.publication_type')"
+          :hint="t('account_books.form.publication_type_hint')"
+          :options="publicationTypeOptions"
+          @update:model-value="(v) => update('publication_type_id', v as string)"
+        />
         <UiSelect
           :model-value="modelValue.language"
           :label="t('account_books.form.language')"
           :options="languageOptions"
           @update:model-value="(v) => update('language', v as BookLanguage)"
         />
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-3">
         <UiInput
           :model-value="modelValue.isbn"
           :label="t('account_books.form.isbn')"

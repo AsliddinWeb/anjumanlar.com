@@ -112,11 +112,36 @@ export interface CategoryList {
   total: number;
 }
 
+// ---------- Publication type ----------
+// What KIND of publication a book is (textbook, monograph, ...) —
+// orthogonal to the subject Category tree above. Flat, admin-managed,
+// a book carries at most one.
+
+export interface PublicationTypePublic {
+  id: string;
+  slug: string;
+  name: LocalisedText;
+  sort_order: number;
+  is_active: boolean;
+  book_count: number;
+}
+
+export interface PublicationTypeList {
+  items: PublicationTypePublic[];
+  total: number;
+}
+
 // ---------- Book ----------
 
 export type BookLanguage = "uz" | "ru" | "en" | "mixed";
 
 export interface BookCategoryRef {
+  id: string;
+  slug: string;
+  name: LocalisedText;
+}
+
+export interface BookPublicationTypeRef {
   id: string;
   slug: string;
   name: LocalisedText;
@@ -154,6 +179,7 @@ export interface BookPublic {
   created_at: string;
   author: BookAuthorRef;
   categories: BookCategoryRef[];
+  publication_type: BookPublicationTypeRef | null;
 }
 
 export interface BookList {

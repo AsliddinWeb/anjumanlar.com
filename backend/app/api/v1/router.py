@@ -17,6 +17,7 @@ from app.api.v1.endpoints import (
     libraries,
     orders,
     payments,
+    publication_types,
     review_categories,
     review_requests,
     reviews,
@@ -47,6 +48,7 @@ api_router.include_router(auth.router)
 api_router.include_router(users.router)
 api_router.include_router(authors.router)
 api_router.include_router(categories.router)
+api_router.include_router(publication_types.router)
 api_router.include_router(books.router)
 api_router.include_router(reviews.books_review_router)
 api_router.include_router(reviews.review_router)

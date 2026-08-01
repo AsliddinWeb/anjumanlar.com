@@ -47,6 +47,7 @@ def book_to_document(book: Book) -> dict[str, Any]:
         "featured": bool(book.featured),
         "category_ids": [str(c.id) for c in (book.categories or [])],
         "category_slugs": [c.slug for c in (book.categories or [])],
+        "publication_type_slug": book.publication_type.slug if book.publication_type else None,
         "author_id": str(book.author_id),
         "author_slug": book.author.slug if book.author else "",
         "author_name": book.author.display_name if book.author else "",
@@ -69,6 +70,7 @@ def translate_sort(sort: str | None) -> list[str]:
 def build_filters(
     *,
     category_slug: str | None = None,
+    publication_type_slug: str | None = None,
     language: str | None = None,
     min_price: float | None = None,
     max_price: float | None = None,
@@ -80,6 +82,8 @@ def build_filters(
     if category_slug:
         # Array membership — Meili matches if the value is in ``category_slugs``.
         parts.append(f'category_slugs = "{category_slug}"')
+    if publication_type_slug:
+        parts.append(f'publication_type_slug = "{publication_type_slug}"')
     if language:
         parts.append(f'language = "{language}"')
     if min_price is not None:

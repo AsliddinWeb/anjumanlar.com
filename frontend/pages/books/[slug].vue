@@ -168,6 +168,14 @@ const similarBooks = computed<BookPublic[]>(() => {
                 <Icon name="folder" class="h-3 w-3" />
                 {{ localised(cat.name, cat.slug) }}
               </NuxtLink>
+              <NuxtLink
+                v-if="book.publication_type"
+                :to="localePath({ path: '/books', query: { publication_type: book.publication_type.slug } })"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-bg-secondary text-ink-secondary text-xs hover:bg-bg-secondary/70 hover:text-ink transition-colors"
+              >
+                <Icon name="document" class="h-3 w-3" />
+                {{ localised(book.publication_type.name, book.publication_type.slug) }}
+              </NuxtLink>
               <UiBadge v-if="book.featured" tone="gold" size="sm" class="inline-flex items-center gap-1">
                 <Icon name="star-solid" class="h-3 w-3" />
                 {{ t("book.featured") }}
@@ -326,6 +334,13 @@ const similarBooks = computed<BookPublic[]>(() => {
             </h4>
           </div>
           <dl class="text-sm divide-y divide-border">
+            <div v-if="book.publication_type" class="flex justify-between gap-3 px-4 py-2.5">
+              <dt class="text-ink-tertiary inline-flex items-center gap-1.5">
+                <Icon name="document" class="h-3.5 w-3.5" />
+                {{ t("book.publication_type") }}
+              </dt>
+              <dd class="text-ink text-right">{{ localised(book.publication_type.name, book.publication_type.slug) }}</dd>
+            </div>
             <div v-if="book.publisher" class="flex justify-between gap-3 px-4 py-2.5">
               <dt class="text-ink-tertiary inline-flex items-center gap-1.5">
                 <Icon name="institution" class="h-3.5 w-3.5" />

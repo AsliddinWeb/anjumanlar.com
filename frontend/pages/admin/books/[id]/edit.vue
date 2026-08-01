@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BookOwnerView, BookStatus, CategoryList } from "~/types/api";
+import type { BookOwnerView, BookStatus, CategoryList, PublicationTypeList } from "~/types/api";
 import type { BookFormValue } from "~/components/book/BookForm.vue";
 import { apiErrorMessage } from "~/composables/useAuth";
 import { formatPrice } from "~/composables/useLocaleText";
@@ -35,6 +35,13 @@ const { data: categoriesRaw } = await useAsyncData(
 );
 const categories = computed(() => categoriesRaw.value?.items ?? []);
 
+const { data: publicationTypesRaw } = await useAsyncData(
+  "admin:books:edit:publication-types",
+  () => api<PublicationTypeList>("/publication-types"),
+  { server: false },
+);
+const publicationTypes = computed(() => publicationTypesRaw.value?.items ?? []);
+
 useHead({
   title: computed(() => book.value
     ? `${localised(book.value.title, book.value.slug)} — ${t("admin.books.edit_page_title")}`
@@ -64,6 +71,7 @@ function modelFromBook(b: BookOwnerView): BookFormValue {
     price: String(b.price ?? 0),
     discount_price: b.discount_price != null ? String(b.discount_price) : "",
     category_ids: b.categories.map((c) => c.id),
+    publication_type_id: b.publication_type?.id ?? "",
     keywords: b.keywords.join(", "),
     featured: b.featured,
   };
@@ -108,6 +116,7 @@ async function save() {
       price: Number(form.value.price) || 0,
       discount_price: form.value.discount_price ? Number(form.value.discount_price) : null,
       category_ids: form.value.category_ids,
+      publication_type_id: form.value.publication_type_id || null,
       keywords: form.value.keywords.split(",").map((k) => k.trim()).filter(Boolean),
       featured: form.value.featured,
     };
@@ -401,6 +410,7 @@ const STATUS_TONE: Record<BookStatus, "success" | "warning" | "neutral" | "error
       v-if="form"
       v-model="form"
       :categories="categories"
+      :publication-types="publicationTypes"
       :loading="submitting"
       :error="error"
       :submit-label="t('admin.actions.save')"

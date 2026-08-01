@@ -35,7 +35,11 @@ async def _load_book(book_id: UUID) -> Book | None:
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(Book)
-            .options(selectinload(Book.author), selectinload(Book.categories))
+            .options(
+                selectinload(Book.author),
+                selectinload(Book.categories),
+                selectinload(Book.publication_type),
+            )
             .where(Book.id == book_id)
         )
         return result.scalar_one_or_none()
