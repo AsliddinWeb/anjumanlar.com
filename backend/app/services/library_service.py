@@ -35,7 +35,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.config import settings
-from app.core.exceptions import NotFoundError
+from app.core.exceptions import ForbiddenError, NotFoundError
 from app.integrations.minio_client import presigned_get_url
 from app.models import (
     AuthorProfile,
@@ -247,7 +247,9 @@ async def issue_download_url(
     """
     row = (
         await db.execute(
-            select(UserLibrary).where(
+            select(UserLibrary)
+            .options(selectinload(UserLibrary.book))
+            .where(
                 UserLibrary.user_id == user.id,
                 UserLibrary.book_id == book_id,
             )
@@ -256,6 +258,11 @@ async def issue_download_url(
     if row is None:
         raise NotFoundError(
             "You don't own this book yet", details={"code": "not_in_library"}
+        )
+    if not row.book.downloads_enabled:
+        raise ForbiddenError(
+            "Downloads are disabled for this book — read it online instead",
+            details={"code": "downloads_disabled"},
         )
 
     # Object key matches what pdf_tasks.watermark_pdf writes:

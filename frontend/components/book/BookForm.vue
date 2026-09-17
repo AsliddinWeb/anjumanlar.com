@@ -23,6 +23,7 @@ export interface BookFormValue {
   publication_type_id: string;
   keywords: string;
   featured: boolean;
+  downloads_enabled: boolean;
 }
 
 const props = defineProps<{
@@ -69,12 +70,7 @@ function fieldKey(kind: "title" | "subtitle" | "description"): keyof BookFormVal
   return `${kind}_${activeLang.value}` as keyof BookFormValue;
 }
 
-const languageOptions = computed(() => [
-  { value: "uz", label: t("account_books.form.languages.uz") },
-  { value: "ru", label: t("account_books.form.languages.ru") },
-  { value: "en", label: t("account_books.form.languages.en") },
-  { value: "mixed", label: t("account_books.form.languages.mixed") },
-]);
+const languageOptions = useBookLanguageOptions();
 
 const categoryOptions = computed(() =>
   [...props.categories].sort((a, b) =>
@@ -161,10 +157,11 @@ function isCategorySelected(id: string) {
           :options="publicationTypeOptions"
           @update:model-value="(v) => update('publication_type_id', v as string)"
         />
-        <UiSelect
+        <UiSearchSelect
           :model-value="modelValue.language"
           :label="t('account_books.form.language')"
           :options="languageOptions"
+          :no-results-label="t('common.empty')"
           @update:model-value="(v) => update('language', v as BookLanguage)"
         />
       </div>
@@ -285,6 +282,24 @@ function isCategorySelected(id: string) {
         <span class="min-w-0">
           <span class="block text-sm font-medium text-ink">{{ t("account_books.form.featured") }}</span>
           <span class="block text-xs text-ink-tertiary mt-0.5">{{ t("account_books.form.featured_hint") }}</span>
+        </span>
+      </label>
+
+      <label class="flex items-start gap-3 cursor-pointer pt-1">
+        <button
+          type="button"
+          class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 mt-0.5"
+          :class="modelValue.downloads_enabled ? 'bg-primary' : 'bg-border'"
+          @click="update('downloads_enabled', !modelValue.downloads_enabled)"
+        >
+          <span
+            class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform"
+            :class="modelValue.downloads_enabled ? 'translate-x-[22px]' : 'translate-x-0.5'"
+          />
+        </button>
+        <span class="min-w-0">
+          <span class="block text-sm font-medium text-ink">{{ t("account_books.form.downloads_enabled") }}</span>
+          <span class="block text-xs text-ink-tertiary mt-0.5">{{ t("account_books.form.downloads_enabled_hint") }}</span>
         </span>
       </label>
     </div>

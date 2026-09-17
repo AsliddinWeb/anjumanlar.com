@@ -69,13 +69,15 @@ class BookAdminCreate(BookCreate):
 
     author_id: UUID
     featured: bool = False
+    downloads_enabled: bool = True
 
 
 class BookAdminUpdate(BookUpdate):
     """Admin PATCH payload — adds admin-only fields that authors are not
-    allowed to flip (currently ``featured``)."""
+    allowed to flip (``featured``, ``downloads_enabled``)."""
 
     featured: bool | None = None
+    downloads_enabled: bool | None = None
 
 
 # ----- Read paths -----
@@ -131,6 +133,7 @@ class BookPublic(BaseModel):
     sales_count: int
 
     featured: bool
+    downloads_enabled: bool
     published_at: datetime | None = None
     created_at: datetime
 

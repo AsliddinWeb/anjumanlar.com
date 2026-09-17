@@ -233,6 +233,7 @@ async def admin_create_book(
     categories = await _load_categories(db, data.category_ids)
     seo_title, seo_description = _derive_seo(data.title, data.description)
     featured = bool(getattr(data, "featured", False))
+    downloads_enabled = bool(getattr(data, "downloads_enabled", True))
 
     book = Book(
         author_id=profile.id,
@@ -253,6 +254,7 @@ async def admin_create_book(
         seo_title=seo_title,
         seo_description=seo_description,
         featured=featured,
+        downloads_enabled=downloads_enabled,
         status=BookStatus.draft,
     )
     book.categories = categories
@@ -567,6 +569,7 @@ async def list_public(
             or_(
                 func.cast(Book.title, sql_text_type()).ilike(like),
                 func.cast(Book.description, sql_text_type()).ilike(like),
+                Book.co_authors.ilike(like),
             )
         )
     if category_slug:
@@ -652,6 +655,17 @@ def _assert_can_upload(book: Book, user: User) -> None:
             f"Cannot upload files for a book in status {book.status.value!r}",
             details={"code": "wrong_status", "status": book.status.value},
         )
+
+
+async def get_file_view_url(db: AsyncSession, user: User, book_id: UUID) -> str:
+    """Short-lived signed URL for the canonical PDF in the private ``books``
+    bucket — owner or admin only. ``file_url`` itself can't be linked to
+    directly (the bucket has no public-read policy), so the edit pages
+    call this on click instead of rendering ``book.file_url`` as an href."""
+    book = await get_for_owner(db, user, book_id)
+    if not book.file_url:
+        raise NotFoundError("No file uploaded yet", details={"code": "book_file_missing"})
+    return storage_service.presigned_book_file_url(book.id)
 
 
 async def set_cover(

@@ -183,6 +183,7 @@
       "categories": "Kategoriyalar",
       "publication_types": "Nashr turlari",
       "users": "Foydalanuvchilar",
+      "orders": "Buyurtmalar",
       "withdrawals": "Pul yechish",
       "audit": "Audit log",
       "blog": "Blog",
@@ -521,6 +522,62 @@
       "process_title": "Jarayonni boshlash",
       "process_body": "{amount} miqdoridagi so'rovni \"jarayonda\" holatiga o'tkazasizmi? Muallifga email yuboriladi."
     },
+    "orders": {
+      "title": "Buyurtmalar",
+      "subtitle": "Barcha xaridlar — holati, to'lovi va tarkibi bo'yicha to'liq nazorat.",
+      "results": "{n} ta buyurtma",
+      "search_placeholder": "Buyurtma raqami, xaridor ismi yoki emaili bo'yicha qidirish...",
+      "filter_status_any": "Barcha holatlar",
+      "empty_title": "Buyurtmalar yo'q",
+      "empty_body": "Hozircha tizimda birorta ham buyurtma yo'q.",
+      "view": "Ko'rish",
+      "detail_title": "Buyurtma tafsiloti",
+      "table": {
+        "order": "Buyurtma",
+        "buyer": "Xaridor",
+        "items": "Kitoblar",
+        "status": "Holat",
+        "total": "Summa",
+        "payment_method": "To'lov usuli"
+      },
+      "fields": {
+        "buyer": "Xaridor",
+        "created_at": "Yaratilgan",
+        "paid_at": "To'langan",
+        "payment_method": "To'lov usuli",
+        "subtotal": "Oraliq summa",
+        "discount": "Chegirma",
+        "total": "Jami"
+      },
+      "section_items": "Buyurtma tarkibi",
+      "items_table": {
+        "book": "Kitob",
+        "author": "Muallif",
+        "price": "Narx",
+        "commission": "Komissiya",
+        "author_earning": "Muallif ulushi",
+        "platform_fee": "Platforma ulushi"
+      },
+      "section_payments": "To'lov urinishlari",
+      "no_payments_title": "To'lov urinishi yo'q",
+      "no_payments_body": "Bu buyurtma bo'yicha hali birorta to'lov urinishi qayd etilmagan.",
+      "payments_table": {
+        "provider": "Provider",
+        "provider_id": "Tranzaksiya ID",
+        "amount": "Summa",
+        "status": "Holat",
+        "created": "Yaratilgan",
+        "performed": "Bajarilgan",
+        "cancelled": "Bekor qilingan"
+      },
+      "payment_statuses": {
+        "created": "Yaratilgan",
+        "pending": "Kutilmoqda",
+        "paid": "To'langan",
+        "cancelled": "Bekor qilingan",
+        "failed": "Muvaffaqiyatsiz"
+      }
+    },
     "blog": {
       "title": "Blog maqolalari",
       "subtitle": "Maqolalarni yaratish, tahrirlash va nashr qilish",
@@ -587,6 +644,16 @@
     "settings": {
       "title": "Sayt sozlamalari",
       "subtitle": "Dizayn, ranglar, bezaklar va sayt bo'ylab umumiy parametrlar.",
+      "contact_section": "Kontakt ma'lumotlari",
+      "contact_hint": "Footer va kontakt bo'limida ko'rinadigan aloqa ma'lumotlari va ijtimoiy tarmoq havolalari. Bo'sh qoldirilgan maydon saytda ko'rsatilmaydi.",
+      "contact_applied": "Kontakt ma'lumotlari saqlandi",
+      "contact_name": "Mas'ul shaxs",
+      "contact_phone": "Telefon raqami",
+      "contact_email": "Email",
+      "telegram_url": "Telegram",
+      "instagram_url": "Instagram",
+      "facebook_url": "Facebook",
+      "youtube_url": "YouTube",
       "theme_section": "Dizayn temasi",
       "theme_hint": "Tanlangan tema saytdagi har bir sahifaga darrov tatbiq qilinadi. Boshqa adminlar va tashrif buyuruvchilar ham yangilangan ranglarni ko'radi.",
       "ornament_section": "Milliy bezak naqshi",
@@ -872,7 +939,10 @@
       "loading": "Kitob yuklanmoqda…",
       "load_failed": "Kitobni yuklab bo'lmadi. Qaytadan urinib ko'ring.",
       "retry": "Qayta urinish",
-      "legal_notice": "Bu nusxa shaxsiy foydalanish uchun. Har sahifada email manzilingiz vatermark sifatida joylashtirilgan — fayl tarqalsa, javobgarlik sizda bo'ladi."
+      "legal_notice": "Bu nusxa shaxsiy foydalanish uchun. Har sahifada email manzilingiz vatermark sifatida joylashtirilgan — fayl tarqalsa, javobgarlik sizda bo'ladi.",
+      "download": "PDF yuklab olish",
+      "download_disabled": "Muallif/admin bu kitob uchun yuklab olishni o'chirgan — faqat onlayn o'qish mumkin.",
+      "download_failed": "Faylni yuklab bo'lmadi"
     }
   },
   "theme": {
@@ -915,7 +985,15 @@
       "tk": "Türkmençe",
       "tg": "Тоҷикӣ",
       "ru": "Русский",
-      "en": "English"
+      "en": "English",
+      "az": "Azərbaycanca",
+      "ar": "العربية",
+      "fa": "فارسی",
+      "zh": "中文",
+      "de": "Deutsch",
+      "fr": "Français",
+      "es": "Español",
+      "mixed": "Aralash"
     },
     "mission": {
       "eyebrow": "Missiyamiz",
@@ -1755,7 +1833,9 @@
       "keywords_placeholder": "tibbiyot, kardiologiya, ...",
       "lang_hint": "Til tablari orasida o'ting",
       "featured": "Tanlangan kitob",
-      "featured_hint": "Bosh sahifa va katalog yuqorisida ko'rsatiladi"
+      "featured_hint": "Bosh sahifa va katalog yuqorisida ko'rsatiladi",
+      "downloads_enabled": "PDF yuklab olishga ruxsat",
+      "downloads_enabled_hint": "O'chirilsa, xaridorlar kitobni faqat onlayn o'qiy oladi — kompyuterga saqlab olib bo'lmaydi"
     },
     "errors": {
       "title_required": "Kamida bitta tilda sarlavha kiriting",
@@ -1775,6 +1855,7 @@
       "select_file": "Fayl tanlash",
       "replace_file": "Almashtirish",
       "view": "Ko'rish",
+      "view_failed": "Faylni ochib bo'lmadi",
       "upload_failed": "Yuklash muvaffaqiyatsiz",
       "size_too_large": "Fayl hajmi ruxsat etilganidan katta",
       "wrong_type": "Fayl turi noto'g'ri"

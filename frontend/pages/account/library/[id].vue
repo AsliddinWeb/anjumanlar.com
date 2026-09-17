@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { UserLibraryItem } from "~/types/api";
+import { apiErrorMessage } from "~/composables/useAuth";
 
 definePageMeta({ middleware: "auth" });
 
@@ -7,6 +8,7 @@ const { t } = useI18n();
 const route = useRoute();
 const localePath = useLocalePath();
 const api = useApi();
+const toast = useToast();
 const { localised } = useLocaleText();
 
 const bookId = computed(() => route.params.id as string);
@@ -30,6 +32,23 @@ const title = computed(() =>
 useSiteSeo({ title: title.value, noindex: true });
 
 const ClientReader = defineAsyncComponent(() => import("~/components/book/BookReader.vue"));
+
+const downloading = ref(false);
+
+async function downloadBook() {
+  if (!item.value || downloading.value) return;
+  downloading.value = true;
+  try {
+    const resp = await api<{ url: string }>(`/libraries/me/${item.value.book.id}/download`);
+    if (import.meta.client) window.open(resp.url, "_blank", "noopener,noreferrer");
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("library.reader.download_failed")));
+  }
+  finally {
+    downloading.value = false;
+  }
+}
 </script>
 
 <template>
@@ -51,11 +70,29 @@ const ClientReader = defineAsyncComponent(() => import("~/components/book/BookRe
             {{ item.book.author.display_name }}
           </p>
         </div>
-        <UiButton variant="ghost" size="sm" :to="localePath('/account/library')">
-          <Icon name="arrow-left" class="h-3.5 w-3.5" />
-          {{ t("library.reader.back") }}
-        </UiButton>
+        <div class="flex items-center gap-2 shrink-0">
+          <UiButton
+            v-if="item?.book.downloads_enabled"
+            variant="ghost"
+            size="sm"
+            :loading="downloading"
+            :disabled="downloading"
+            @click="downloadBook"
+          >
+            <Icon name="upload" class="h-3.5 w-3.5 rotate-180" />
+            {{ t("library.reader.download") }}
+          </UiButton>
+          <UiButton variant="ghost" size="sm" :to="localePath('/account/library')">
+            <Icon name="arrow-left" class="h-3.5 w-3.5" />
+            {{ t("library.reader.back") }}
+          </UiButton>
+        </div>
       </header>
+
+      <p v-if="item && !item.book.downloads_enabled" class="text-xs text-ink-tertiary inline-flex items-center gap-1.5">
+        <Icon name="lock" class="h-3.5 w-3.5" />
+        {{ t("library.reader.download_disabled") }}
+      </p>
 
       <ClientOnly>
         <ClientReader v-if="item" :book-id="item.book.id" :title="title" />

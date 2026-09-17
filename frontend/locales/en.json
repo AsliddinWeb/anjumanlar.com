@@ -183,6 +183,7 @@
       "categories": "Categories",
       "publication_types": "Publication types",
       "users": "Users",
+      "orders": "Orders",
       "withdrawals": "Withdrawals",
       "audit": "Audit log",
       "blog": "Blog",
@@ -521,6 +522,62 @@
       "process_title": "Start processing",
       "process_body": "Move the {amount} request to processing? The author will be emailed."
     },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "Every purchase — status, payment, and contents under full control.",
+      "results": "{n} orders",
+      "search_placeholder": "Search by order number, buyer name, or email...",
+      "filter_status_any": "All statuses",
+      "empty_title": "No orders",
+      "empty_body": "There are no orders in the system yet.",
+      "view": "View",
+      "detail_title": "Order detail",
+      "table": {
+        "order": "Order",
+        "buyer": "Buyer",
+        "items": "Books",
+        "status": "Status",
+        "total": "Total",
+        "payment_method": "Payment method"
+      },
+      "fields": {
+        "buyer": "Buyer",
+        "created_at": "Created",
+        "paid_at": "Paid",
+        "payment_method": "Payment method",
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "total": "Total"
+      },
+      "section_items": "Order contents",
+      "items_table": {
+        "book": "Book",
+        "author": "Author",
+        "price": "Price",
+        "commission": "Commission",
+        "author_earning": "Author earning",
+        "platform_fee": "Platform fee"
+      },
+      "section_payments": "Payment attempts",
+      "no_payments_title": "No payment attempts",
+      "no_payments_body": "No payment attempt has been recorded for this order yet.",
+      "payments_table": {
+        "provider": "Provider",
+        "provider_id": "Transaction ID",
+        "amount": "Amount",
+        "status": "Status",
+        "created": "Created",
+        "performed": "Performed",
+        "cancelled": "Cancelled"
+      },
+      "payment_statuses": {
+        "created": "Created",
+        "pending": "Pending",
+        "paid": "Paid",
+        "cancelled": "Cancelled",
+        "failed": "Failed"
+      }
+    },
     "blog": {
       "title": "Blog posts",
       "subtitle": "Create, edit and publish blog articles",
@@ -587,6 +644,16 @@
     "settings": {
       "title": "Site settings",
       "subtitle": "Design, colours, ornaments and site-wide options.",
+      "contact_section": "Contact information",
+      "contact_hint": "Contact details and social links shown in the footer and contact page. An empty field just doesn't show up on the site.",
+      "contact_applied": "Contact information saved",
+      "contact_name": "Contact person",
+      "contact_phone": "Phone number",
+      "contact_email": "Email",
+      "telegram_url": "Telegram",
+      "instagram_url": "Instagram",
+      "facebook_url": "Facebook",
+      "youtube_url": "YouTube",
       "theme_section": "Design theme",
       "theme_hint": "The selected theme applies instantly to every page on the site. Other admins and visitors will see the updated colours.",
       "ornament_section": "National ornament",
@@ -872,7 +939,10 @@
       "loading": "Loading book…",
       "load_failed": "Couldn't load the book. Please try again.",
       "retry": "Retry",
-      "legal_notice": "This copy is for your personal use. Every page is watermarked with your email — if the file leaks, you'll be the one held responsible."
+      "legal_notice": "This copy is for your personal use. Every page is watermarked with your email — if the file leaks, you'll be the one held responsible.",
+      "download": "Download PDF",
+      "download_disabled": "The author/admin has disabled downloads for this book — online reading only.",
+      "download_failed": "Couldn't download the file"
     }
   },
   "theme": {
@@ -915,7 +985,15 @@
       "tk": "Turkmen",
       "tg": "Tajik",
       "ru": "Russian",
-      "en": "English"
+      "en": "English",
+      "az": "Azerbaijani",
+      "ar": "Arabic",
+      "fa": "Persian",
+      "zh": "Chinese",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish",
+      "mixed": "Mixed"
     },
     "mission": {
       "eyebrow": "Our mission",
@@ -1755,7 +1833,9 @@
       "keywords_placeholder": "medicine, cardiology, ...",
       "lang_hint": "Switch between language tabs",
       "featured": "Featured book",
-      "featured_hint": "Highlighted on the homepage and catalogue top"
+      "featured_hint": "Highlighted on the homepage and catalogue top",
+      "downloads_enabled": "Allow PDF download",
+      "downloads_enabled_hint": "When off, buyers can only read the book online — they can't save the file to their device"
     },
     "errors": {
       "title_required": "Enter the title in at least one language",
@@ -1775,6 +1855,7 @@
       "select_file": "Select file",
       "replace_file": "Replace",
       "view": "View",
+      "view_failed": "Couldn't open the file",
       "upload_failed": "Upload failed",
       "size_too_large": "File is larger than allowed",
       "wrong_type": "Wrong file type"

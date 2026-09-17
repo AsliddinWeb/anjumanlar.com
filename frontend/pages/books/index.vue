@@ -72,13 +72,7 @@ const publicationTypeOptions = computed(() => {
   ];
 });
 
-const languageOptions = [
-  { value: "", label: t("catalog.filters.language_any") },
-  { value: "uz", label: "O'zbekcha" },
-  { value: "ru", label: "Русский" },
-  { value: "en", label: "English" },
-  { value: "mixed", label: t("catalog.filters.language_mixed") },
-];
+const languageOptions = useBookLanguageOptions();
 
 const sortOptions = computed(() => [
   { value: "-published_at", label: t("catalog.sort.newest"), icon: "sparkles" as IconName },
@@ -156,7 +150,7 @@ const activeChips = computed<{ key: string; label: string; clear: () => void }[]
     });
   }
   if (queryParams.value.language) {
-    const lang = languageOptions.find((l) => l.value === queryParams.value.language);
+    const lang = languageOptions.value.find((l) => l.value === queryParams.value.language);
     chips.push({
       key: "language",
       label: lang?.label ?? queryParams.value.language,
@@ -369,9 +363,11 @@ useEscape(() => {
                 @update:model-value="(v) => setQuery({ publication_type: v })"
               />
 
-              <UiSelect
+              <UiSearchSelect
                 :model-value="queryParams.language ?? ''"
                 :label="t('catalog.filters.language')"
+                :placeholder="t('catalog.filters.language_any')"
+                :no-results-label="t('common.empty')"
                 :options="languageOptions"
                 @update:model-value="(v) => setQuery({ language: v })"
               />
@@ -538,9 +534,11 @@ useEscape(() => {
               :options="publicationTypeOptions"
               @update:model-value="(v) => setQuery({ publication_type: v })"
             />
-            <UiSelect
+            <UiSearchSelect
               :model-value="queryParams.language ?? ''"
               :label="t('catalog.filters.language')"
+              :placeholder="t('catalog.filters.language_any')"
+              :no-results-label="t('common.empty')"
               :options="languageOptions"
               @update:model-value="(v) => setQuery({ language: v })"
             />

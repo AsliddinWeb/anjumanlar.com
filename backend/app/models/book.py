@@ -58,6 +58,19 @@ class BookLanguage(enum.StrEnum):
     uz = "uz"
     ru = "ru"
     en = "en"
+    kk = "kk"  # Kazakh
+    tr = "tr"  # Turkish
+    ky = "ky"  # Kyrgyz
+    tg = "tg"  # Tajik
+    tk = "tk"  # Turkmen
+    kaa = "kaa"  # Karakalpak
+    az = "az"  # Azerbaijani
+    ar = "ar"  # Arabic
+    fa = "fa"  # Persian/Farsi
+    zh = "zh"  # Chinese
+    de = "de"  # German
+    fr = "fr"  # French
+    es = "es"  # Spanish
     mixed = "mixed"
 
 
@@ -166,6 +179,12 @@ class Book(UUIDMixin, TimestampMixin, Base):
 
     featured: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default="false"
+    )
+    # Admin-only anti-piracy switch. True (default) = buyers can save the
+    # watermarked PDF to disk via /libraries/me/{id}/download; False =
+    # /stream (inline, no save dialog) is the only way to read it.
+    downloads_enabled: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True, server_default="true"
     )
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 

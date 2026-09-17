@@ -68,6 +68,7 @@ function modelFromBook(b: BookOwnerView): BookFormValue {
     publication_type_id: b.publication_type?.id ?? "",
     keywords: b.keywords.join(", "),
     featured: b.featured,
+    downloads_enabled: b.downloads_enabled,
   };
 }
 
@@ -275,6 +276,7 @@ const STATUS_BANNER: Record<BookStatus, { tone: string; iconBg: string; title: s
             accept="application/pdf"
             :max-size-mb="100"
             :endpoint="`/books/${book.id}/file`"
+            :view-endpoint="`/books/${book.id}/file-url`"
             :read-only="!isEditable"
             @uploaded="onFileUploaded"
           />

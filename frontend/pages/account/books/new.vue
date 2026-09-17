@@ -45,6 +45,7 @@ function emptyForm(): BookFormValue {
     publication_type_id: "",
     keywords: "",
     featured: false,
+    downloads_enabled: true,
   };
 }
 

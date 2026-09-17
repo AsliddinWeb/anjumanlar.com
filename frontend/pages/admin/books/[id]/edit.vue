@@ -74,6 +74,7 @@ function modelFromBook(b: BookOwnerView): BookFormValue {
     publication_type_id: b.publication_type?.id ?? "",
     keywords: b.keywords.join(", "),
     featured: b.featured,
+    downloads_enabled: b.downloads_enabled,
   };
 }
 
@@ -119,6 +120,7 @@ async function save() {
       publication_type_id: form.value.publication_type_id || null,
       keywords: form.value.keywords.split(",").map((k) => k.trim()).filter(Boolean),
       featured: form.value.featured,
+      downloads_enabled: form.value.downloads_enabled,
     };
     await api(`/books/admin/${book.value.id}`, { method: "PATCH", body: payload });
     toast.success(t("admin.books.update_success"));
@@ -353,7 +355,7 @@ const STATUS_TONE: Record<BookStatus, "success" | "warning" | "neutral" | "error
       </div>
       <div>
         <dt class="text-ink-tertiary uppercase tracking-wide text-[10px]">{{ t("admin.books.language_label") }}</dt>
-        <dd class="text-ink mt-0.5">{{ book.language }}</dd>
+        <dd class="text-ink mt-0.5">{{ t(`languages.${book.language}`) }}</dd>
       </div>
       <div>
         <dt class="text-ink-tertiary uppercase tracking-wide text-[10px]">{{ t("account_books.table.updated_at") }}</dt>
@@ -390,6 +392,7 @@ const STATUS_TONE: Record<BookStatus, "success" | "warning" | "neutral" | "error
           accept="application/pdf"
           :max-size-mb="100"
           :endpoint="`/books/${book.id}/file`"
+          :view-endpoint="`/books/${book.id}/file-url`"
           @uploaded="onFileUploaded"
         />
         <BookFileUpload

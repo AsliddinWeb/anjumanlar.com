@@ -22,6 +22,7 @@ export type AdminScope =
   | "blog"
   | "categories"
   | "users"
+  | "orders"
   | "withdrawals"
   | "finance"
   | "audit"
@@ -175,6 +176,7 @@ export interface BookPublic {
   views_count: number;
   sales_count: number;
   featured: boolean;
+  downloads_enabled: boolean;
   published_at: string | null;
   created_at: string;
   author: BookAuthorRef;
@@ -493,6 +495,43 @@ export interface OrderList {
   page_size: number;
 }
 
+export interface OrderBuyer {
+  id: string;
+  email: string;
+  full_name: string;
+  preferred_locale: string;
+}
+
+export interface OrderPaymentPublic {
+  id: string;
+  provider: string;
+  provider_id: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  state: number | null;
+  create_time: number | null;
+  perform_time: number | null;
+  cancel_time: number | null;
+  reason: number | null;
+  created_at: string;
+}
+
+export interface OrderAdminPublic extends OrderPublic {
+  user: OrderBuyer;
+}
+
+export interface OrderAdminDetail extends OrderAdminPublic {
+  payments: OrderPaymentPublic[];
+}
+
+export interface OrderAdminList {
+  items: OrderAdminPublic[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
 // ---------- Library ----------
 
 export interface UserLibraryItem {
@@ -552,4 +591,20 @@ export interface WithdrawalList {
   total: number;
   page: number;
   page_size: number;
+}
+
+// ---------- Site settings ----------
+
+export interface SiteSettingsPublic {
+  theme_name: string;
+  ornament_name: string;
+  animations_enabled: boolean;
+  author_uploads_enabled: boolean;
+  contact_name: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  telegram_url: string | null;
+  instagram_url: string | null;
+  facebook_url: string | null;
+  youtube_url: string | null;
 }

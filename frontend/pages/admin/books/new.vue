@@ -31,12 +31,33 @@ const { data: publicationTypesRaw } = await useAsyncData(
 );
 const publicationTypes = computed(() => publicationTypesRaw.value?.items ?? []);
 
-const { data: authorsRaw } = await useAsyncData(
-  "admin:books:new:authors",
-  () => api<AuthorList>("/authors", { query: { page_size: 100 } }),
-  { server: false },
-);
-const authors = computed<AuthorPublic[]>(() => authorsRaw.value?.items ?? []);
+const authors = ref<AuthorPublic[]>([]);
+const authorsLoading = ref(false);
+// Set once from the unfiltered initial load — distinguishes "no authors
+// exist on the platform yet" from "this search query matched nothing".
+const hasAnyAuthors = ref(false);
+let authorSearchTimer: ReturnType<typeof setTimeout> | null = null;
+
+async function loadAuthors(search?: string) {
+  authorsLoading.value = true;
+  try {
+    const resp = await api<AuthorList>("/authors", {
+      query: { page_size: 50, search: search?.trim() || undefined },
+    });
+    authors.value = resp.items;
+    if (!search) hasAnyAuthors.value = resp.total > 0;
+  }
+  finally {
+    authorsLoading.value = false;
+  }
+}
+
+function onAuthorSearch(query: string) {
+  if (authorSearchTimer) clearTimeout(authorSearchTimer);
+  authorSearchTimer = setTimeout(() => loadAuthors(query), 300);
+}
+
+await loadAuthors();
 
 function emptyForm(): BookFormValue {
   return {
@@ -54,6 +75,7 @@ function emptyForm(): BookFormValue {
     publication_type_id: "",
     keywords: "",
     featured: false,
+    downloads_enabled: true,
   };
 }
 
@@ -62,13 +84,12 @@ const authorId = ref<string>("");
 const submitting = ref(false);
 const error = ref<string | null>(null);
 
-const authorOptions = computed(() => [
-  { value: "", label: t("admin.books.author_select_placeholder") },
-  ...authors.value.map((a) => ({
+const authorOptions = computed(() =>
+  authors.value.map((a) => ({
     value: a.id,
     label: a.academic_title ? `${a.display_name} — ${a.academic_title}` : a.display_name,
   })),
-]);
+);
 
 function packLocalised(uz: string, ru: string, en: string) {
   const out: Record<string, string> = {};
@@ -108,6 +129,7 @@ async function submit() {
       publication_type_id: form.value.publication_type_id || null,
       keywords: form.value.keywords.split(",").map((k) => k.trim()).filter(Boolean),
       featured: form.value.featured,
+      downloads_enabled: form.value.downloads_enabled,
     };
     const created = await api<BookOwnerView>("/books/admin", { method: "POST", body: payload });
     toast.success(t("admin.books.create_success"));
@@ -137,7 +159,7 @@ async function submit() {
     />
 
     <UiEmptyState
-      v-if="authors.length === 0"
+      v-if="!hasAnyAuthors"
       icon="users"
       :title="t('admin.books.no_authors_title')"
       :description="t('admin.books.no_authors_body')"
@@ -149,10 +171,16 @@ async function submit() {
 
     <template v-else>
       <div class="rounded-md border border-border bg-bg-card p-5 mb-5 space-y-2">
-        <UiSelect
+        <UiSearchSelect
           v-model="authorId"
+          remote
+          :loading="authorsLoading"
           :label="t('admin.books.author_field')"
+          :placeholder="t('admin.books.author_select_placeholder')"
+          :search-placeholder="t('admin.books.author_search_placeholder')"
+          :no-results-label="t('common.empty')"
           :options="authorOptions"
+          @search="onAuthorSearch"
         />
         <p class="text-xs text-ink-tertiary">{{ t('admin.books.author_field_hint') }}</p>
       </div>
