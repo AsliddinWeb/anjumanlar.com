@@ -80,7 +80,7 @@ const breadcrumbs = computed(() => {
   return items;
 });
 
-const languageLabel = computed(() => t(`languages.${book.value.language}`));
+const languageLabel = computed(() => t(`home.languages.${book.value.language}`));
 
 const authorInitials = computed(() => {
   const parts = book.value.author.display_name.trim().split(/\s+/).slice(0, 2);

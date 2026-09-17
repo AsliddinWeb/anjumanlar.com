@@ -355,7 +355,7 @@ const STATUS_TONE: Record<BookStatus, "success" | "warning" | "neutral" | "error
       </div>
       <div>
         <dt class="text-ink-tertiary uppercase tracking-wide text-[10px]">{{ t("admin.books.language_label") }}</dt>
-        <dd class="text-ink mt-0.5">{{ t(`languages.${book.language}`) }}</dd>
+        <dd class="text-ink mt-0.5">{{ t(`home.languages.${book.language}`) }}</dd>
       </div>
       <div>
         <dt class="text-ink-tertiary uppercase tracking-wide text-[10px]">{{ t("account_books.table.updated_at") }}</dt>
