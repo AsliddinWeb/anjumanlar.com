@@ -48,3 +48,15 @@ async def update_author_uploads(db: AsyncSession, enabled: bool) -> SiteSettings
     row.author_uploads_enabled = enabled
     await db.flush()
     return row
+
+
+async def update_contact_info(db: AsyncSession, **fields: str | None) -> SiteSettings:
+    """Set whichever contact/social fields the caller passed — every
+    kwarg maps 1:1 to a ``SiteSettings`` column (contact_name,
+    contact_phone, contact_email, telegram_url, instagram_url,
+    facebook_url, youtube_url)."""
+    row = await get(db)
+    for key, value in fields.items():
+        setattr(row, key, value)
+    await db.flush()
+    return row

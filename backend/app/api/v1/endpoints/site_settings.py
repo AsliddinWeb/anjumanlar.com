@@ -67,6 +67,21 @@ async def admin_update_settings(
         await site_settings_service.update_animations(db, data.animations_enabled)
     if data.author_uploads_enabled is not None:
         await site_settings_service.update_author_uploads(db, data.author_uploads_enabled)
+    contact_fields = {
+        k: v
+        for k, v in {
+            "contact_name": data.contact_name,
+            "contact_phone": data.contact_phone,
+            "contact_email": data.contact_email,
+            "telegram_url": data.telegram_url,
+            "instagram_url": data.instagram_url,
+            "facebook_url": data.facebook_url,
+            "youtube_url": data.youtube_url,
+        }.items()
+        if v is not None
+    }
+    if contact_fields:
+        await site_settings_service.update_contact_info(db, **contact_fields)
     row = await site_settings_service.get(db)
     await db.commit()
     return SiteSettingsPublic.model_validate(row)

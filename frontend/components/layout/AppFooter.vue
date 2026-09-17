@@ -1,8 +1,24 @@
 <script setup lang="ts">
+import type { SiteSettingsPublic } from "~/types/api";
+
 const { t } = useI18n();
 const localePath = useLocalePath();
+const api = useApi();
 
 const year = new Date().getFullYear();
+
+const { data: settingsRaw } = await useAsyncData(
+  "footer:settings",
+  () => api<SiteSettingsPublic>("/settings"),
+);
+const settings = computed(() => settingsRaw.value);
+
+const socialLinks = computed(() => [
+  { label: "Telegram", url: settings.value?.telegram_url },
+  { label: "Instagram", url: settings.value?.instagram_url },
+  { label: "Facebook", url: settings.value?.facebook_url },
+  { label: "YouTube", url: settings.value?.youtube_url },
+].filter((l) => l.url));
 
 const exploreLinks = computed(() => [
   { to: "/books", label: t("nav.books") },
@@ -63,13 +79,24 @@ const legalLinks = computed(() => [
               {{ l.label }}
             </NuxtLink>
           </li>
-          <li>
+          <li v-if="settings?.contact_email">
             <a
-              href="mailto:info@monografiya.com"
+              :href="`mailto:${settings.contact_email}`"
               class="text-ink-secondary hover:text-primary"
             >
-              info@monografiya.com
+              {{ settings.contact_email }}
             </a>
+          </li>
+          <li v-if="settings?.contact_phone">
+            <a
+              :href="`tel:${settings.contact_phone.replace(/\\s+/g, '')}`"
+              class="text-ink-secondary hover:text-primary"
+            >
+              {{ settings.contact_phone }}
+            </a>
+          </li>
+          <li v-if="settings?.contact_name" class="text-ink-tertiary">
+            {{ settings.contact_name }}
           </li>
         </ul>
       </div>
@@ -89,26 +116,19 @@ const legalLinks = computed(() => [
             </li>
           </ul>
         </div>
-        <div>
+        <div v-if="socialLinks.length">
           <h4 class="text-sm font-medium text-ink mb-3">{{ t("footer.follow") }}</h4>
           <div class="flex items-center gap-3 text-sm">
             <a
-              href="https://t.me/monografiya"
+              v-for="l in socialLinks"
+              :key="l.label"
+              :href="l.url!"
               target="_blank"
               rel="noopener noreferrer"
               class="text-ink-secondary hover:text-primary"
-              aria-label="Telegram"
+              :aria-label="l.label"
             >
-              Telegram
-            </a>
-            <a
-              href="https://instagram.com/monografiya"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-ink-secondary hover:text-primary"
-              aria-label="Instagram"
-            >
-              Instagram
+              {{ l.label }}
             </a>
           </div>
         </div>

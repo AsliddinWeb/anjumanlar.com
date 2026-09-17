@@ -2,6 +2,7 @@
 import { THEMES } from "~/utils/themes";
 import { ORNAMENTS } from "~/utils/ornaments";
 import { apiErrorMessage } from "~/composables/useAuth";
+import type { SiteSettingsPublic } from "~/types/api";
 
 definePageMeta({
   layout: "admin",
@@ -13,8 +14,65 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const toast = useToast();
 const theme = useTheme();
+const api = useApi();
 
 useHead({ title: t("admin.settings.title") });
+
+// ---- Contact / social links ----
+const { data: settingsRaw } = await useAsyncData(
+  "admin:settings:full",
+  () => api<SiteSettingsPublic>("/admin/settings"),
+  { server: false },
+);
+
+const contactForm = reactive({
+  contact_name: "",
+  contact_phone: "",
+  contact_email: "",
+  telegram_url: "",
+  instagram_url: "",
+  facebook_url: "",
+  youtube_url: "",
+});
+
+watch(settingsRaw, (v) => {
+  if (!v) return;
+  contactForm.contact_name = v.contact_name ?? "";
+  contactForm.contact_phone = v.contact_phone ?? "";
+  contactForm.contact_email = v.contact_email ?? "";
+  contactForm.telegram_url = v.telegram_url ?? "";
+  contactForm.instagram_url = v.instagram_url ?? "";
+  contactForm.facebook_url = v.facebook_url ?? "";
+  contactForm.youtube_url = v.youtube_url ?? "";
+}, { immediate: true });
+
+const savingContact = ref(false);
+
+async function saveContact() {
+  if (savingContact.value) return;
+  savingContact.value = true;
+  try {
+    await api("/admin/settings", {
+      method: "PATCH",
+      body: {
+        contact_name: contactForm.contact_name.trim() || null,
+        contact_phone: contactForm.contact_phone.trim() || null,
+        contact_email: contactForm.contact_email.trim() || null,
+        telegram_url: contactForm.telegram_url.trim() || null,
+        instagram_url: contactForm.instagram_url.trim() || null,
+        facebook_url: contactForm.facebook_url.trim() || null,
+        youtube_url: contactForm.youtube_url.trim() || null,
+      },
+    });
+    toast.success(t("admin.settings.contact_applied"));
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("common.error")));
+  }
+  finally {
+    savingContact.value = false;
+  }
+}
 
 const applying = ref<string | null>(null);
 const applyingOrnament = ref<string | null>(null);
@@ -104,6 +162,62 @@ async function applyOrnament(name: string) {
         />
       </template>
     </AdminPageHeader>
+
+    <!-- CONTACT / SOCIAL -->
+    <section class="space-y-3">
+      <h2 class="text-sm uppercase tracking-wider text-ink-tertiary">
+        {{ t("admin.settings.contact_section") }}
+      </h2>
+      <p class="text-sm text-ink-secondary">
+        {{ t("admin.settings.contact_hint") }}
+      </p>
+      <div class="rounded-md border border-border bg-bg-card p-5 space-y-4">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <UiInput
+            v-model="contactForm.contact_name"
+            :label="t('admin.settings.contact_name')"
+            :placeholder="t('admin.settings.contact_name')"
+          />
+          <UiInput
+            v-model="contactForm.contact_phone"
+            :label="t('admin.settings.contact_phone')"
+            placeholder="+998 90 123 45 67"
+          />
+          <UiInput
+            v-model="contactForm.contact_email"
+            type="email"
+            :label="t('admin.settings.contact_email')"
+            placeholder="info@monografiya.com"
+          />
+          <UiInput
+            v-model="contactForm.telegram_url"
+            :label="t('admin.settings.telegram_url')"
+            placeholder="https://t.me/..."
+          />
+          <UiInput
+            v-model="contactForm.instagram_url"
+            :label="t('admin.settings.instagram_url')"
+            placeholder="https://instagram.com/..."
+          />
+          <UiInput
+            v-model="contactForm.facebook_url"
+            :label="t('admin.settings.facebook_url')"
+            placeholder="https://facebook.com/..."
+          />
+          <UiInput
+            v-model="contactForm.youtube_url"
+            :label="t('admin.settings.youtube_url')"
+            placeholder="https://youtube.com/@..."
+          />
+        </div>
+        <div class="flex justify-end">
+          <UiButton :loading="savingContact" @click="saveContact">
+            <Icon name="check" class="h-4 w-4" />
+            {{ t("admin.actions.save") }}
+          </UiButton>
+        </div>
+      </div>
+    </section>
 
     <!-- ANIMATIONS -->
     <section class="space-y-3">

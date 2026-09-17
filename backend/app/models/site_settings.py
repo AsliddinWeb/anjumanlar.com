@@ -52,6 +52,17 @@ class SiteSettings(UUIDMixin, TimestampMixin, Base):
         Boolean, nullable=False, default=True, server_default="true"
     )
 
+    # Footer / contact page — editable from /admin/settings instead of
+    # being hardcoded in the frontend. All nullable: an empty field just
+    # hides that row/icon on the public site.
+    contact_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    contact_phone: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    contact_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    telegram_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    instagram_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    facebook_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    youtube_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
     __table_args__ = (
         CheckConstraint("singleton = TRUE", name="site_settings_singleton_check"),
     )
