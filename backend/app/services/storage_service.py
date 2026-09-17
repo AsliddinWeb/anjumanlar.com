@@ -17,7 +17,7 @@ from pypdf.errors import PdfReadError
 
 from app.config import settings
 from app.core.exceptions import ValidationError
-from app.integrations.minio_client import put_bytes
+from app.integrations.minio_client import presigned_get_url, put_bytes
 
 # ---------------------------------------------------------------------------
 # Avatars
@@ -270,3 +270,9 @@ def upload_book_file(book_id: UUID, raw: bytes, content_type: str) -> BookFileUp
     )
     size_mb = round(len(raw) / (1024 * 1024), 2)
     return BookFileUpload(url=url, pages_count=pages_count, file_size_mb=size_mb)
+
+
+def presigned_book_file_url(book_id: UUID, expires_seconds: int = 300) -> str:
+    """Short-lived signed URL for the canonical PDF — the ``books`` bucket
+    has no public-read policy, so ``book.file_url`` on its own 403s."""
+    return presigned_get_url(settings.MINIO_BUCKET_BOOKS, f"{book_id}.pdf", expires_seconds)

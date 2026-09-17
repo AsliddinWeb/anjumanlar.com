@@ -69,13 +69,18 @@ def presigned_get_url(
     """
     # We need a client bound to the public endpoint, otherwise the
     # signed URL would point at "minio:9000" which is unreachable from
-    # the user's browser.
+    # the user's browser. Pinning `region` matters just as much: without
+    # it the SDK issues a GetBucketLocation call against that same
+    # public endpoint to discover the region, and from inside the
+    # backend container the public endpoint (localhost:8302 in dev) is
+    # unreachable — signing would 500 before ever returning a URL.
     public_host = settings.MINIO_PUBLIC_ENDPOINT.split("://", 1)[-1]
     signing_client = Minio(
         endpoint=public_host,
         access_key=settings.MINIO_ROOT_USER,
         secret_key=settings.MINIO_ROOT_PASSWORD,
         secure=settings.MINIO_PUBLIC_ENDPOINT.startswith("https://"),
+        region="us-east-1",
     )
     return signing_client.presigned_get_object(
         bucket, object_key, expires=timedelta(seconds=expires_seconds)

@@ -18,6 +18,13 @@ const props = defineProps<{
   endpoint: string;
   /** When true the picker is disabled (book in wrong status). */
   readOnly?: boolean;
+  /**
+   * When set, "view" fetches a short-lived signed URL from this endpoint
+   * instead of linking `url` directly. Needed for buckets with no
+   * public-read policy (the canonical book PDF) — a direct link to
+   * `url` there 403s.
+   */
+  viewEndpoint?: string;
 }>();
 
 const emit = defineEmits<{
@@ -28,6 +35,27 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
+const viewing = ref(false);
+
+async function openFile() {
+  if (!props.url) return;
+  if (!props.viewEndpoint) {
+    if (import.meta.client) window.open(props.url, "_blank", "noopener,noreferrer");
+    return;
+  }
+  if (viewing.value) return;
+  viewing.value = true;
+  try {
+    const resp = await api<{ url: string }>(props.viewEndpoint);
+    if (import.meta.client) window.open(resp.url, "_blank", "noopener,noreferrer");
+  }
+  catch (err) {
+    toast.error(apiErrorMessage(err, t("account_books.upload.view_failed")));
+  }
+  finally {
+    viewing.value = false;
+  }
+}
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const uploading = ref(false);
@@ -126,16 +154,16 @@ const hasFile = computed(() => Boolean(props.url));
           <Icon name="upload" class="h-4 w-4" />
           {{ hasFile ? t("account_books.upload.replace_file") : t("account_books.upload.select_file") }}
         </UiButton>
-        <a
+        <button
           v-if="hasFile && url"
-          :href="url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          type="button"
+          :disabled="viewing"
+          class="inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
+          @click="openFile"
         >
           <Icon name="external-link" class="h-3 w-3" />
           {{ t("account_books.upload.view") }}
-        </a>
+        </button>
       </div>
     </div>
 

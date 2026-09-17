@@ -269,6 +269,19 @@ async def upload_book_file(
     return BookOwnerView.model_validate(book)
 
 
+@router.get(
+    "/{book_id}/file-url",
+    summary="Short-lived signed URL to view the canonical PDF (owner or admin)",
+)
+async def read_book_file_url(
+    book_id: UUID,
+    user: Annotated[User, Depends(require_author)],
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    url = await book_service.get_file_view_url(db, user, book_id)
+    return {"url": url}
+
+
 # ---------- Admin moderation + full CRUD ----------
 #
 # Mounted as /books/admin/* to keep the router single-file. Phase 5 may
