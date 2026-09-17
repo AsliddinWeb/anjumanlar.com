@@ -21,6 +21,7 @@ interface StatsSnapshot {
   books: { pending: number };
   reviews: { pending: number };
   review_requests: { pending: number };
+  orders: { pending: number };
   withdrawals: { open: number };
 }
 
@@ -53,6 +54,7 @@ const allItems = computed<Item[]>(() => [
   { to: "/admin/categories", icon: "folder", label: t("admin.nav.categories"), scope: "categories" },
   { to: "/admin/publication-types", icon: "book", label: t("admin.nav.publication_types"), scope: "categories" },
   { to: "/admin/users", icon: "users", label: t("admin.nav.users"), scope: "users" },
+  { to: "/admin/orders", icon: "cart", label: t("admin.nav.orders"), scope: "orders", badge: () => stats.value?.orders.pending ?? 0 },
   { to: "/admin/withdrawals", icon: "money", label: t("admin.nav.withdrawals"), scope: "withdrawals", badge: () => stats.value?.withdrawals.open ?? 0 },
   { to: "/admin/finance", icon: "chart", label: t("admin.nav.finance"), scope: "finance" },
   { to: "/admin/audit", icon: "clipboard-list", label: t("admin.nav.audit"), scope: "audit" },

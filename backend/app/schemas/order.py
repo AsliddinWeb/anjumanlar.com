@@ -62,3 +62,50 @@ class OrderList(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class OrderBuyer(BaseModel):
+    """Buyer identity as shown to admins — no auth-sensitive fields."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    email: str
+    full_name: str
+    preferred_locale: str
+
+
+class OrderPaymentPublic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    provider: str
+    provider_id: str | None = None
+    amount: float
+    currency: str
+    status: str
+    state: int | None = None
+    create_time: int | None = None
+    perform_time: int | None = None
+    cancel_time: int | None = None
+    reason: int | None = None
+    created_at: datetime
+
+
+class OrderAdminPublic(OrderPublic):
+    """Order row as shown in the admin orders table — adds the buyer."""
+
+    user: OrderBuyer
+
+
+class OrderAdminDetail(OrderAdminPublic):
+    """Full admin detail — adds the payment-attempt history."""
+
+    payments: list[OrderPaymentPublic]
+
+
+class OrderAdminList(BaseModel):
+    items: list[OrderAdminPublic]
+    total: int
+    page: int
+    page_size: int

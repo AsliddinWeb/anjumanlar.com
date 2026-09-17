@@ -17,6 +17,7 @@ ADMIN_SCOPES: list[str] = [
     "blog",
     "categories",
     "users",
+    "orders",
     "withdrawals",
     "finance",
     "audit",

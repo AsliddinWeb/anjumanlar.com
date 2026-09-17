@@ -264,6 +264,96 @@ async def list_for_user(
     return list(rows), total
 
 
+_ADMIN_ORDER_SORT_MAP = {
+    "created_at": Order.created_at.asc(),
+    "-created_at": Order.created_at.desc(),
+    "total": Order.total.asc(),
+    "-total": Order.total.desc(),
+}
+
+
+async def admin_list(
+    db: AsyncSession,
+    *,
+    page: int,
+    page_size: int,
+    status: OrderStatus | None = None,
+    search: str | None = None,
+    sort: str = "-created_at",
+) -> tuple[list[Order], int]:
+    """Every order in the system, for the `/admin/orders` table.
+
+    ``search`` matches the order number or the buyer's email/name so
+    support staff can jump straight to a disputed order from a
+    Payme receipt or a user's complaint.
+    """
+    base = select(Order).join(User, Order.user_id == User.id)
+    if status is not None:
+        base = base.where(Order.status == status)
+    if search:
+        like = f"%{search.strip()}%"
+        base = base.where(
+            Order.order_number.ilike(like)
+            | User.email.ilike(like)
+            | User.full_name.ilike(like)
+        )
+
+    total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+
+    clause = _ADMIN_ORDER_SORT_MAP.get(sort, _ADMIN_ORDER_SORT_MAP["-created_at"])
+    rows = (
+        (
+            await db.execute(
+                base.options(
+                    selectinload(Order.user),
+                    selectinload(Order.items)
+                    .selectinload(OrderItem.book)
+                    .selectinload(Book.author),
+                    selectinload(Order.items)
+                    .selectinload(OrderItem.book)
+                    .selectinload(Book.categories),
+                    selectinload(Order.items)
+                    .selectinload(OrderItem.book)
+                    .selectinload(Book.publication_type),
+                )
+                .order_by(clause)
+                .offset((page - 1) * page_size)
+                .limit(page_size)
+            )
+        )
+        .scalars()
+        .unique()
+        .all()
+    )
+    return list(rows), total
+
+
+async def admin_get(db: AsyncSession, order_id: UUID) -> Order:
+    """Full detail for one order — items, buyer, and every payment attempt."""
+    row = (
+        await db.execute(
+            select(Order)
+            .options(
+                selectinload(Order.user),
+                selectinload(Order.items)
+                .selectinload(OrderItem.book)
+                .selectinload(Book.author),
+                selectinload(Order.items)
+                .selectinload(OrderItem.book)
+                .selectinload(Book.categories),
+                selectinload(Order.items)
+                .selectinload(OrderItem.book)
+                .selectinload(Book.publication_type),
+                selectinload(Order.payments),
+            )
+            .where(Order.id == order_id)
+        )
+    ).unique().scalar_one_or_none()
+    if row is None:
+        raise NotFoundError("Order not found", details={"code": "order_not_found"})
+    return row
+
+
 async def cancel(db: AsyncSession, user: User, order_id: UUID) -> Order:
     order = await get_for_user(db, user, order_id)
     if order.status != OrderStatus.pending:

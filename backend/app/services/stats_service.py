@@ -145,6 +145,11 @@ async def snapshot(db: AsyncSession) -> dict[str, Any]:
             )
         )
     ).scalar_one()
+    orders_pending = (
+        await db.execute(
+            select(func.count()).select_from(Order).where(Order.status == OrderStatus.pending)
+        )
+    ).scalar_one()
 
     revenue_total = (
         await db.execute(
@@ -211,6 +216,7 @@ async def snapshot(db: AsyncSession) -> dict[str, Any]:
         "orders": {
             "paid_total": int(orders_paid_total),
             "paid_this_month": int(orders_paid_this_month),
+            "pending": int(orders_pending),
         },
         "revenue": {
             "gross": float(revenue_total),

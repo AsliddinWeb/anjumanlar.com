@@ -5,14 +5,14 @@ prices and commission, the response carries a placeholder
 ``payment_url`` field that the Payme integration (Phase 4.4) will
 populate.
 
-Admin moderation lives under /admin/orders in a later phase; for now
-admins can read any order via the regular GET (the service performs
-the role check).
+``admin_router`` (mounted at /admin/orders) gives staff the full order
+table — every buyer's orders, with buyer identity and the raw payment
+attempts, for support and reconciliation.
 """
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
@@ -20,10 +20,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.db.session import get_db
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, require_admin_scope
 from app.integrations.payme.client import build_checkout_url
 from app.models import OrderStatus, User
 from app.schemas.order import (
+    OrderAdminDetail,
+    OrderAdminList,
+    OrderAdminPublic,
     OrderCheckout,
     OrderCreate,
     OrderList,
@@ -32,6 +35,7 @@ from app.schemas.order import (
 from app.services import order_service
 
 router = APIRouter(prefix="/orders", tags=["orders"])
+admin_router = APIRouter(prefix="/admin/orders", tags=["orders"])
 
 
 @router.post(
@@ -120,3 +124,50 @@ async def cancel_order(
     order = await order_service.cancel(db, user, order_id)
     await db.commit()
     return OrderPublic.model_validate(order)
+
+
+# ---------- admin ----------
+
+
+@admin_router.get(
+    "",
+    response_model=OrderAdminList,
+    summary="List every order in the system (admin)",
+)
+async def admin_list_orders(
+    _: Annotated[User, Depends(require_admin_scope("orders"))],
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    status_filter: OrderStatus | None = Query(None, alias="status"),
+    search: str | None = Query(None, max_length=255),
+    sort: Literal["created_at", "-created_at", "total", "-total"] = "-created_at",
+    db: AsyncSession = Depends(get_db),
+) -> OrderAdminList:
+    items, total = await order_service.admin_list(
+        db,
+        page=page,
+        page_size=page_size,
+        status=status_filter,
+        search=search,
+        sort=sort,
+    )
+    return OrderAdminList(
+        items=[OrderAdminPublic.model_validate(o) for o in items],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@admin_router.get(
+    "/{order_id}",
+    response_model=OrderAdminDetail,
+    summary="Full order detail — items, buyer, payment attempts (admin)",
+)
+async def admin_read_order(
+    order_id: UUID,
+    _: Annotated[User, Depends(require_admin_scope("orders"))],
+    db: AsyncSession = Depends(get_db),
+) -> OrderAdminDetail:
+    order = await order_service.admin_get(db, order_id)
+    return OrderAdminDetail.model_validate(order)
