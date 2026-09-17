@@ -30,6 +30,7 @@ _SEARCHABLE = [
     "description_ru",
     "description_en",
     "author_name",
+    "co_authors",
     "publisher",
     "isbn",
 ]

@@ -51,6 +51,7 @@ def book_to_document(book: Book) -> dict[str, Any]:
         "author_id": str(book.author_id),
         "author_slug": book.author.slug if book.author else "",
         "author_name": book.author.display_name if book.author else "",
+        "co_authors": book.co_authors or "",
         "publisher": book.publisher or "",
         "isbn": book.isbn or "",
         "cover_url": book.cover_url,

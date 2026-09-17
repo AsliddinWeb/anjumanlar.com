@@ -80,15 +80,7 @@ const breadcrumbs = computed(() => {
   return items;
 });
 
-const languageLabel = computed(() => {
-  const map: Record<string, string> = {
-    uz: "O'zbekcha",
-    ru: "Русский",
-    en: "English",
-    mixed: t("book.lang_mixed"),
-  };
-  return map[book.value.language] ?? book.value.language;
-});
+const languageLabel = computed(() => t(`languages.${book.value.language}`));
 
 const authorInitials = computed(() => {
   const parts = book.value.author.display_name.trim().split(/\s+/).slice(0, 2);
@@ -189,17 +181,22 @@ const similarBooks = computed<BookPublic[]>(() => {
           </div>
 
           <!-- Author chip -->
-          <NuxtLink
-            :to="localePath(`/authors/${book.author.slug}`)"
-            class="inline-flex items-center gap-2.5 px-2 py-1 rounded-full border border-border bg-bg-card hover:border-primary transition-colors group"
-          >
-            <span class="h-7 w-7 rounded-full bg-primary text-ink-inverse flex items-center justify-center text-[11px] font-semibold">
-              {{ authorInitials }}
+          <div class="flex flex-wrap items-center gap-2">
+            <NuxtLink
+              :to="localePath(`/authors/${book.author.slug}`)"
+              class="inline-flex items-center gap-2.5 px-2 py-1 rounded-full border border-border bg-bg-card hover:border-primary transition-colors group"
+            >
+              <span class="h-7 w-7 rounded-full bg-primary text-ink-inverse flex items-center justify-center text-[11px] font-semibold">
+                {{ authorInitials }}
+              </span>
+              <span class="text-sm text-ink-secondary group-hover:text-primary transition-colors pr-2">
+                {{ book.author.display_name }}
+              </span>
+            </NuxtLink>
+            <span v-if="book.co_authors" class="text-xs text-ink-tertiary">
+              + {{ book.co_authors }}
             </span>
-            <span class="text-sm text-ink-secondary group-hover:text-primary transition-colors pr-2">
-              {{ book.author.display_name }}
-            </span>
-          </NuxtLink>
+          </div>
 
           <!-- Rating -->
           <div>
@@ -317,6 +314,10 @@ const similarBooks = computed<BookPublic[]>(() => {
                 {{ t("book.author_view_profile") }}
                 <Icon name="arrow-right" class="h-4 w-4" />
               </UiButton>
+              <p v-if="book.co_authors" class="text-sm text-ink-secondary pt-2 border-t border-border">
+                <span class="text-ink-tertiary">{{ t("account_books.co_authors") }}:</span>
+                {{ book.co_authors }}
+              </p>
             </section>
 
             <section v-else-if="active === 'reviews'">

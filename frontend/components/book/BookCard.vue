@@ -46,7 +46,7 @@ const href = computed(() => localePath(`/books/${props.book.slug}`));
         {{ title }}
       </h3>
       <p class="text-xs text-ink-secondary truncate">
-        {{ book.author.display_name }}
+        {{ book.author.display_name }}<template v-if="book.co_authors">, {{ book.co_authors }}</template>
       </p>
       <div class="flex items-center justify-between pt-1">
         <BookPriceTag
