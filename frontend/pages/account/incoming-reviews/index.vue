@@ -13,6 +13,7 @@ const api = useApi();
 const toast = useToast();
 const { hasRole } = useAuth();
 const { formatDate } = useFormatDate();
+const { opening, openSignedFile } = useSignedFile();
 
 useHead({ title: t("review_requests.incoming_title") });
 
@@ -198,16 +199,16 @@ async function confirmSubmit() {
               </span>
             </div>
             <footer class="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
-              <a
+              <button
                 v-if="r.manuscript_url"
-                :href="r.manuscript_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                type="button"
+                :disabled="opening === `manuscript:${r.id}`"
+                class="inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
+                @click="openSignedFile(`/review-requests/${r.id}/manuscript-url`, `manuscript:${r.id}`)"
               >
                 <Icon name="document" class="h-3.5 w-3.5" />
                 {{ t("review_requests.actions.download_manuscript") }}
-              </a>
+              </button>
               <span class="flex-1" />
               <UiButton
                 v-if="['pending', 'quoted'].includes(r.status) && r.manuscript_url"

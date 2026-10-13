@@ -132,6 +132,32 @@ async def read_request(
     return ReviewRequestPublic.model_validate(row)
 
 
+@router.get(
+    "/{request_id}/manuscript-url",
+    summary="Short-lived signed URL for the manuscript PDF (requester/author/admin)",
+)
+async def read_manuscript_url(
+    request_id: UUID,
+    user: Annotated[User, Depends(get_current_user)],
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    url = await review_request_service.get_manuscript_url(db, user, request_id)
+    return {"url": url}
+
+
+@router.get(
+    "/{request_id}/review-file-url",
+    summary="Short-lived signed URL for the submitted review PDF (requester/author/admin)",
+)
+async def read_review_file_url(
+    request_id: UUID,
+    user: Annotated[User, Depends(get_current_user)],
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    url = await review_request_service.get_review_file_url(db, user, request_id)
+    return {"url": url}
+
+
 @router.post(
     "/{request_id}/pay",
     response_model=ReviewRequestPublic,

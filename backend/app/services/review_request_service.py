@@ -354,3 +354,24 @@ async def get_for_user(
     request = await _get(db, request_id)
     await _assert_visible(db, request, user)
     return request
+
+
+async def get_manuscript_url(db: AsyncSession, user: User, request_id: UUID) -> str:
+    """Short-lived signed URL for the manuscript PDF — requester/author/admin
+    only (same visibility as the request itself)."""
+    request = await get_for_user(db, user, request_id)
+    if not request.manuscript_url:
+        raise NotFoundError(
+            "No manuscript uploaded yet", details={"code": "manuscript_missing"}
+        )
+    return storage_service.presigned_review_manuscript_url(request.id)
+
+
+async def get_review_file_url(db: AsyncSession, user: User, request_id: UUID) -> str:
+    """Short-lived signed URL for the author's submitted review PDF."""
+    request = await get_for_user(db, user, request_id)
+    if not request.review_file_url:
+        raise NotFoundError(
+            "No review file uploaded yet", details={"code": "review_file_missing"}
+        )
+    return storage_service.presigned_review_response_url(request.id)

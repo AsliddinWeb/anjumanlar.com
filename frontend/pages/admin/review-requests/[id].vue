@@ -16,6 +16,7 @@ const api = useApi();
 const toast = useToast();
 const { localised } = useLocaleText();
 const { formatDate } = useFormatDate();
+const { opening, openSignedFile } = useSignedFile();
 
 const requestId = computed(() => route.params.id as string);
 
@@ -283,16 +284,16 @@ const canCancel = computed(() => r.value && !["completed", "cancelled"].includes
             {{ r.manuscript_filename || (r.manuscript_url ? "manuscript.pdf" : t("account_books.upload.no_file")) }}
           </div>
         </div>
-        <a
+        <button
           v-if="r.manuscript_url"
-          :href="r.manuscript_url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          type="button"
+          :disabled="opening === 'manuscript'"
+          class="inline-flex items-center gap-1 text-sm text-primary hover:underline disabled:opacity-50"
+          @click="openSignedFile(`/review-requests/${r.id}/manuscript-url`, 'manuscript')"
         >
           <Icon name="external" class="h-3.5 w-3.5" />
           {{ t("review_requests.actions.download_manuscript") }}
-        </a>
+        </button>
       </div>
 
       <div v-if="r.notes" class="space-y-1 pt-2">
@@ -308,16 +309,16 @@ const canCancel = computed(() => r.value && !["completed", "cancelled"].includes
         {{ t("review_requests.fields.review_text") }}
       </h3>
       <p class="text-sm text-ink leading-relaxed whitespace-pre-line">{{ r.review_text }}</p>
-      <a
+      <button
         v-if="r.review_file_url"
-        :href="r.review_file_url"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+        type="button"
+        :disabled="opening === 'review'"
+        class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline disabled:opacity-50"
+        @click="openSignedFile(`/review-requests/${r.id}/review-file-url`, 'review')"
       >
         <Icon name="document" class="h-4 w-4" />
         {{ t("review_requests.actions.download_review_file") }}
-      </a>
+      </button>
     </div>
 
     <div class="flex justify-end">

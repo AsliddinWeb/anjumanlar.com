@@ -15,6 +15,7 @@ const router = useRouter();
 const api = useApi();
 const { formatDate } = useFormatDate();
 const { localised } = useLocaleText();
+const { opening, openSignedFile } = useSignedFile();
 
 useHead({ title: t("review_requests.title") });
 
@@ -136,26 +137,26 @@ function setStatus(s: string) {
               <span v-if="r.final_price != null" class="text-primary tabular-nums">
                 {{ formatPrice(r.final_price) }}
               </span>
-              <a
+              <button
                 v-if="r.manuscript_url"
-                :href="r.manuscript_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-primary hover:underline inline-flex items-center gap-1"
+                type="button"
+                :disabled="opening === `manuscript:${r.id}`"
+                class="text-primary hover:underline inline-flex items-center gap-1 disabled:opacity-50"
+                @click="openSignedFile(`/review-requests/${r.id}/manuscript-url`, `manuscript:${r.id}`)"
               >
                 <Icon name="document" class="h-3 w-3" />
                 {{ t("review_requests.actions.download_manuscript") }}
-              </a>
-              <a
+              </button>
+              <button
                 v-if="r.review_file_url"
-                :href="r.review_file_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-primary hover:underline inline-flex items-center gap-1"
+                type="button"
+                :disabled="opening === `review:${r.id}`"
+                class="text-primary hover:underline inline-flex items-center gap-1 disabled:opacity-50"
+                @click="openSignedFile(`/review-requests/${r.id}/review-file-url`, `review:${r.id}`)"
               >
                 <Icon name="document" class="h-3 w-3" />
                 {{ t("review_requests.actions.download_review_file") }}
-              </a>
+              </button>
             </div>
           </div>
           <UiButton

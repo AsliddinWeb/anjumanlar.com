@@ -276,3 +276,18 @@ def presigned_book_file_url(book_id: UUID, expires_seconds: int = 300) -> str:
     """Short-lived signed URL for the canonical PDF — the ``books`` bucket
     has no public-read policy, so ``book.file_url`` on its own 403s."""
     return presigned_get_url(settings.MINIO_BUCKET_BOOKS, f"{book_id}.pdf", expires_seconds)
+
+
+def presigned_review_manuscript_url(request_id: UUID, expires_seconds: int = 300) -> str:
+    """Short-lived signed URL for a review request's manuscript PDF — same
+    private-bucket story as ``presigned_book_file_url``."""
+    return presigned_get_url(
+        settings.MINIO_BUCKET_BOOKS, f"review-manuscripts/{request_id}.pdf", expires_seconds
+    )
+
+
+def presigned_review_response_url(request_id: UUID, expires_seconds: int = 300) -> str:
+    """Short-lived signed URL for the author's submitted review PDF."""
+    return presigned_get_url(
+        settings.MINIO_BUCKET_BOOKS, f"review-responses/{request_id}.pdf", expires_seconds
+    )
