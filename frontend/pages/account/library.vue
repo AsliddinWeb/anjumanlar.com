@@ -184,7 +184,7 @@ function setQuery(updates: Record<string, string | undefined>) {
               <Icon name="book" class="h-4 w-4" />
               {{ t("library.read_online") }}
             </UiButton>
-            <p class="text-[10px] text-ink-tertiary mt-1.5 text-center">
+            <p v-if="!entry.book.downloads_enabled" class="text-[10px] text-ink-tertiary mt-1.5 text-center">
               {{ t("library.read_online_hint") }}
             </p>
           </div>
