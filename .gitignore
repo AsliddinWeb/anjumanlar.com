@@ -9,6 +9,9 @@ celerybeat-schedule
 celerybeat-schedule.db
 celerybeat.pid
 
+# ===== Deploy state (server-local, per checkout) =====
+.deploy-state
+
 # ===== Python / Backend =====
 __pycache__/
 *.py[cod]
