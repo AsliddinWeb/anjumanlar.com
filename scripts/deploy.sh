@@ -39,11 +39,29 @@ if [[ -n "$FORCE" && "$FORCE" != "backend" && "$FORCE" != "frontend" && "$FORCE"
     exit 1
 fi
 
-echo "==> pulling latest main"
-git fetch --quiet
-BEFORE_SHA=$(git rev-parse HEAD)
-git pull --ff-only
+if [[ -z "${DEPLOY_SH_REEXEC:-}" ]]; then
+    echo "==> pulling latest main"
+    git fetch --quiet
+    BEFORE_SHA=$(git rev-parse HEAD)
+    git pull --ff-only
+    AFTER_SHA=$(git rev-parse HEAD)
+
+    if [[ "$BEFORE_SHA" != "$AFTER_SHA" ]]; then
+        # The pull may have rewritten this very file. A long-running bash
+        # process reads its script from disk as it goes, so continuing
+        # in-place after a `git pull` that touched scripts/deploy.sh risks
+        # running a mix of old and new logic. `exec` replaces the process
+        # image outright, forcing a clean re-read of whatever is on disk
+        # now — cheap (bash startup only) and eliminates the hazard.
+        echo "==> re-executing the freshly pulled script"
+        DEPLOY_SH_REEXEC=1 DEPLOY_SH_BEFORE_SHA="$BEFORE_SHA" exec bash "$0" "$FORCE"
+    fi
+    BEFORE_SHA_FOR_DIFF="$BEFORE_SHA"
+else
+    BEFORE_SHA_FOR_DIFF="$DEPLOY_SH_BEFORE_SHA"
+fi
 AFTER_SHA=$(git rev-parse HEAD)
+BEFORE_SHA="$BEFORE_SHA_FOR_DIFF"
 
 # --- decide what needs rebuilding -------------------------------------------
 BUILD_BACKEND=0
