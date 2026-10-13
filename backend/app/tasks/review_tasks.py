@@ -14,14 +14,13 @@ filter, double-sends are not possible under steady-state load.
 
 from __future__ import annotations
 
-import asyncio
 import logging
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import and_, exists, not_, select
 from sqlalchemy.orm import selectinload
 
-from app.db.session import AsyncSessionLocal
+from app.db.session import AsyncSessionLocal, run_db_task
 from app.models import (
     Book,
     Order,
@@ -109,7 +108,7 @@ async def _send_reminders() -> int:
 @celery_app.task(name="reviews.send_reminders", bind=True)
 def send_review_reminders(self) -> int:  # noqa: ARG001 — bind for retry compat
     """Public entry point for beat. Returns the number of emails queued."""
-    sent = asyncio.run(_send_reminders())
+    sent = run_db_task(_send_reminders())
     logger.info("reviews.send_reminders queued=%s", sent)
     return sent
 

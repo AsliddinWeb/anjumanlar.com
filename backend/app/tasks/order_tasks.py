@@ -9,10 +9,9 @@ a minute, which is fine for a 30-minute checkout window.
 
 from __future__ import annotations
 
-import asyncio
 import logging
 
-from app.db.session import AsyncSessionLocal
+from app.db.session import AsyncSessionLocal, run_db_task
 from app.services import order_service
 from app.tasks.celery_app import celery_app
 
@@ -30,7 +29,7 @@ async def _expire_async() -> int:
 @celery_app.task(name="orders.expire_pending")
 def expire_pending_orders() -> int:
     """Periodic sweep — returns the number of orders moved to expired."""
-    count = asyncio.run(_expire_async())
+    count = run_db_task(_expire_async())
     if count:
         logger.info("orders.expire_pending moved %s order(s) to expired", count)
     return count

@@ -16,14 +16,13 @@ outside any FastAPI request context.
 
 from __future__ import annotations
 
-import asyncio
 import logging
 from uuid import UUID
 
 from sqlalchemy import select
 
 from app.config import settings
-from app.db.session import AsyncSessionLocal
+from app.db.session import AsyncSessionLocal, run_db_task
 from app.integrations.minio_client import get_bytes, put_bytes
 from app.models import Book
 from app.services import pdf_service
@@ -70,7 +69,7 @@ def generate_demo_pdf(self, book_id: str) -> str:
         demo_bytes,
         "application/pdf",
     )
-    asyncio.run(_set_book_field(UUID(book_id), demo_url=demo_url))
+    run_db_task(_set_book_field(UUID(book_id), demo_url=demo_url))
     logger.info("pdf.generate_demo OK book=%s url=%s", book_id, demo_url)
     return demo_url
 

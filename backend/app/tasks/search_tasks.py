@@ -11,14 +11,13 @@ The remove path is idempotent so re-firing on a missing doc is fine.
 
 from __future__ import annotations
 
-import asyncio
 import logging
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.db.session import AsyncSessionLocal
+from app.db.session import AsyncSessionLocal, run_db_task
 from app.integrations.meilisearch_client import (
     delete_book_document,
     upsert_book_document,
@@ -56,7 +55,7 @@ async def _load_book(book_id: UUID) -> Book | None:
 )
 def sync_book_to_meilisearch(self, book_id: str) -> str:
     """Push the book's document to Meilisearch. Returns the doc id on success."""
-    book = asyncio.run(_load_book(UUID(book_id)))
+    book = run_db_task(_load_book(UUID(book_id)))
     if book is None:
         logger.warning("search.sync_book: book %s vanished", book_id)
         return book_id
