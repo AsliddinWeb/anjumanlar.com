@@ -942,7 +942,19 @@
       "legal_notice": "Bu nusxa shaxsiy foydalanish uchun. Har sahifada email manzilingiz vatermark sifatida joylashtirilgan — fayl tarqalsa, javobgarlik sizda bo'ladi.",
       "download": "PDF yuklab olish",
       "download_disabled": "Muallif/admin bu kitob uchun yuklab olishni o'chirgan — faqat onlayn o'qish mumkin.",
-      "download_failed": "Faylni yuklab bo'lmadi"
+      "download_failed": "Faylni yuklab bo'lmadi",
+      "prev_page": "Oldingi sahifa",
+      "next_page": "Keyingi sahifa",
+      "page_number": "Sahifa raqami",
+      "zoom_out": "Kichraytirish",
+      "zoom_in": "Kattalashtirish",
+      "enter_fullscreen": "To'liq ekran",
+      "exit_fullscreen": "To'liq ekrandan chiqish",
+      "swipe_hint": "Sahifani varaqlash uchun chapga/o'ngga suring",
+      "session_expired": "Sessiya muddati tugadi. Iltimos, qaytadan urinib ko'ring.",
+      "not_ready": "Kitobingiz hali tayyorlanmoqda — bir necha soniyada avtomatik qayta yuklanadi.",
+      "not_found_title": "Kitob topilmadi",
+      "not_found_body": "Bu kitob sizning kutubxonangizda yo'q, yoki havola noto'g'ri."
     }
   },
   "theme": {

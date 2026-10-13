@@ -942,7 +942,19 @@
       "legal_notice": "This copy is for your personal use. Every page is watermarked with your email — if the file leaks, you'll be the one held responsible.",
       "download": "Download PDF",
       "download_disabled": "The author/admin has disabled downloads for this book — online reading only.",
-      "download_failed": "Couldn't download the file"
+      "download_failed": "Couldn't download the file",
+      "prev_page": "Previous page",
+      "next_page": "Next page",
+      "page_number": "Page number",
+      "zoom_out": "Zoom out",
+      "zoom_in": "Zoom in",
+      "enter_fullscreen": "Fullscreen",
+      "exit_fullscreen": "Exit fullscreen",
+      "swipe_hint": "Swipe left/right to turn pages",
+      "session_expired": "Your session expired. Please try again.",
+      "not_ready": "Your book is still being prepared — it'll reload automatically in a few seconds.",
+      "not_found_title": "Book not found",
+      "not_found_body": "This book isn't in your library, or the link is wrong."
     }
   },
   "theme": {
