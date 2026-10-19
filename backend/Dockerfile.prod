@@ -58,11 +58,13 @@ EXPOSE 8000
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
-# 4 uvicorn workers — adjust per CPU; for a 2-vCPU box keep this at 2-3.
+# Each worker is a full extra copy of the app in memory — keep this at
+# 2 on a small/shared box (the prod server also runs a second,
+# unrelated project). Raise it only once the box has headroom to spare.
 CMD ["uvicorn", "app.main:app", \
      "--host", "0.0.0.0", \
      "--port", "8000", \
-     "--workers", "4", \
+     "--workers", "2", \
      "--no-server-header", \
      "--proxy-headers", \
      "--forwarded-allow-ips", "*"]

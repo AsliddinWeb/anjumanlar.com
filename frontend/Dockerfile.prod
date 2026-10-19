@@ -9,6 +9,10 @@
 # ===== Builder =====
 FROM node:20-alpine AS builder
 
+# Tried lowering this for a low-RAM prod host (1536 and 896 both
+# crashed the SSR build outright with "JavaScript heap out of
+# memory" — verified locally). This app's build genuinely needs
+# close to 2GB; don't lower it without re-testing a full `pnpm build`.
 ENV PNPM_HOME="/pnpm" \
     PATH="$PNPM_HOME:$PATH" \
     NUXT_TELEMETRY_DISABLED=1 \

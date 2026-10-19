@@ -50,6 +50,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 256m
     networks: [monografiya]
 
   # ---------- Redis 7 ----------
@@ -67,6 +68,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
+    mem_limit: 96m
     networks: [monografiya]
 
   # ---------- MinIO ----------
@@ -89,6 +91,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 192m
     networks: [monografiya]
 
   minio-init:
@@ -130,6 +133,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 256m
     networks: [monografiya]
 
   # ---------- Backend (FastAPI) ----------
@@ -161,6 +165,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    mem_limit: 384m
     networks: [monografiya]
 
   # ---------- Frontend (Nuxt 3, prebuilt) ----------
@@ -191,6 +196,7 @@ services:
     depends_on:
       backend:
         condition: service_started
+    mem_limit: 256m
     networks: [monografiya]
 
   # ---------- Celery worker ----------
@@ -210,6 +216,7 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
+    mem_limit: 320m
     networks: [monografiya]
 
   # ---------- Celery beat ----------
@@ -229,6 +236,7 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
+    mem_limit: 96m
     networks: [monografiya]
 
   # ---------- Nginx (TLS terminator + reverse proxy) ----------
