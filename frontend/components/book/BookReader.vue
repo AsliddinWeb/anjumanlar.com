@@ -44,7 +44,10 @@ const errorMessage = ref<string>("");
 /** "not_ready" gets a friendlier message + an auto-retry instead of a dead end. */
 const errorKind = ref<"generic" | "auth" | "not_ready">("generic");
 
-const pdfDoc = ref<PDFDocumentProxy | null>(null);
+// shallowRef, not ref: PDF.js 4.x keeps state in #private fields, which
+// throw "Cannot read private member" when called through Vue's deep
+// reactive Proxy — getPage() failed on every book because of this.
+const pdfDoc = shallowRef<PDFDocumentProxy | null>(null);
 const totalPages = ref(0);
 const currentPage = ref(1);
 const scale = ref(1.25);
@@ -114,6 +117,7 @@ async function loadDocument() {
     await renderCurrent();
   }
   catch (err) {
+    console.error("[BookReader] failed to load/render", err);
     status.value = "error";
     const httpStatus = (err as { status?: number } | null)?.status;
     if (httpStatus === 401) {
