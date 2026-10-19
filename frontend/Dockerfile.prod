@@ -9,14 +9,14 @@
 # ===== Builder =====
 FROM node:20-alpine AS builder
 
-# Tried lowering this for a low-RAM prod host (1536 and 896 both
-# crashed the SSR build outright with "JavaScript heap out of
-# memory" — verified locally). This app's build genuinely needs
-# close to 2GB; don't lower it without re-testing a full `pnpm build`.
+# Measured (local, same image): with sourcemaps off (nuxt.config.ts) the
+# SSR build passes at 1536 and OOMs at 1408; with them on it needs
+# >1792. 1664 leaves headroom. Re-test a full `pnpm build` before
+# lowering — 896 and 1536 *with* sourcemaps both crashed.
 ENV PNPM_HOME="/pnpm" \
     PATH="$PNPM_HOME:$PATH" \
     NUXT_TELEMETRY_DISABLED=1 \
-    NODE_OPTIONS="--max-old-space-size=2048"
+    NODE_OPTIONS="--max-old-space-size=1664"
 
 # Build-arg → ENV so nuxt.config.ts picks them up via $NUXT_PUBLIC_*.
 ARG NUXT_PUBLIC_API_BASE

@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
 
+  // Source maps roughly double what Rollup holds in memory during the
+  // build (map decoding + chaining): with them the SSR build needs >1.8GB
+  // of heap, without them ~1.5GB. Prod has no use for them (no Sentry
+  // source-map upload), so don't generate any.
+  sourcemap: { server: false, client: false },
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
